@@ -1,5 +1,5 @@
-#if !defined(FFT_H)
-#define FFT_H
+#ifndef _FFT_H
+#define _FFT_H
 
 int_fast8_t init_fft();
 
