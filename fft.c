@@ -195,7 +195,7 @@ int_fast8_t fft_correlation_cli()
 void __attribute__ ((constructor)) libinit_fft()
 {
 	init_fft();
-	printf(" ...... Loading module %s\n", __FILE__);
+//	printf(" ...... Loading module %s\n", __FILE__);
 }
 
 
