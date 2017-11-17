@@ -222,7 +222,7 @@ int_fast8_t init_fft()
 
 
     strcpy(data.module[data.NBmodule].name, __FILE__);
-    strcpy(data.module[data.NBmodule].info, "FFTW wrapper");
+    strcpy(data.module[data.NBmodule].info, "milk    - FFTW wrapper");
     data.NBmodule++;
 
 
