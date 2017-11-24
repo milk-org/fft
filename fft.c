@@ -222,7 +222,8 @@ int_fast8_t init_fft()
 
 
     strcpy(data.module[data.NBmodule].name, __FILE__);
-    strcpy(data.module[data.NBmodule].info, "milk    - FFTW wrapper");
+    strcpy(data.module[data.NBmodule].package, "milk");
+    strcpy(data.module[data.NBmodule].info, "FFTW wrapper");
     data.NBmodule++;
 
 
@@ -2563,14 +2564,17 @@ fflush(stdout);
 
 
 
-//
-// pupil convolution by complex focal plane mask of limited support
-// typically used with fpmz = zoomed copy of 1-fpm
-// high resolution focal plane mask using DFT
-// zoom factor
-//
-// force computation over pixels >0.5 in _DFTmask00 if it exists
-//
+/**
+ * @brief Use DFT to insert Focal Plane Mask
+ * 
+ *  Pupil convolution by complex focal plane mask of limited support
+ *  typically used with fpmz = zoomed copy of 1-fpm
+ * 
+ * High resolution focal plane mask using DFT
+ * 
+ * Forces computation over pixels >0.5 in _DFTmask00 if it exists
+ * 
+ */ 
 long fft_DFTinsertFPM( const char *pupin_name, const char *fpmz_name, double zfactor, const char *pupout_name)
 {
     double eps = 1.0e-16;
@@ -2691,7 +2695,7 @@ long fft_DFTinsertFPM( const char *pupin_name, const char *fpmz_name, double zfa
                 tcy += y*y*ampin*ampin;
             }
         printf("TX TY = %.18lf %.18lf", tx/tcx, ty/tcy);
-        if(FORCE_IMZERO==1) // Remove tip-tilt in focal plane mask imaginary part
+        if( FORCE_IMZERO == 1 ) // Remove tip-tilt in focal plane mask imaginary part
         {
             tx = 0.0;
             ty = 0.0;
@@ -2739,11 +2743,11 @@ long fft_DFTinsertFPM( const char *pupin_name, const char *fpmz_name, double zfa
         }
         */
 
-        if(0) // TEST
+        if(1) // TEST
         {
             mk_amph_from_complex("_foc0", "tmp_foc0_a", "tmp_foc0_p", 0);
-            save_fl_fits("tmp_foc0_a", "!_DFT_foca");
-            save_fl_fits("tmp_foc0_p", "!_DFT_focp");
+            save_fl_fits("tmp_foc0_a", "!_DFT_foca.fits");
+            save_fl_fits("tmp_foc0_p", "!_DFT_focp.fits");
             delete_image_ID("tmp_foc0_a");
             delete_image_ID("tmp_foc0_p");
         }
@@ -2779,6 +2783,8 @@ long fft_DFTinsertFPM( const char *pupin_name, const char *fpmz_name, double zfa
 
     return(IDout);
 }
+
+
 
 
 //
