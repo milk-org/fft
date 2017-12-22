@@ -2743,8 +2743,11 @@ long fft_DFTinsertFPM( const char *pupin_name, const char *fpmz_name, double zfa
         }
         */
 
-        if(1) // TEST
+
+        if(0) // TEST
         {
+			/// @warning This internal test could crash the process as multiple write operations to the same filename may occurr: leave option OFF for production 
+			
             mk_amph_from_complex("_foc0", "tmp_foc0_a", "tmp_foc0_p", 0);
             save_fl_fits("tmp_foc0_a", "!_DFT_foca.fits");
             save_fl_fits("tmp_foc0_p", "!_DFT_focp.fits");
