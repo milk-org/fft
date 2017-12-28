@@ -195,7 +195,12 @@ int_fast8_t fft_correlation_cli()
 void __attribute__ ((constructor)) libinit_fft()
 {
 	init_fft();
-//	printf(" ...... Loading module %s\n", __FILE__);
+
+	if(data.progStatus>0)
+	{
+		printf("  Found unloaded shared object in ./libs/ -> LOADING module %s\n", __FILE__);
+		fflush(stdout);
+	}	
 }
 
 
