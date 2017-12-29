@@ -1,6 +1,8 @@
 #ifndef _FFT_H
 #define _FFT_H
 
+
+void __attribute__ ((constructor)) libinit_fft();
 int_fast8_t init_fft();
 
 

@@ -83,7 +83,7 @@ static int NB_FFTW_THREADS = 2;
 
 extern DATA data;
 
-
+static int INITSTATUS_fft = 0;
 
 
 // Forward references
@@ -194,8 +194,12 @@ int_fast8_t fft_correlation_cli()
 
 void __attribute__ ((constructor)) libinit_fft()
 {
-	init_fft();
-	RegisterModule(__FILE__, "milk", "FFTW wrapper");
+	if ( INITSTATUS_fft == 0 )
+	{
+		init_fft();
+		RegisterModule(__FILE__, "milk", "FFTW wrapper");
+		INITSTATUS_fft = 1;
+	}
 }
 
 
