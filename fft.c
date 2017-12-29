@@ -195,12 +195,7 @@ int_fast8_t fft_correlation_cli()
 void __attribute__ ((constructor)) libinit_fft()
 {
 	init_fft();
-
-	if(data.progStatus>0)
-	{
-		printf("  Found unloaded shared object in ./libs/ -> LOADING module %s\n", __FILE__);
-		fflush(stdout);
-	}	
+	RegisterModule(__FILE__, "milk", "FFTW wrapper");
 }
 
 
@@ -224,12 +219,6 @@ int_fast8_t init_fft()
 
     fftwf_set_timelimit(1000.0);
     fftw_set_timelimit(1000.0);
-
-
-    strcpy(data.module[data.NBmodule].name, __FILE__);
-    strcpy(data.module[data.NBmodule].package, "milk");
-    strcpy(data.module[data.NBmodule].info, "FFTW wrapper");
-    data.NBmodule++;
 
 
 
