@@ -2741,10 +2741,7 @@ long fft_DFTinsertFPM( const char *pupin_name, const char *fpmz_name, double zfa
         }
         */
 
-<<<<<<< HEAD
-=======
 
->>>>>>> 2aab9a0e092f0a4436c3f02a650540904d1ffb41
         if(0) // TEST
         {
 			/// @warning This internal test could crash the process as multiple write operations to the same filename may occurr: leave option OFF for production 
