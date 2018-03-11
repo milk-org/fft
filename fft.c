@@ -2939,11 +2939,14 @@ int fft_image_translate(const char *ID_name, const char *ID_out, double xtransl,
     long naxes[2];
     //  int n0,n1;
 
-    fprintf( stdout, "[arith_image_translate %f %f]\n", xtransl, ytransl);
 
     ID = image_ID(ID_name);
     naxes[0] = data.image[ID].md[0].size[0];
     naxes[1] = data.image[ID].md[0].size[1];
+
+    fprintf( stdout, "[arith_image_translate %ld %ld %ld     %f %f]\n", ID, naxes[0], naxes[1], xtransl, ytransl);
+
+
     
     printf("n0 n1 = %ld %ld\n", naxes[0], naxes[1]);
     // n0 = (int) ((log10(naxes[0])/log10(2))+0.01);
@@ -2954,9 +2957,7 @@ int fft_image_translate(const char *ID_name, const char *ID_out, double xtransl,
     save_fits(ID_name, "!_TEST_in.fits");
     
     do2drfft(ID_name, "ffttmp1");
-    mk_amph_from_complex("ffttmp1", "amptmp", "phatmp", 0);
-    arith_image_cstmult_inplace("amptmp", 1.0/naxes[0]/naxes[1]);
-    
+    mk_amph_from_complex("ffttmp1", "amptmp", "phatmp", 0);  
     save_fits("amptmp", "!_TEST_amptmp.fits");
     save_fits("phatmp", "!_TEST_phatmp.fits");
     list_image_ID();
