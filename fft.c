@@ -1515,10 +1515,12 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
     IDout = create_image_ID(out_name, naxis, naxesl, atypeout, data.SHARED_DFT, data.NBKEWORD_DFT);
     
     if(naxis==2)
-    {
-        OK=1;
+    {	
+        OK = 1;
+        
         if(atype==_DATATYPE_FLOAT)
         {
+			printf("============ LINE %ld ============\n", __LINE__);
             plan = fftwf_plan_dft_r2c_2d((int) naxes[1], (int) naxes[0], data.image[IDin].array.F, (fftwf_complex*) data.image[IDtmp].array.CF, FFTWOPTMODE);
             if(plan==NULL)
             {
