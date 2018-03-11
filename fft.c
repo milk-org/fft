@@ -1543,7 +1543,7 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
             fftwf_destroy_plan(plan);
 
 			printf("TEST %ld  : %f\n", __LINE__, data.image[IDin].array.F[0]);
-			printf("TEST %ld  : %f %f\n", __LINE__, data.image[IDtmp].array.CF[0].re, , data.image[IDtmp].array.CF[0].im);
+			printf("TEST %ld  : %f %f\n", __LINE__, data.image[IDtmp].array.CF[0].re, data.image[IDtmp].array.CF[0].im);
 
             if(dir == -1)
             {
