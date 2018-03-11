@@ -2939,6 +2939,8 @@ int fft_image_translate(const char *ID_name, const char *ID_out, double xtransl,
     ID = image_ID(ID_name);
     naxes[0] = data.image[ID].md[0].size[0];
     naxes[1] = data.image[ID].md[0].size[1];
+    
+    printf("n0 n1 = %ld %ld\n", naxes[0], naxes[1]);
     // n0 = (int) ((log10(naxes[0])/log10(2))+0.01);
     // n1 = (int) ((log10(naxes[0])/log10(2))+0.01);
 
@@ -2949,9 +2951,13 @@ int fft_image_translate(const char *ID_name, const char *ID_out, double xtransl,
     delete_image_ID("ffttmp1");
     arith_make_slopexy("sltmp", naxes[0], naxes[1], xtransl*2.0*M_PI/naxes[0], ytransl*2.0*M_PI/naxes[1]);
     permut("sltmp");
-    arith_image_add("phatmp","sltmp","phatmp1");
+	
+    arith_image_add("phatmp", "sltmp", "phatmp1");
     delete_image_ID("phatmp");
     delete_image_ID("sltmp");
+	
+	save_fits("phatmp1", "!_TEST_phatmp1.fits");
+    
     mk_complex_from_amph("amptmp", "phatmp1", "ffttmp2", 0);
     delete_image_ID("amptmp");
     delete_image_ID("phatmp1");
