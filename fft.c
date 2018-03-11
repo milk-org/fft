@@ -2949,8 +2949,9 @@ int fft_image_translate(const char *ID_name, const char *ID_out, double xtransl,
     save_fits(ID_name, "!_TEST_in.fits");
     
     do2drfft(ID_name, "ffttmp1");
-    mk_amph_from_complex("ffttmp1","amptmp","phatmp", 0);
+    mk_amph_from_complex("ffttmp1", "amptmp", "phatmp", 0);
     
+    save_fits("amptmp", "!_TEST_amptmp.fits");
     save_fits("phatmp", "!_TEST_phatmp.fits");
     list_image_ID();
     delete_image_ID("ffttmp1");
