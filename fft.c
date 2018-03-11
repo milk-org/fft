@@ -1520,7 +1520,6 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
         
         if(atype==_DATATYPE_FLOAT)
         {
-			printf("============ LINE %ld ======== dir = %d ====\n", __LINE__, dir);
             plan = fftwf_plan_dft_r2c_2d((int) naxes[1], (int) naxes[0], data.image[IDin].array.F, (fftwf_complex*) data.image[IDtmp].array.CF, FFTWOPTMODE);
             if(plan==NULL)
             {
@@ -1541,9 +1540,6 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
             }
             fftwf_execute(plan);
             fftwf_destroy_plan(plan);
-
-			printf("TEST %ld  : %f\n", __LINE__, data.image[IDin].array.F[0]);
-			printf("TEST %ld  : %f %f\n", __LINE__, data.image[IDtmp].array.CF[0].re, data.image[IDtmp].array.CF[0].im);
 
             if(dir == -1)
             {
@@ -2945,24 +2941,21 @@ int fft_image_translate(const char *ID_name, const char *ID_out, double xtransl,
     naxes[0] = data.image[ID].md[0].size[0];
     naxes[1] = data.image[ID].md[0].size[1];
 
-    fprintf( stdout, "[arith_image_translate %ld %ld %ld     %f %f]\n", ID, naxes[0], naxes[1], xtransl, ytransl);
+  //  fprintf( stdout, "[arith_image_translate %ld %ld %ld     %f %f]\n", ID, naxes[0], naxes[1], xtransl, ytransl);
 
 
     
-    printf("n0 n1 = %ld %ld\n", naxes[0], naxes[1]);
     // n0 = (int) ((log10(naxes[0])/log10(2))+0.01);
     // n1 = (int) ((log10(naxes[0])/log10(2))+0.01);
 
     //  if ((n0==n1)&&(naxes[0]==(int) pow(2,n0))&&(naxes[1]==(int) pow(2,n1)))
     // {
-    save_fits(ID_name, "!_TEST_in.fits");
+
     
     do2drfft(ID_name, "ffttmp1");
     mk_amph_from_complex("ffttmp1", "amptmp", "phatmp", 0);  
-    save_fits("amptmp", "!_TEST_amptmp.fits");
-    save_fits("phatmp", "!_TEST_phatmp.fits");
-    list_image_ID();
-    exit(0);
+
+
     delete_image_ID("ffttmp1");
     arith_make_slopexy("sltmp", naxes[0], naxes[1], xtransl*2.0*M_PI/naxes[0], ytransl*2.0*M_PI/naxes[1]);
     permut("sltmp");
@@ -2971,7 +2964,6 @@ int fft_image_translate(const char *ID_name, const char *ID_out, double xtransl,
     delete_image_ID("phatmp");
     delete_image_ID("sltmp");
 	
-	save_fits("phatmp1", "!_TEST_phatmp1.fits");
     
     mk_complex_from_amph("amptmp", "phatmp1", "ffttmp2", 0);
     delete_image_ID("amptmp");
