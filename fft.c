@@ -2952,7 +2952,7 @@ int fft_image_translate(const char *ID_name, const char *ID_out, double xtransl,
     mk_amph_from_complex("ffttmp1","amptmp","phatmp", 0);
     
     save_fits("phatmp", "!_TEST_phatmp.fits");
-    
+    list_image_ID();
     delete_image_ID("ffttmp1");
     arith_make_slopexy("sltmp", naxes[0], naxes[1], xtransl*2.0*M_PI/naxes[0], ytransl*2.0*M_PI/naxes[1]);
     permut("sltmp");
