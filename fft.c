@@ -1520,7 +1520,7 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
         
         if(atype==_DATATYPE_FLOAT)
         {
-			printf("============ LINE %ld ============\n", __LINE__);
+			printf("============ LINE %ld ======== dir = %d ====\n", __LINE__, dir);
             plan = fftwf_plan_dft_r2c_2d((int) naxes[1], (int) naxes[0], data.image[IDin].array.F, (fftwf_complex*) data.image[IDtmp].array.CF, FFTWOPTMODE);
             if(plan==NULL)
             {
