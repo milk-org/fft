@@ -2946,6 +2946,8 @@ int fft_image_translate(const char *ID_name, const char *ID_out, double xtransl,
 
     //  if ((n0==n1)&&(naxes[0]==(int) pow(2,n0))&&(naxes[1]==(int) pow(2,n1)))
     // {
+    save_fits(ID_name, "!_TEST_in.fits");
+    
     do2drfft(ID_name, "ffttmp1");
     mk_amph_from_complex("ffttmp1","amptmp","phatmp", 0);
     
