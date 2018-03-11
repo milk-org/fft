@@ -2932,6 +2932,7 @@ long fft_DFTinsertFPM_re( const char *pupin_name, const char *fpmz_name, double 
 |
 | COMMENT:  Inclusion of this routine requires inclusion of modules:
 |           fft, gen_image
+* DOES NOT WORK ON STREAM
 +-----------------------------------------------------------------------------*/
 int fft_image_translate(const char *ID_name, const char *ID_out, double xtransl, double ytransl)
 {
