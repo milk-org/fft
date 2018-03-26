@@ -2374,8 +2374,8 @@ long fft_DFT( const char *IDin_name, const char *IDinmask_name, const char *IDou
 
 
 
-    iioutarray = (uint_fast32_t *) malloc(sizeof(uint_fast32_t)*NBptsout);
-    jjoutarray = (uint_fast32_t *) malloc(sizeof(uint_fast32_t)*NBptsout);
+    iioutarray = (uint_fast16_t *) malloc(sizeof(uint_fast16_t)*NBptsout);
+    jjoutarray = (uint_fast16_t *) malloc(sizeof(uint_fast16_t)*NBptsout);
     xoutarray = (double *) malloc(sizeof(double)*NBptsout);
     youtarray = (double *) malloc(sizeof(double)*NBptsout);
     kout = 0;
