@@ -81,7 +81,7 @@ static int clock_gettime(int clk_id, struct mach_timespec *t){
 //#define FFTWMT 1
 static int NB_FFTW_THREADS = 2;
 
-extern DATA data;
+//extern DATA data;
 
 static int INITSTATUS_fft = 0;
 
