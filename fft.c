@@ -2156,7 +2156,15 @@ int test_fftspeed(int nmax)
 // dir = -1 for FT, 1 for inverse FT
 // kin in selects slice in IDin_name if this is a cube
 //
-long fft_DFT( const char *IDin_name, const char *IDinmask_name, const char *IDout_name, const char *IDoutmask_name, double Zfactor, int dir, long kin)
+long fft_DFT( 
+		const char *IDin_name, 
+		const char *IDinmask_name, 
+		const char *IDout_name, 
+		const char *IDoutmask_name, 
+		double Zfactor, 
+		int dir, 
+		long kin
+		)
 {
     long IDin;
     long IDout;
@@ -2467,25 +2475,21 @@ fflush(stdout);
         // # ifdef _OPENMP
     }
 # endif
-
 printf("> ");
 fflush(stdout);
 
 
 
-
-	
-
-
-printf("<<");
+printf(" <");
 fflush(stdout);
-
-
-# ifdef HAVE_LIBGOMP
+#ifdef HAVE_LIBGOMP
+	printf(" -omp- %d ", omp_get_max_threads());
+	fflush(stdout);
     #pragma omp parallel default(shared) private(kout, k, pha, re, im, cospha, sinpha, iiin, jjin, iiout, jjout, cosXX, cosYY, sinXX, sinYY, cosXY, sinXY)
     {
         #pragma omp for
-# endif
+#endif
+
         for(kout=0; kout<NBptsout; kout++)
         {
 			iiout = iioutarray[kout];
@@ -2517,12 +2521,11 @@ fflush(stdout);
             data.image[IDout].array.CF[jjoutarray[kout]*xsize+iioutarray[kout]].re = re/Zfactor;
             data.image[IDout].array.CF[jjoutarray[kout]*xsize+iioutarray[kout]].im = im/Zfactor;
         }
-# ifdef HAVE_LIBGOMP
+
+#ifdef HAVE_LIBGOMP
     }
-# endif
-
-
-printf(">>");
+#endif
+printf("> ");
 fflush(stdout);
 
 	free(cosvalinpha);
@@ -2574,7 +2577,12 @@ fflush(stdout);
  * Forces computation over pixels >0.5 in _DFTmask00 if it exists
  * 
  */ 
-long fft_DFTinsertFPM( const char *pupin_name, const char *fpmz_name, double zfactor, const char *pupout_name)
+long fft_DFTinsertFPM(
+		const char *pupin_name, 
+		const char *fpmz_name, 
+		double zfactor, 
+		const char *pupout_name
+		)
 {
     double eps = 1.0e-16;
     long ID, ID1;
