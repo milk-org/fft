@@ -2837,7 +2837,7 @@ long fft_DFTinsertFPM_re( const char *pupin_name, const char *fpmz_name, double 
     double re, im, rein, imin, amp, pha, ampin, phain, amp2;
     double x, y, r;
     double total = 0;
-	char fname[200];
+	char fname[600];
 	long ID_DFTmask00;
 
     IDin = image_ID(pupin_name);
