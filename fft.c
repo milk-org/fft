@@ -2479,6 +2479,8 @@ printf("> ");
 fflush(stdout);
 
 
+// DFT 
+
 
 printf(" <");
 fflush(stdout);
@@ -2487,9 +2489,15 @@ fflush(stdout);
 	fflush(stdout);
     #pragma omp parallel default(shared) private(kout, k, pha, re, im, cospha, sinpha, iiin, jjin, iiout, jjout, cosXX, cosYY, sinXX, sinYY, cosXY, sinXY)
     {
+		#pragma omp master
+		{
+			printf(" [%d thread(s)] ", omp_get_num_threads());
+			fflush(stdout);
+        }
+        
         #pragma omp for
 #endif
-
+		
         for(kout=0; kout<NBptsout; kout++)
         {
 			iiout = iioutarray[kout];
@@ -2628,8 +2636,13 @@ long fft_DFTinsertFPM(
 
     IDout = create_3DCimage_ID(pupout_name, xsize, ysize, zsize);
 
+
     for(k=0; k<zsize; k++) // increment slice (= wavelength)
     {
+		//
+		// Create default input mask for DFT
+		// if amplitude above threshold value, turn pixel "on"
+		//
         IDpupin_mask = create_2Dimage_ID("_DFTpupmask", xsize, ysize);
         for(ii=0; ii<xsize*ysize; ii++)
         {
@@ -2641,7 +2654,9 @@ long fft_DFTinsertFPM(
             else
                 data.image[IDpupin_mask].array.F[ii] = 0.0;
         }
-        
+        //
+        // If _DFTmask00 exists, make corresponding pixels = 1
+        //
         if(ID_DFTmask00 != -1)
 			for(ii=0; ii<xsize*ysize; ii++)
 			{
@@ -2649,6 +2664,10 @@ long fft_DFTinsertFPM(
 					data.image[IDpupin_mask].array.F[ii] = 1.0;
 			}
 
+		//
+		// Construct focal plane mask for DFT
+		// If amplitude >eps, turn pixel ON, save result in _fpmzmask
+		//
         IDfpmz = image_ID(fpmz_name);
         IDfpmz_mask = create_2Dimage_ID("_fpmzmask", xsize, ysize);
         for(ii=0; ii<xsize*ysize; ii++)
