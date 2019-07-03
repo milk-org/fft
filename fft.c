@@ -2412,15 +2412,18 @@ long fft_DFT(
 	IDsinYY = create_2Dimage_ID("_sinYY", ysize, ysize);
 
 
+
 printf(" <");
 fflush(stdout);
 
-    //# ifdef _OPENMP
-# ifdef HAVE_LIBGOMP
+//#ifdef _OPENMP
+#ifdef HAVE_LIBGOMP
+printf("HAVE_LIBGOMP");
     #pragma omp parallel default(shared) private(pixiiout, pixiiin, iiout, iiin, pha, cospha, sinpha)
     {
         #pragma omp for
-# endif
+#endif
+
         for(pixiiout=0; pixiiout<NBpixact_iiout; pixiiout++)
         {
 			iiout = iioutarrayActive[pixiiout];
