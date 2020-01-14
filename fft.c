@@ -345,6 +345,9 @@ int fft_setNthreads(int nt)
     return(0);
 }
 
+
+
+
 int import_wisdom()
 {
     FILE *fp;
@@ -374,12 +377,24 @@ int import_wisdom()
 # endif
 
 
+    int nowisdomWarning = 0;
+
     if((fp = fopen(wisdom_file_single,"r"))==NULL)
     {
-        n = snprintf(warnmessg,SBUFFERSIZE,"No single precision wisdom file in %s\n FFTs will not be optimized, and may run slower than if a wisdom file is used\n type \"initfft\" to create the wisdom file (this will take time)", wisdom_file_single);
+        nowisdomWarning = 1;
+        /*
+        n = snprintf(
+                warnmessg,
+                SBUFFERSIZE,
+                "No single precision wisdom file in %s\n FFTs will not be optimized,"
+                " and may run slower than if a wisdom file is used\n type \"initfft\""
+                " to create the wisdom file (this will take time)",
+                wisdom_file_single);
+
         if(n >= SBUFFERSIZE)
             printERROR(__FILE__,__func__,__LINE__,"Attempted to write string buffer with too many characters");
         printWARNING(__FILE__,__func__,__LINE__,warnmessg);
+        */
     } else  {
         if (fftwf_import_wisdom_from_file(fp)==0)
             printERROR(__FILE__,__func__,__LINE__,"Error reading wisdom");
@@ -389,19 +404,30 @@ int import_wisdom()
 
     if((fp = fopen(wisdom_file_double,"r"))==NULL)
     {
-        n = snprintf(warnmessg,SBUFFERSIZE,"No double precision wisdom file in %s\n FFTs will not be optimized, and may run slower than if a wisdom file is used\n type \"initfft\" to create the wisdom file (this will take time)", wisdom_file_double);
-        if(n >= SBUFFERSIZE)
-            printERROR(__FILE__,__func__,__LINE__,"Attempted to write string buffer with too many characters");
-        printWARNING(__FILE__,__func__,__LINE__,warnmessg);
+        nowisdomWarning = 1;
+        /*  n = snprintf(
+                  warnmessg,
+                  SBUFFERSIZE,
+                  "No double precision wisdom file in %s\n FFTs will not be optimized,"
+                  " and may run slower than if a wisdom file is used\n type \"initfft\""
+                  " to create the wisdom file (this will take time)",
+                  wisdom_file_double);
+          if(n >= SBUFFERSIZE)
+              printERROR(__FILE__,__func__,__LINE__,"Attempted to write string buffer with too many characters");
+          printWARNING(__FILE__,__func__,__LINE__,warnmessg);*/
     } else  {
         if (fftw_import_wisdom_from_file(fp)==0)
             printERROR(__FILE__,__func__,__LINE__,"Error reading wisdom");
         fclose(fp);
     }
 
+	if(nowisdomWarning == 1) {
+		printf("NOTE: no fftw wisdom file found. Run initfft to create\n");
+	}
 
     return(0);
 }
+
 
 
 
