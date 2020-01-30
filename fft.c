@@ -521,10 +521,12 @@ errno_t export_wisdom()
     char errmessg[SBUFFERSIZE];
     int n;
     char command[200];
-    
+
     sprintf(command, "mkdir -p %s", FFTCONFIGDIR);
-    system(command);
-    
+    if(system(command) != 0) {
+        printERROR(__FILE__,__func__,__LINE__, "system() returns non-zero value");
+    }
+
 # ifdef FFTWMT
     n = snprintf(wisdom_file_single, SBUFFERSIZE, "%s/fftwf_mt_wisdom.dat", FFTCONFIGDIR);
     if(n >= SBUFFERSIZE)
