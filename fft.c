@@ -4,8 +4,6 @@
  * 
  * Wrapper to fftw
  * 
- * @bug No known bugs.
- * 
  */
 
 
@@ -75,7 +73,7 @@ static int clock_gettime(int clk_id, struct mach_timespec *t){
 
 
 //#define FFTWMT 1
-static int NB_FFTW_THREADS = 2;
+//static int NB_FFTW_THREADS = 2;
 
 //extern DATA data;
 
@@ -104,81 +102,147 @@ long fft_correlation(char *ID_name1, char *ID_name2, char *ID_nameout);
 //
 
 
-int_fast8_t fft_permut_cli()
+errno_t fft_permut_cli()
 {
-    if(CLI_checkarg(1,4)==0)
+    if(
+        CLI_checkarg(1,4)
+        == 0 )
+    {
         permut(data.cmdargtoken[1].val.string);
-
-    return 0;
+        return CLICMD_SUCCESS;
+    }
+    else {
+        return CLICMD_INVALID_ARG;
+    }
 }
 
 
 //int do2dfft(char *in_name, char *out_name);
 
-int_fast8_t fft_do1dfft_cli()
+errno_t fft_do1dfft_cli()
 {
-    if(CLI_checkarg(1,4)+CLI_checkarg(2,3)==0)
+    if(
+        CLI_checkarg(1,4) +
+        CLI_checkarg(2,3)
+        == 0 )
     {
-        do1dfft(data.cmdargtoken[1].val.string, data.cmdargtoken[2].val.string);
-        return 0;
+        do1dfft(
+            data.cmdargtoken[1].val.string,
+            data.cmdargtoken[2].val.string
+        );
+
+        return CLICMD_SUCCESS;
     }
-    else
-        return 1;
+    else {
+        return CLICMD_INVALID_ARG;
+    }
 }
 
-int_fast8_t fft_do1drfft_cli()
+
+errno_t fft_do1drfft_cli()
 {
-    if(CLI_checkarg(1,4)+CLI_checkarg(2,3)==0)
+    if(
+        CLI_checkarg(1,4) +
+        CLI_checkarg(2,3)
+        == 0 )
     {
-        do1drfft(data.cmdargtoken[1].val.string, data.cmdargtoken[2].val.string);
-        return 0;
+        do1drfft(
+            data.cmdargtoken[1].val.string,
+            data.cmdargtoken[2].val.string
+        );
+
+        return CLICMD_SUCCESS;
     }
-    else
-        return 1;
+    else {
+        return CLICMD_INVALID_ARG;
+    }
 }
 
 
-int_fast8_t fft_do2dfft_cli()
+errno_t fft_do2dfft_cli()
 {
-    if(CLI_checkarg(1,4)+CLI_checkarg(2,3)==0)
+    if(
+        CLI_checkarg(1,4) +
+        CLI_checkarg(2,3)
+        == 0 )
     {
-        do2dfft(data.cmdargtoken[1].val.string, data.cmdargtoken[2].val.string);
-        return 0;
+        do2dfft(
+            data.cmdargtoken[1].val.string,
+            data.cmdargtoken[2].val.string
+        );
+
+        return CLICMD_SUCCESS;
     }
-    else
-        return 1;
+    else {
+        return CLICMD_INVALID_ARG;
+    }
 }
 
 
 
 
-int_fast8_t test_fftspeed_cli()
+errno_t test_fftspeed_cli()
 {
-    if(CLI_checkarg(1,2)==0)
-        test_fftspeed((int) data.cmdargtoken[1].val.numl);
-
-    return 0;
+    if(
+        CLI_checkarg(1,2)
+        == 0 )
+    {
+        test_fftspeed(
+            (int) data.cmdargtoken[1].val.numl
+        );
+        return CLICMD_SUCCESS;
+    }
+    else {
+        return CLICMD_INVALID_ARG;
+    }
 }
 
 
-int_fast8_t fft_image_translate_cli()
+
+errno_t fft_image_translate_cli()
 {
-    if(CLI_checkarg(1,4)+CLI_checkarg(2,3)+CLI_checkarg(3,1)+CLI_checkarg(4,1)==0)
-        fft_image_translate(data.cmdargtoken[1].val.string, data.cmdargtoken[2].val.string, data.cmdargtoken[3].val.numf, data.cmdargtoken[4].val.numf);
-    else
-        return 1;
+    if(
+        CLI_checkarg(1,4) +
+        CLI_checkarg(2,3) +
+        CLI_checkarg(3,1) +
+        CLI_checkarg(4,1)
+        == 0 )
+    {
+        fft_image_translate(
+            data.cmdargtoken[1].val.string,
+            data.cmdargtoken[2].val.string,
+            data.cmdargtoken[3].val.numf,
+            data.cmdargtoken[4].val.numf
+        );
 
-    return 0;
+        return CLICMD_SUCCESS;
+    }
+    else {
+        return CLICMD_INVALID_ARG;
+    }
 }
 
 
 
-int_fast8_t fft_correlation_cli()
+errno_t fft_correlation_cli()
 {
-    if(CLI_checkarg(1,4)+CLI_checkarg(2,4)+CLI_checkarg(3,3)==0)
-        fft_correlation(data.cmdargtoken[1].val.string, data.cmdargtoken[2].val.string, data.cmdargtoken[3].val.string);
-    else
-        return 1;
+    if(
+        CLI_checkarg(1,4) +
+        CLI_checkarg(2,4) +
+        CLI_checkarg(3,3)
+        == 0 )
+    {
+        fft_correlation(
+            data.cmdargtoken[1].val.string,
+            data.cmdargtoken[2].val.string,
+            data.cmdargtoken[3].val.string
+        );
+
+        return CLICMD_SUCCESS;
+    }
+    else {
+        return CLICMD_INVALID_ARG;
+    }
 }
 
 
@@ -186,8 +250,11 @@ int_fast8_t fft_correlation_cli()
 
 
 
-
-
+/*
+ * Library initialization function.
+ * Called when shared object is loaded
+ * 
+ */ 
 void __attribute__ ((constructor)) libinit_fft()
 {
 	if ( INITSTATUS_fft == 0 )
@@ -199,9 +266,36 @@ void __attribute__ ((constructor)) libinit_fft()
 }
 
 
+/*
+ * Library close function.
+ * Called when shared object in unloaded, or program exit.
+ *
+ */
+void __attribute__ ((destructor)) libclose_fft()
+{
+    if ( INITSTATUS_fft == 1 )
+    {
+        fftw_forget_wisdom();
+        fftwf_forget_wisdom();
+
+# ifdef FFTWMT
+        fftw_cleanup_threads();
+        fftwf_cleanup_threads();
+# endif
+
+# ifndef FFTWMT
+        fftw_cleanup();
+        fftwf_cleanup();
+# endif
+    }
+
+}
 
 
-int_fast8_t init_fft()
+
+
+
+errno_t init_fft()
 {
 
 # ifdef FFTWMT
@@ -217,104 +311,90 @@ int_fast8_t init_fft()
     import_wisdom();
 
 
-    fftwf_set_timelimit(1000.0);
-    fftw_set_timelimit(1000.0);
+    //fftwf_set_timelimit(1000.0);
+    //fftw_set_timelimit(1000.0);
 
 
 
-    strcpy(data.cmd[data.NBcmd].key,"initfft");
-    strcpy(data.cmd[data.NBcmd].module,__FILE__);
-    data.cmd[data.NBcmd].fp = init_fftw_plans0;
-    strcpy(data.cmd[data.NBcmd].info,"init FFTW");
-    strcpy(data.cmd[data.NBcmd].syntax,"no argument");
-    strcpy(data.cmd[data.NBcmd].example,"initfft");
-    strcpy(data.cmd[data.NBcmd].Ccall,"int init_fftw_plans0()");
-    data.NBcmd++;
-    
-    
-    strcpy(data.cmd[data.NBcmd].key,"dofft");
-    strcpy(data.cmd[data.NBcmd].module,__FILE__);
-    data.cmd[data.NBcmd].fp = fft_do2dfft_cli;
-    strcpy(data.cmd[data.NBcmd].info,"perform FFT");
-    strcpy(data.cmd[data.NBcmd].syntax,"<input> <output>");
-    strcpy(data.cmd[data.NBcmd].example,"fofft in out");
-    strcpy(data.cmd[data.NBcmd].Ccall,"int do2dfft(const char *in_name, const char *out_name)");
-    data.NBcmd++;
-
-    
-    strcpy(data.cmd[data.NBcmd].key,"do1Dfft");
-    strcpy(data.cmd[data.NBcmd].module,__FILE__);
-    data.cmd[data.NBcmd].fp = fft_do1dfft_cli;
-    strcpy(data.cmd[data.NBcmd].info,"perform 1D complex->complex FFT");
-    strcpy(data.cmd[data.NBcmd].syntax,"<input> <output>");
-    strcpy(data.cmd[data.NBcmd].example,"do1Dfft in out");
-    strcpy(data.cmd[data.NBcmd].Ccall,"int do1dfft(const char *in_name, const char *out_name)");
-    data.NBcmd++;
-     
-       
-    strcpy(data.cmd[data.NBcmd].key,"do1Drfft");
-    strcpy(data.cmd[data.NBcmd].module,__FILE__);
-    data.cmd[data.NBcmd].fp = fft_do1drfft_cli;
-    strcpy(data.cmd[data.NBcmd].info,"perform 1D real->complex FFT");
-    strcpy(data.cmd[data.NBcmd].syntax,"<input> <output>");
-    strcpy(data.cmd[data.NBcmd].example,"do1drfft in out");
-    strcpy(data.cmd[data.NBcmd].Ccall,"int do1drfft(const char *in_name, const char *out_name)");
-    data.NBcmd++;
-     
-
-    strcpy(data.cmd[data.NBcmd].key,"permut");
-    strcpy(data.cmd[data.NBcmd].module,__FILE__);
-    data.cmd[data.NBcmd].fp = fft_permut_cli;
-    strcpy(data.cmd[data.NBcmd].info,"permut image quadrants");
-    strcpy(data.cmd[data.NBcmd].syntax,"<image>");
-    strcpy(data.cmd[data.NBcmd].example,"permut im1");
-    strcpy(data.cmd[data.NBcmd].Ccall,"int permut(const char *ID_name)");
-    data.NBcmd++;
-
-    strcpy(data.cmd[data.NBcmd].key,"testfftspeed");
-    strcpy(data.cmd[data.NBcmd].module,__FILE__);
-    data.cmd[data.NBcmd].fp = test_fftspeed_cli;
-    strcpy(data.cmd[data.NBcmd].info,"test FFTW speed");
-    strcpy(data.cmd[data.NBcmd].syntax,"no argument");
-    strcpy(data.cmd[data.NBcmd].example,"testfftspeed");
-    strcpy(data.cmd[data.NBcmd].Ccall,"int test_fftwspeed(int nmax)");
-    data.NBcmd++;
-
-    strcpy(data.cmd[data.NBcmd].key,"transl");
-    strcpy(data.cmd[data.NBcmd].module,__FILE__);
-    data.cmd[data.NBcmd].fp = fft_image_translate_cli;
-    strcpy(data.cmd[data.NBcmd].info,"translate image");
-    strcpy(data.cmd[data.NBcmd].syntax,"<imagein> <imageout> <xtransl> <ytransl>");
-    strcpy(data.cmd[data.NBcmd].example,"transl im1 im2 2.3 -2.1");
-    strcpy(data.cmd[data.NBcmd].Ccall,"int fft_image_translate(const char *ID_name, const char *ID_out, double xtransl, double ytransl)");
-    data.NBcmd++;
-
-    strcpy(data.cmd[data.NBcmd].key,"fcorrel");
-    strcpy(data.cmd[data.NBcmd].module,__FILE__);
-    data.cmd[data.NBcmd].fp = fft_correlation_cli;
-    strcpy(data.cmd[data.NBcmd].info,"correlate two images");
-    strcpy(data.cmd[data.NBcmd].syntax,"<imagein1> <imagein2> <correlout>");
-    strcpy(data.cmd[data.NBcmd].example,"fcorrel im1 im2 outim");
-    strcpy(data.cmd[data.NBcmd].Ccall,"long fft_correlation(const char *ID_name1, const char *ID_name2, const char *ID_nameout)");
-    data.NBcmd++;
-
-    return 0;
-}
+    RegisterCLIcommand(
+        "initfft",
+        __FILE__,
+        init_fftw_plans0,
+        "init FFTW",
+        "no argument",
+        "initfft",
+        "int init_fftw_plans0()");
 
 
+    RegisterCLIcommand(
+        "dofft",
+        __FILE__,
+        fft_do2dfft_cli,
+        "perform FFT",
+        "<input> <output>",
+        "fofft in out",
+        "int do2dfft(const char *in_name, const char *out_name)");
 
 
-int free_fft()
-{
-# ifdef FFTWMT
-    fftwf_cleanup_threads();
-# endif
+    RegisterCLIcommand(
+        "do1Dfft",
+        __FILE__,
+        fft_do1dfft_cli,
+        "perform 1D complex->complex FFT",
+        "<input> <output>",
+        "do1Dfft in out",
+        "int do1dfft(const char *in_name, const char *out_name)");
 
-# ifndef FFTWMT
-    fftwf_cleanup();
-# endif
 
-    return 0;
+    RegisterCLIcommand(
+        "do1Drfft",
+        __FILE__,
+        fft_do1drfft_cli,
+        "perform 1D real->complex FFT",
+        "<input> <output>",
+        "do1drfft in out",
+        "int do1drfft(const char *in_name, const char *out_name)");
+
+
+    RegisterCLIcommand(
+        "permut",
+        __FILE__,
+        fft_permut_cli,
+        "permut image quadrants",
+        "<image>",
+        "permut im1",
+        "int permut(const char *ID_name)");
+
+
+    RegisterCLIcommand(
+        "testfftspeed",
+        __FILE__,
+        test_fftspeed_cli,
+        "test FFTW speed",
+        "no argument",
+        "testfftspeed",
+        "int test_fftwspeed(int nmax)");
+
+    RegisterCLIcommand(
+        "transl",
+        __FILE__,
+        fft_image_translate_cli,
+        "translate image",
+        "<imagein> <imageout> <xtransl> <ytransl>",
+        "transl im1 im2 2.3 -2.1",
+        "int fft_image_translate(const char *ID_name, const char *ID_out, double xtransl, double ytransl)");
+
+
+    RegisterCLIcommand(
+        "fcorrel",
+        __FILE__,
+        fft_correlation_cli,
+        "correlate two images",
+        "<imagein1> <imagein2> <correlout>",
+        "fcorrel im1 im2 outim",
+        "long fft_correlation(const char *ID_name1, const char *ID_name2, const char *ID_nameout)");
+
+    return RETURN_SUCCESS;
 }
 
 
@@ -327,7 +407,11 @@ int free_fft()
 
 
 
-int fft_setNthreads(int nt)
+
+
+int fft_setNthreads(
+    __attribute__((unused)) int nt
+)
 {
  //   printf("set number of thread to %d (FFTWMT)\n",nt);
 # ifdef FFTWMT
@@ -348,12 +432,11 @@ int fft_setNthreads(int nt)
 
 
 
-int import_wisdom()
+errno_t import_wisdom()
 {
     FILE *fp;
     char wisdom_file_single[SBUFFERSIZE];
     char wisdom_file_double[SBUFFERSIZE];
-    char warnmessg[SBUFFERSIZE];
     int n;
 
 
@@ -379,7 +462,7 @@ int import_wisdom()
 
     int nowisdomWarning = 0;
 
-    if((fp = fopen(wisdom_file_single,"r"))==NULL)
+    if((fp = fopen(wisdom_file_single, "r")) == NULL)
     {
         nowisdomWarning = 1;
         /*
@@ -396,13 +479,13 @@ int import_wisdom()
         printWARNING(__FILE__,__func__,__LINE__,warnmessg);
         */
     } else  {
-        if (fftwf_import_wisdom_from_file(fp)==0)
+        if (fftwf_import_wisdom_from_file(fp) == 0)
             printERROR(__FILE__,__func__,__LINE__,"Error reading wisdom");
         fclose(fp);
     }
 
 
-    if((fp = fopen(wisdom_file_double,"r"))==NULL)
+    if((fp = fopen(wisdom_file_double, "r")) == NULL)
     {
         nowisdomWarning = 1;
         /*  n = snprintf(
@@ -416,22 +499,22 @@ int import_wisdom()
               printERROR(__FILE__,__func__,__LINE__,"Attempted to write string buffer with too many characters");
           printWARNING(__FILE__,__func__,__LINE__,warnmessg);*/
     } else  {
-        if (fftw_import_wisdom_from_file(fp)==0)
+        if (fftw_import_wisdom_from_file(fp) == 0)
             printERROR(__FILE__,__func__,__LINE__,"Error reading wisdom");
         fclose(fp);
     }
 
 	if(nowisdomWarning == 1) {
-		printf("NOTE: no fftw wisdom file found. Run initfft to create\n");
+		printf("(no fftw wisdom file, run initfft to create)");
 	}
 
-    return(0);
+    return RETURN_SUCCESS;
 }
 
 
 
 
-int export_wisdom()
+errno_t export_wisdom()
 {
     FILE *fp;
     char wisdom_file_single[SBUFFERSIZE];
@@ -439,10 +522,9 @@ int export_wisdom()
     char errmessg[SBUFFERSIZE];
     int n;
     char command[200];
-    int ret;
     
     sprintf(command, "mkdir -p %s", FFTCONFIGDIR);
-    ret = system(command);
+    system(command);
     
 # ifdef FFTWMT
     n = snprintf(wisdom_file_single, SBUFFERSIZE, "%s/fftwf_mt_wisdom.dat", FFTCONFIGDIR);
@@ -485,11 +567,7 @@ int export_wisdom()
     fftw_export_wisdom_to_file(fp);
     fclose(fp);
 
-
-
-
-
-    return(0);
+    return RETURN_SUCCESS;
 }
 
 
@@ -502,7 +580,7 @@ int export_wisdom()
 |
 |
 +-----------------------------------------------------------------------------*/
-int_fast8_t init_fftw_plans(int mode)
+errno_t init_fftw_plans(int mode)
 {
     int n;
     int size;
@@ -610,17 +688,17 @@ int_fast8_t init_fftw_plans(int mode)
 
     export_wisdom();
 
-    return(0);
+    return RETURN_SUCCESS;
 }
 
 
 
 
-int_fast8_t init_fftw_plans0()
+errno_t init_fftw_plans0()
 {
     init_fftw_plans(0);
 
-    return(0);
+    return RETURN_SUCCESS;
 }
 
 
@@ -633,7 +711,6 @@ int permut(const char *ID_name)
     int ID;
     long xhalf,yhalf;
     long ii,jj,kk;
-    long i;
     long naxis;
     uint8_t datatype;
     int OK=0;
@@ -1051,6 +1128,7 @@ long FFT_do1dfft(const char *in_name, const char *out_name, int dir)
 
 
 
+
 /* 1d real -> complex fft */
 // supports single and double precision
 long do1drfft(const char *in_name, const char *out_name)
@@ -1059,10 +1137,10 @@ long do1drfft(const char *in_name, const char *out_name)
     uint32_t *naxesl;
     uint32_t *naxesout;
     long naxis;
-    long IDin, IDout, IDtmp;
+    long IDin, IDout;
     long i;
     int OK=0;
-    long ii,jj;
+    long jj;
     fftwf_plan plan;
 	fftw_plan plan_double;
 	fftwf_complex *outptr;
@@ -1213,11 +1291,9 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
     fftwf_plan plan;
     fftw_plan plan_double;
     long tmp1;
-    long IDcpy;
 
     char ffttmpcpyname[SBUFFERSIZE];
     int n;
-    long nextID;
 	uint8_t datatype;
 
 
@@ -1490,7 +1566,7 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
     long IDin,IDout,IDtmp;
     long i;
     int OK=0;
-    long idist;
+//    long idist;
     long ii,jj,kk;
     fftwf_plan plan;
     fftw_plan plan_double;
@@ -1525,13 +1601,16 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
     }
 
     n = snprintf(ffttmpname,SBUFFERSIZE,"_ffttmp_%d",(int) getpid());
-    if(n >= SBUFFERSIZE)
+    if(n >= SBUFFERSIZE) {
         printERROR(__FILE__,__func__,__LINE__,"Attempted to write string buffer with too many characters");
+	}
 
-	if(datatype==_DATATYPE_FLOAT)
+	if(datatype==_DATATYPE_FLOAT) {
 		datatypeout = _DATATYPE_COMPLEX_FLOAT;
-	else
+	}
+	else {
 		datatypeout = _DATATYPE_COMPLEX_DOUBLE;
+	}
 
     IDtmp = create_image_ID(ffttmpname, naxis, naxestmp, datatypeout, data.SHARED_DFT, data.NBKEWORD_DFT);
 
@@ -1629,7 +1708,7 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
     if(naxis==3)
     {
         OK=1;
-        idist = naxes[0]*naxes[1];
+        //idist = naxes[0]*naxes[1];
 
         // swapping first 2 axis
         tmp1 = naxes[0];
@@ -1764,9 +1843,13 @@ long do2drffti(const char *in_name, const char *out_name)
 
 
 
-long fft_correlation(const char *ID_name1, const char *ID_name2, const char *ID_nameout)
+imageID fft_correlation(
+    const char *ID_name1,
+    const char *ID_name2,
+    const char *ID_nameout
+)
 {
-    long ID1, ID2,IDout;
+    imageID ID1, IDout;
     long nelement;
 
     char ft1name[SBUFFERSIZE];
@@ -1864,7 +1947,7 @@ long fft_correlation(const char *ID_name1, const char *ID_name2, const char *ID_
     IDout = image_ID(ID_nameout);
 
 
-    return(IDout);
+    return IDout;
 }
 
 
@@ -2072,9 +2155,9 @@ int test_fftspeed(int nmax)
     struct timespec tS2;
     double ti0,ti1,ti2;
     double dt1;
-    struct timeval tv;
-    int nb_threads=1;
-    int nb_threads_max = 8;
+    //struct timeval tv;
+    //int nb_threads=1;
+    //int nb_threads_max = 8;
 
     /*  printf("%ld ticks per second\n",CLOCKS_PER_SEC);*/
     nbiter = 10000;
@@ -2179,26 +2262,26 @@ int test_fftspeed(int nmax)
 // dir = -1 for FT, 1 for inverse FT
 // kin in selects slice in IDin_name if this is a cube
 //
-long fft_DFT( 
-		const char *IDin_name, 
-		const char *IDinmask_name, 
-		const char *IDout_name, 
-		const char *IDoutmask_name, 
-		double Zfactor, 
-		int dir, 
-		long kin
-		)
+imageID fft_DFT(
+    const char *IDin_name,
+    const char *IDinmask_name,
+    const char *IDout_name,
+    const char *IDoutmask_name,
+    double      Zfactor,
+    int         dir,
+    long        kin
+)
 {
-    long IDin;
-    long IDout;
-    long IDinmask;
-    long IDoutmask;
+    imageID IDin;
+    imageID IDout;
+    imageID IDinmask;
+    imageID IDoutmask;
 
-    long NBptsin;
-    long NBptsout;
+    uint32_t NBptsin;
+    uint32_t NBptsout;
 
-    uint_fast16_t xsize, ysize;
-    uint_fast16_t ii, jj, k, kout;
+    uint32_t xsize, ysize;
+    uint32_t ii, jj, k, kout;
     double val;
     double re, im;
     float pha;
@@ -2217,28 +2300,28 @@ long fft_DFT(
     double *xoutarray;
     double *youtarray;
 
-	float cospha, sinpha;
+    float cospha, sinpha;
 
-	long IDcosXX, IDcosYY, IDsinXX, IDsinYY;
+    long IDcosXX, IDcosYY, IDsinXX, IDsinYY;
 
-	// list of active coordinates
-	uint_fast16_t *iiinarrayActive;
-	uint_fast16_t *jjinarrayActive;
-	uint_fast16_t *iioutarrayActive;
-	uint_fast16_t *jjoutarrayActive;	
-	uint_fast16_t pixiiin, pixiiout, pixjjin, pixjjout;
-	
-	uint_fast8_t pixact;
-	uint_fast16_t NBpixact_iiin, NBpixact_jjin;
-	uint_fast16_t NBpixact_iiout, NBpixact_jjout;
+    // list of active coordinates
+    uint_fast16_t *iiinarrayActive;
+    uint_fast16_t *jjinarrayActive;
+    uint_fast16_t *iioutarrayActive;
+    uint_fast16_t *jjoutarrayActive;
+    uint_fast16_t pixiiin, pixiiout, pixjjin, pixjjout;
 
-	float *XinarrayActive;
-	float *YinarrayActive;
-	float *XoutarrayActive;
-	float *YoutarrayActive;
-	uint_fast16_t iiin, jjin, iiout, jjout;
+    uint_fast8_t pixact;
+    uint_fast16_t NBpixact_iiin, NBpixact_jjin;
+    uint_fast16_t NBpixact_iiout, NBpixact_jjout;
 
-	float cosXX, sinXX, cosYY, sinYY, cosXY, sinXY;
+    float *XinarrayActive;
+    float *YinarrayActive;
+    float *XoutarrayActive;
+    float *YoutarrayActive;
+    uint_fast16_t iiin, jjin, iiout, jjout;
+
+    float cosXX, sinXX, cosYY, sinYY, cosXY, sinXY;
 
 
 
@@ -2249,68 +2332,68 @@ long fft_DFT(
     IDinmask = image_ID(IDinmask_name);
     xsize = data.image[IDinmask].md[0].size[0];
     ysize = data.image[IDinmask].md[0].size[1];
-   	iiinarrayActive = (uint_fast16_t *) malloc(sizeof(uint_fast16_t)*xsize);
-	jjinarrayActive = (uint_fast16_t *) malloc(sizeof(uint_fast16_t)*ysize);
-	iioutarrayActive = (uint_fast16_t *) malloc(sizeof(uint_fast16_t)*xsize);
-	jjoutarrayActive = (uint_fast16_t *) malloc(sizeof(uint_fast16_t)*ysize);
+    iiinarrayActive = (uint_fast16_t *) malloc(sizeof(uint_fast16_t)*xsize);
+    jjinarrayActive = (uint_fast16_t *) malloc(sizeof(uint_fast16_t)*ysize);
+    iioutarrayActive = (uint_fast16_t *) malloc(sizeof(uint_fast16_t)*xsize);
+    jjoutarrayActive = (uint_fast16_t *) malloc(sizeof(uint_fast16_t)*ysize);
 
 
-    
-    
-    
+
+
+
     NBptsin = 0;
     NBpixact_iiin = 0;
     for(ii=0; ii<xsize; ii++)
     {
-		pixact = 0;
+        pixact = 0;
         for(jj=0; jj<ysize; jj++)
         {
             val = data.image[IDinmask].array.F[jj*xsize+ii];
             if(val>0.5)
             {
-				pixact = 1;
+                pixact = 1;
                 NBptsin ++;
-			}
+            }
         }
         if(pixact==1)
-			{
-				iiinarrayActive[NBpixact_iiin] = ii;
-				NBpixact_iiin++;
-			}
-	}
+        {
+            iiinarrayActive[NBpixact_iiin] = ii;
+            NBpixact_iiin++;
+        }
+    }
 
-	NBpixact_jjin = 0;
+    NBpixact_jjin = 0;
     for(jj=0; jj<ysize; jj++)
     {
-		pixact = 0;
+        pixact = 0;
         for(ii=0; ii<xsize; ii++)
         {
             val = data.image[IDinmask].array.F[jj*xsize+ii];
             if(val>0.5)
-				pixact = 1;
+                pixact = 1;
         }
         if(pixact==1)
-			{
-				jjinarrayActive[NBpixact_jjin] = jj;
-				NBpixact_jjin++;
-			}
-	}
-	
+        {
+            jjinarrayActive[NBpixact_jjin] = jj;
+            NBpixact_jjin++;
+        }
+    }
+
     XinarrayActive = (float *) malloc(sizeof(float)*NBpixact_iiin);
     YinarrayActive = (float *) malloc(sizeof(float)*NBpixact_jjin);
 
-	for(pixiiin=0; pixiiin<NBpixact_iiin; pixiiin++)
-	{
-		iiin = iiinarrayActive[pixiiin];
-		XinarrayActive[pixiiin] = (1.0*iiin/xsize-0.5);
-	}
-	for(pixjjin=0; pixjjin<NBpixact_jjin; pixjjin++)
-	{
-		jjin = jjinarrayActive[pixjjin];
-		YinarrayActive[pixjjin] = (1.0*jjin/ysize-0.5);
-	}
+    for(pixiiin=0; pixiiin<NBpixact_iiin; pixiiin++)
+    {
+        iiin = iiinarrayActive[pixiiin];
+        XinarrayActive[pixiiin] = (1.0*iiin/xsize-0.5);
+    }
+    for(pixjjin=0; pixjjin<NBpixact_jjin; pixjjin++)
+    {
+        jjin = jjinarrayActive[pixjjin];
+        YinarrayActive[pixjjin] = (1.0*jjin/ysize-0.5);
+    }
 
-    printf("DFT (factor %f, slice %ld):  %ld input points (%ld %ld)-> ", Zfactor, kin, NBptsin, NBpixact_iiin, NBpixact_jjin);
+    printf("DFT (factor %f, slice %ld):  %u input points (%ld %ld)-> ", Zfactor, kin, NBptsin, NBpixact_iiin, NBpixact_jjin);
 
     iiinarray = (uint_fast16_t *) malloc(sizeof(uint_fast16_t)*NBptsin);
     jjinarray = (uint_fast16_t *) malloc(sizeof(uint_fast16_t)*NBptsin);
@@ -2353,55 +2436,55 @@ long fft_DFT(
     NBpixact_iiout = 0;
     for(ii=0; ii<xsize; ii++)
     {
-		pixact = 0;
-	    for(jj=0; jj<ysize; jj++)
+        pixact = 0;
+        for(jj=0; jj<ysize; jj++)
         {
             val = data.image[IDoutmask].array.F[jj*xsize+ii];
             if(val>0.5)
             {
-				pixact = 1;
+                pixact = 1;
                 NBptsout ++;
-			}
+            }
         }
         if(pixact==1)
-			{
-				iioutarrayActive[NBpixact_iiout] = ii;
-				NBpixact_iiout++;
-			}
-	}
-	
-	NBpixact_jjout = 0;
+        {
+            iioutarrayActive[NBpixact_iiout] = ii;
+            NBpixact_iiout++;
+        }
+    }
+
+    NBpixact_jjout = 0;
     for(jj=0; jj<ysize; jj++)
     {
-		pixact = 0;
+        pixact = 0;
         for(ii=0; ii<xsize; ii++)
         {
             val = data.image[IDoutmask].array.F[jj*xsize+ii];
             if(val>0.5)
-				pixact = 1;
+                pixact = 1;
         }
         if(pixact==1)
-			{
-				jjoutarrayActive[NBpixact_jjout] = jj;
-				NBpixact_jjout++;
-			}
-	}
-	XoutarrayActive = (float *) malloc(sizeof(float)*NBpixact_iiout);
+        {
+            jjoutarrayActive[NBpixact_jjout] = jj;
+            NBpixact_jjout++;
+        }
+    }
+    XoutarrayActive = (float *) malloc(sizeof(float)*NBpixact_iiout);
     YoutarrayActive = (float *) malloc(sizeof(float)*NBpixact_jjout);
-	
-	for(pixiiout=0; pixiiout<NBpixact_iiout; pixiiout++)
-	{
-		iiout = iioutarrayActive[pixiiout];
-		XoutarrayActive[pixiiout] = (1.0/Zfactor) * (1.0*iiout/xsize-0.5) * xsize;
-	}
-	
-	for(pixjjout=0; pixjjout<NBpixact_jjout; pixjjout++)
-	{
-		jjout = jjoutarrayActive[pixjjout];
-		YoutarrayActive[pixjjout] = (1.0/Zfactor) * (1.0*jjout/ysize-0.5) * ysize;
-	}	
-	
-    printf("%ld output points (%ld %ld) \n", NBptsout, NBpixact_iiout, NBpixact_jjout);
+
+    for(pixiiout=0; pixiiout<NBpixact_iiout; pixiiout++)
+    {
+        iiout = iioutarrayActive[pixiiout];
+        XoutarrayActive[pixiiout] = (1.0/Zfactor) * (1.0*iiout/xsize-0.5) * xsize;
+    }
+
+    for(pixjjout=0; pixjjout<NBpixact_jjout; pixjjout++)
+    {
+        jjout = jjoutarrayActive[pixjjout];
+        YoutarrayActive[pixjjout] = (1.0/Zfactor) * (1.0*jjout/ysize-0.5) * ysize;
+    }
+
+    printf("%u output points (%ld %ld) \n", NBptsout, NBpixact_iiout, NBpixact_jjout);
 
 
 
@@ -2429,19 +2512,19 @@ long fft_DFT(
 
 
 
-	IDcosXX = create_2Dimage_ID("_cosXX", xsize, xsize);
-	IDsinXX = create_2Dimage_ID("_sinXX", xsize, xsize);
-	IDcosYY = create_2Dimage_ID("_cosYY", ysize, ysize);
-	IDsinYY = create_2Dimage_ID("_sinYY", ysize, ysize);
+    IDcosXX = create_2Dimage_ID("_cosXX", xsize, xsize);
+    IDsinXX = create_2Dimage_ID("_sinXX", xsize, xsize);
+    IDcosYY = create_2Dimage_ID("_cosYY", ysize, ysize);
+    IDsinYY = create_2Dimage_ID("_sinYY", ysize, ysize);
 
 
 
-printf(" <");
-fflush(stdout);
+    printf(" <");
+    fflush(stdout);
 
-//#ifdef _OPENMP
+    //#ifdef _OPENMP
 #ifdef HAVE_LIBGOMP
-printf("HAVE_LIBGOMP");
+    printf("HAVE_LIBGOMP");
     #pragma omp parallel default(shared) private(pixiiout, pixiiin, iiout, iiin, pha, cospha, sinpha)
     {
         #pragma omp for
@@ -2449,17 +2532,17 @@ printf("HAVE_LIBGOMP");
 
         for(pixiiout=0; pixiiout<NBpixact_iiout; pixiiout++)
         {
-			iiout = iioutarrayActive[pixiiout];
+            iiout = iioutarrayActive[pixiiout];
             for(pixiiin=0; pixiiin<NBpixact_iiin; pixiiin++)
             {
-				iiin = iiinarrayActive[pixiiin];
+                iiin = iiinarrayActive[pixiiin];
                 pha = 2.0*dir*M_PI*(XinarrayActive[pixiiin]*XoutarrayActive[pixiiout]);
-				cospha = cosf(pha);
-				sinpha = sinf(pha);
-                
+                cospha = cosf(pha);
+                sinpha = sinf(pha);
+
                 data.image[IDcosXX].array.F[iiout*xsize+iiin] = cospha;
                 data.image[IDsinXX].array.F[iiout*xsize+iiin] = sinpha;
-               
+
             }
         }
 # ifdef HAVE_LIBGOMP
@@ -2467,14 +2550,14 @@ printf("HAVE_LIBGOMP");
     }
 # endif
 
-printf("> ");
-fflush(stdout);
+    printf("> ");
+    fflush(stdout);
 
 
 
 
-printf(" <");
-fflush(stdout);
+    printf(" <");
+    fflush(stdout);
 
     //# ifdef _OPENMP
 # ifdef HAVE_LIBGOMP
@@ -2484,71 +2567,71 @@ fflush(stdout);
 # endif
         for(pixjjout=0; pixjjout<NBpixact_jjout; pixjjout++)
         {
-			jjout = jjoutarrayActive[pixjjout];
+            jjout = jjoutarrayActive[pixjjout];
             for(pixjjin=0; pixjjin<NBpixact_jjin; pixjjin++)
             {
-				jjin = jjinarrayActive[pixjjin];
+                jjin = jjinarrayActive[pixjjin];
                 pha = 2.0*dir*M_PI*(YinarrayActive[pixjjin]*YoutarrayActive[pixjjout]);
-				cospha = cosf(pha);
-				sinpha = sinf(pha);
-                
+                cospha = cosf(pha);
+                sinpha = sinf(pha);
+
                 data.image[IDcosYY].array.F[jjout*ysize+jjin] = cospha;
                 data.image[IDsinYY].array.F[jjout*ysize+jjin] = sinpha;
-               
+
             }
         }
 # ifdef HAVE_LIBGOMP
         // # ifdef _OPENMP
     }
 # endif
-printf("> ");
-fflush(stdout);
+    printf("> ");
+    fflush(stdout);
 
 
-// DFT 
+    // DFT
 
 
-printf(" <");
-fflush(stdout);
+    printf(" <");
+    fflush(stdout);
 #ifdef HAVE_LIBGOMP
-	printf(" -omp- %d ", omp_get_max_threads());
-	fflush(stdout);
+    printf(" -omp- %d ", omp_get_max_threads());
+    fflush(stdout);
     #pragma omp parallel default(shared) private(kout, k, pha, re, im, cospha, sinpha, iiin, jjin, iiout, jjout, cosXX, cosYY, sinXX, sinYY, cosXY, sinXY)
     {
-		#pragma omp master
-		{
-			printf(" [%d thread(s)] ", omp_get_num_threads());
-			fflush(stdout);
+        #pragma omp master
+        {
+            printf(" [%d thread(s)] ", omp_get_num_threads());
+            fflush(stdout);
         }
-        
+
         #pragma omp for
 #endif
-		
-        for(kout=0; kout<NBptsout; kout++)
+
+        for(kout=0; kout < NBptsout; kout++)
         {
-			iiout = iioutarray[kout];
-			jjout = jjoutarray[kout];
-			
+            iiout = iioutarray[kout];
+            jjout = jjoutarray[kout];
+
             re = 0.0;
             im = 0.0;
             for(k=0; k<NBptsin; k++)
             {
-				iiin = iiinarray[k];
-				jjin = jjinarray[k];
-				
-				cosXX = data.image[IDcosXX].array.F[iiout*xsize + iiin];
-				cosYY = data.image[IDcosYY].array.F[jjout*ysize + jjin];
-				
-				sinXX = data.image[IDsinXX].array.F[iiout*xsize + iiin];
-				sinYY = data.image[IDsinYY].array.F[jjout*ysize + jjin];
-				
-				cosXY = cosXX*cosYY - sinXX*sinYY;
-				sinXY = sinXX*cosYY + cosXX*sinYY;
-				
-				cospha = cosvalinpha[k]*cosXY - sinvalinpha[k]*sinXY;
-				sinpha = sinvalinpha[k]*cosXY + cosvalinpha[k]*sinXY;
-				
-				
+                iiin = iiinarray[k];
+                jjin = jjinarray[k];
+
+                cosXX = data.image[IDcosXX].array.F[iiout*xsize + iiin];
+                cosYY = data.image[IDcosYY].array.F[jjout*ysize + jjin];
+
+                sinXX = data.image[IDsinXX].array.F[iiout*xsize + iiin];
+                sinYY = data.image[IDsinYY].array.F[jjout*ysize + jjin];
+
+                cosXY = cosXX*cosYY - sinXX*sinYY;
+                sinXY = sinXX*cosYY + cosXX*sinYY;
+
+                cospha = cosvalinpha[k]*cosXY - sinvalinpha[k]*sinXY;
+                sinpha = sinvalinpha[k]*cosXY + cosvalinpha[k]*sinXY;
+
+
                 re += valinamp[k]*cospha;
                 im += valinamp[k]*sinpha;
             }
@@ -2559,26 +2642,26 @@ fflush(stdout);
 #ifdef HAVE_LIBGOMP
     }
 #endif
-printf("> ");
-fflush(stdout);
+    printf("> ");
+    fflush(stdout);
 
-	free(cosvalinpha);
-	free(sinvalinpha);
-	
-	delete_image_ID("_cosXX");
-	delete_image_ID("_sinXX");
-	delete_image_ID("_cosYY");
-	delete_image_ID("_sinYY");
+    free(cosvalinpha);
+    free(sinvalinpha);
 
-	free(XinarrayActive);
-	free(YinarrayActive);
-	free(XoutarrayActive);
-	free(YoutarrayActive);
+    delete_image_ID("_cosXX");
+    delete_image_ID("_sinXX");
+    delete_image_ID("_cosYY");
+    delete_image_ID("_sinYY");
 
-	free(iiinarrayActive);
-	free(jjinarrayActive);
-	free(iioutarrayActive);
-	free(jjoutarrayActive);
+    free(XinarrayActive);
+    free(YinarrayActive);
+    free(XoutarrayActive);
+    free(YoutarrayActive);
+
+    free(iiinarrayActive);
+    free(jjinarrayActive);
+    free(iioutarrayActive);
+    free(jjoutarrayActive);
 
     free(iiinarray);
     free(jjinarray);
@@ -2593,7 +2676,7 @@ fflush(stdout);
     free(xoutarray);
     free(youtarray);
 
-    return(IDout);
+    return IDout;
 }
 
 
@@ -2611,27 +2694,27 @@ fflush(stdout);
  * Forces computation over pixels >0.5 in _DFTmask00 if it exists
  * 
  */ 
-long fft_DFTinsertFPM(
-		const char *pupin_name, 
-		const char *fpmz_name, 
-		double zfactor, 
-		const char *pupout_name
-		)
+imageID fft_DFTinsertFPM(
+    const char *pupin_name,
+    const char *fpmz_name,
+    double      zfactor,
+    const char *pupout_name
+)
 {
     double eps = 1.0e-16;
-    long ID, ID1;
-    long IDpupin_mask;
-    long IDfpmz;
-    long IDfpmz_mask;
+    imageID ID;
+    imageID IDpupin_mask;
+    imageID IDfpmz;
+    imageID IDfpmz_mask;
     long xsize, ysize, zsize;
-    long IDin, IDout;
+    imageID IDin, IDout;
     long ii, jj, k;
     double re, im, rein, imin, amp, pha, ampin, phain, amp2;
-    double x, y, r;
+    double x, y;
     double total = 0;
-    long IDout2D;
+    imageID IDout2D;
     int FORCE_IMZERO = 0;
-    double imresidual = 0.0;
+    //double imresidual = 0.0;
     double tx, ty, tcx, tcy;
     long size2;
 
@@ -2835,8 +2918,7 @@ long fft_DFTinsertFPM(
         delete_image_ID("_fpmzmask");
     }
 
-
-    return(IDout);
+    return IDout;
 }
 
 
@@ -2850,21 +2932,25 @@ long fft_DFTinsertFPM(
 //
 //
 //
-long fft_DFTinsertFPM_re( const char *pupin_name, const char *fpmz_name, double zfactor, const char *pupout_name)
+imageID fft_DFTinsertFPM_re(
+    const char *pupin_name,
+    const char *fpmz_name,
+    double      zfactor,
+    const char *pupout_name
+)
 {
     double eps = 1.0e-10;
-    long ID;
-    long IDpupin_mask;
-    long IDfpmz;
-    long IDfpmz_mask;
+    imageID ID;
+    imageID IDpupin_mask;
+    imageID IDfpmz;
+    imageID IDfpmz_mask;
     long xsize, ysize;
-    long IDin, IDout;
-    long ii, jj;
-    double re, im, rein, imin, amp, pha, ampin, phain, amp2;
-    double x, y, r;
+    imageID IDin, IDout;
+    long ii;
+    double re, im, rein, imin, amp, ampin, phain, amp2;
     double total = 0;
 	char fname[600];
-	long ID_DFTmask00;
+	imageID ID_DFTmask00;
 
     IDin = image_ID(pupin_name);
     xsize = data.image[IDin].md[0].size[0];
@@ -2966,7 +3052,7 @@ long fft_DFTinsertFPM_re( const char *pupin_name, const char *fpmz_name, double 
     delete_image_ID("_DFTpupmask");
     delete_image_ID("_fpmzmask");
 
-    return(IDout);
+    return IDout;
 }
 
 

@@ -3,18 +3,18 @@
 
 
 void __attribute__ ((constructor)) libinit_fft();
-int_fast8_t init_fft();
+errno_t init_fft();
 
 
-int import_wisdom();
+errno_t import_wisdom();
 
 int fft_setoffsets(long o1, long o2);
 
-int_fast8_t init_fftw_plans(int mode);
+errno_t init_fftw_plans(int mode);
 
-int_fast8_t init_fftw_plans0();
+errno_t init_fftw_plans0();
 
-int export_wisdom();
+errno_t export_wisdom();
 
 int permut(const char *ID_name);
 
@@ -46,9 +46,24 @@ int fftczoom(const char *ID_name, const char *ID_out, long factor);
 
 int test_fftspeed(int nmax);
 
-long fft_DFT( const char *IDin_name, const char *IDinmask_name, const char *IDout_name, const char *IDoutmask_name, double Zfactor, int dir, long kin);
 
-long fft_DFTinsertFPM( const char *pupin_name, const char *fpmz_name, double zfactor, const char *pupout_name);
+imageID fft_DFT(
+    const char *IDin_name,
+    const char *IDinmask_name,
+    const char *IDout_name,
+    const char *IDoutmask_name,
+    double      Zfactor,
+    int         dir,
+    long        kin
+);
+
+
+imageID fft_DFTinsertFPM(
+    const char *pupin_name,
+    const char *fpmz_name,
+    double      zfactor,
+    const char *pupout_name
+);
 
 long fft_DFTinsertFPM_re( const char *pupin_name, const char *fpmz_name, double zfactor, const char *pupout_name);
 
