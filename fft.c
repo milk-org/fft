@@ -60,8 +60,40 @@ static int clock_gettime(int clk_id, struct mach_timespec *t){
 
 #define PI 3.14159265358979323846264338328
 
-#define SWAP(x,y)  tmp=(x);x=(y);y=tmp;
-#define CSWAP(x,y)  tmp=(x.re);x.re=(y.re);y.re=tmp;tmp=(x.im);x.im=(y.im);y.im=tmp;
+
+
+#define SWAPf(x,y) do { \
+float swaptmp = x; \
+x = y;   \
+y = swaptmp;   \
+} while(0)
+
+#define SWAPd(x,y) do { \
+double swaptmp = x; \
+x = y;   \
+y = swaptmp;   \
+} while(0)
+
+
+#define CSWAPcf(x,y) do { \
+float swaptmp = x.re;  \
+x.re = y.re; \
+y.re = swaptmp;    \
+swaptmp = x.im;  \
+x.im = y.im; \
+y.im = swaptmp;    \
+} while(0)
+
+
+#define CSWAPcd(x,y) do { \
+double swaptmp = (x.re);  \
+x.re = y.re; \
+y.re = swaptmp;    \
+swaptmp = x.im;  \
+x.im = y.im; \
+y.im = swaptmp;    \
+} while(0)
+
 
 #define SBUFFERSIZE 1000
 
@@ -707,9 +739,8 @@ errno_t init_fftw_plans0()
 
 int permut(const char *ID_name)
 {
-    double tmp;
     long naxes0, naxes1, naxes2;
-    int ID;
+    imageID ID;
     long xhalf,yhalf;
     long ii,jj,kk;
     long naxis;
@@ -735,8 +766,6 @@ int permut(const char *ID_name)
 
     datatype = data.image[ID].md[0].datatype;
 
-    tmp=0;
-
     if(datatype==_DATATYPE_FLOAT)
     {
         if(naxis==1)
@@ -744,7 +773,7 @@ int permut(const char *ID_name)
             OK=1;
             xhalf = (long) (naxes0/2);
             for (ii = 0; ii < xhalf; ii++)
-                SWAP(data.image[ID].array.F[ii],data.image[ID].array.F[ii+xhalf])
+                SWAPf(data.image[ID].array.F[ii],data.image[ID].array.F[ii+xhalf]);
             }
         if(naxis==2)
         {
@@ -753,11 +782,11 @@ int permut(const char *ID_name)
             yhalf = (long) (naxes1/2);
             for (jj = 0; jj < yhalf; jj++)
                 for (ii = 0; ii < xhalf; ii++) {
-                    SWAP(data.image[ID].array.F[jj*naxes0+ii],data.image[ID].array.F[(jj+yhalf)*naxes0+(ii+xhalf)])
+                    SWAPf(data.image[ID].array.F[jj*naxes0+ii],data.image[ID].array.F[(jj+yhalf)*naxes0+(ii+xhalf)]);
                 }
             for (jj = yhalf; jj < naxes1; jj++)
                 for (ii = 0; ii < xhalf; ii++) {
-                    SWAP(data.image[ID].array.F[jj*naxes0+ii],data.image[ID].array.F[(jj-yhalf)*naxes0+(ii+xhalf)])
+                    SWAPf(data.image[ID].array.F[jj*naxes0+ii],data.image[ID].array.F[(jj-yhalf)*naxes0+(ii+xhalf)]);
                 }
         }
         if(naxis==3)
@@ -769,13 +798,13 @@ int permut(const char *ID_name)
                 for (ii = 0; ii < xhalf; ii++)
                 {
                     for(kk=0; kk<naxes2; kk++)
-                        SWAP(data.image[ID].array.F[kk*naxes0*naxes1+jj*naxes0+ii],data.image[ID].array.F[kk*naxes0*naxes1+(jj+yhalf)*naxes0+(ii+xhalf)])
+                        SWAPf(data.image[ID].array.F[kk*naxes0*naxes1+jj*naxes0+ii],data.image[ID].array.F[kk*naxes0*naxes1+(jj+yhalf)*naxes0+(ii+xhalf)]);
                     }
             for (jj = yhalf; jj < naxes1; jj++)
                 for (ii = 0; ii < xhalf; ii++)
                 {
                     for(kk=0; kk<naxes2; kk++)
-                        SWAP(data.image[ID].array.F[kk*naxes0*naxes1+jj*naxes0+ii],data.image[ID].array.F[kk*naxes0*naxes1+(jj-yhalf)*naxes0+(ii+xhalf)])
+                        SWAPf(data.image[ID].array.F[kk*naxes0*naxes1+jj*naxes0+ii],data.image[ID].array.F[kk*naxes0*naxes1+(jj-yhalf)*naxes0+(ii+xhalf)]);
                     }
         }
     }
@@ -787,7 +816,7 @@ int permut(const char *ID_name)
             OK=1;
             xhalf = (long) (naxes0/2);
             for (ii = 0; ii < xhalf; ii++)
-                SWAP(data.image[ID].array.D[ii],data.image[ID].array.D[ii+xhalf])
+                SWAPd(data.image[ID].array.D[ii],data.image[ID].array.D[ii+xhalf]);
             }
         if(naxis==2)
         {
@@ -796,11 +825,11 @@ int permut(const char *ID_name)
             yhalf = (long) (naxes1/2);
             for (jj = 0; jj < yhalf; jj++)
                 for (ii = 0; ii < xhalf; ii++) {
-                    SWAP(data.image[ID].array.D[jj*naxes0+ii],data.image[ID].array.D[(jj+yhalf)*naxes0+(ii+xhalf)])
+                    SWAPd(data.image[ID].array.D[jj*naxes0+ii],data.image[ID].array.D[(jj+yhalf)*naxes0+(ii+xhalf)]);
                 }
             for (jj = yhalf; jj < naxes1; jj++)
                 for (ii = 0; ii < xhalf; ii++) {
-                    SWAP(data.image[ID].array.D[jj*naxes0+ii],data.image[ID].array.D[(jj-yhalf)*naxes0+(ii+xhalf)])
+                    SWAPd(data.image[ID].array.D[jj*naxes0+ii],data.image[ID].array.D[(jj-yhalf)*naxes0+(ii+xhalf)]);
                 }
         }
         if(naxis==3)
@@ -812,13 +841,13 @@ int permut(const char *ID_name)
                 for (ii = 0; ii < xhalf; ii++)
                 {
                     for(kk=0; kk<naxes2; kk++)
-                        SWAP(data.image[ID].array.D[kk*naxes0*naxes1+jj*naxes0+ii],data.image[ID].array.D[kk*naxes0*naxes1+(jj+yhalf)*naxes0+(ii+xhalf)])
+                        SWAPd(data.image[ID].array.D[kk*naxes0*naxes1+jj*naxes0+ii],data.image[ID].array.D[kk*naxes0*naxes1+(jj+yhalf)*naxes0+(ii+xhalf)]);
                     }
             for (jj = yhalf; jj < naxes1; jj++)
                 for (ii = 0; ii < xhalf; ii++)
                 {
                     for(kk=0; kk<naxes2; kk++)
-                        SWAP(data.image[ID].array.D[kk*naxes0*naxes1+jj*naxes0+ii],data.image[ID].array.D[kk*naxes0*naxes1+(jj-yhalf)*naxes0+(ii+xhalf)])
+                        SWAPd(data.image[ID].array.D[kk*naxes0*naxes1+jj*naxes0+ii],data.image[ID].array.D[kk*naxes0*naxes1+(jj-yhalf)*naxes0+(ii+xhalf)]);
                     }
         }
     }
@@ -830,7 +859,7 @@ int permut(const char *ID_name)
             OK=1;
             xhalf = (long) (naxes0/2);
             for (ii = 0; ii < xhalf; ii++)
-                CSWAP(data.image[ID].array.CF[ii], data.image[ID].array.CF[ii+xhalf])
+                CSWAPcf(data.image[ID].array.CF[ii], data.image[ID].array.CF[ii+xhalf]);
             }
         if(naxis==2)
         {
@@ -839,11 +868,11 @@ int permut(const char *ID_name)
             yhalf = (long) (naxes1/2);
             for (jj = 0; jj < yhalf; jj++)
                 for (ii = 0; ii < xhalf; ii++) {
-                    CSWAP(data.image[ID].array.CF[jj*naxes0+ii], data.image[ID].array.CF[(jj+yhalf)*naxes0+(ii+xhalf)])
+                    CSWAPcf(data.image[ID].array.CF[jj*naxes0+ii], data.image[ID].array.CF[(jj+yhalf)*naxes0+(ii+xhalf)]);
                 }
             for (jj = yhalf; jj < naxes1; jj++)
                 for (ii = 0; ii < xhalf; ii++) {
-                    CSWAP(data.image[ID].array.CF[jj*naxes0+ii], data.image[ID].array.CF[(jj-yhalf)*naxes0+(ii+xhalf)])
+                    CSWAPcf(data.image[ID].array.CF[jj*naxes0+ii], data.image[ID].array.CF[(jj-yhalf)*naxes0+(ii+xhalf)]);
                 }
         }
         if(naxis==3)
@@ -855,7 +884,7 @@ int permut(const char *ID_name)
                 for (jj = 0; jj < yhalf; jj++)
                     for (ii = 0; ii < xhalf; ii++)
                     {
-                        CSWAP(data.image[ID].array.CF[kk*naxes0*naxes1+jj*naxes0+ii],data.image[ID].array.CF[kk*naxes0*naxes1+(jj+yhalf)*naxes0+(ii+xhalf)])
+                        CSWAPcf(data.image[ID].array.CF[kk*naxes0*naxes1+jj*naxes0+ii],data.image[ID].array.CF[kk*naxes0*naxes1+(jj+yhalf)*naxes0+(ii+xhalf)]);
                     }
             printf(" - ");
             fflush(stdout);
@@ -864,7 +893,7 @@ int permut(const char *ID_name)
                 for (jj = yhalf; jj < naxes1; jj++)
                     for (ii = 0; ii < xhalf; ii++)
                     {
-                        CSWAP(data.image[ID].array.CF[kk*naxes0*naxes1+jj*naxes0+ii],data.image[ID].array.CF[kk*naxes0*naxes1+(jj-yhalf)*naxes0+(ii+xhalf)])
+                        CSWAPcf(data.image[ID].array.CF[kk*naxes0*naxes1+jj*naxes0+ii],data.image[ID].array.CF[kk*naxes0*naxes1+(jj-yhalf)*naxes0+(ii+xhalf)]);
                     }
         }
     }
@@ -876,7 +905,7 @@ int permut(const char *ID_name)
             OK=1;
             xhalf = (long) (naxes0/2);
             for (ii = 0; ii < xhalf; ii++)
-                CSWAP(data.image[ID].array.CD[ii], data.image[ID].array.CD[ii+xhalf])
+                CSWAPcd(data.image[ID].array.CD[ii], data.image[ID].array.CD[ii+xhalf]);
             }
         if(naxis==2)
         {
@@ -885,11 +914,11 @@ int permut(const char *ID_name)
             yhalf = (long) (naxes1/2);
             for (jj = 0; jj < yhalf; jj++)
                 for (ii = 0; ii < xhalf; ii++) {
-                    CSWAP(data.image[ID].array.CD[jj*naxes0+ii], data.image[ID].array.CD[(jj+yhalf)*naxes0+(ii+xhalf)])
+                    CSWAPcd(data.image[ID].array.CD[jj*naxes0+ii], data.image[ID].array.CD[(jj+yhalf)*naxes0+(ii+xhalf)]);
                 }
             for (jj = yhalf; jj < naxes1; jj++)
                 for (ii = 0; ii < xhalf; ii++) {
-                    CSWAP(data.image[ID].array.CD[jj*naxes0+ii], data.image[ID].array.CD[(jj-yhalf)*naxes0+(ii+xhalf)])
+                    CSWAPcd(data.image[ID].array.CD[jj*naxes0+ii], data.image[ID].array.CD[(jj-yhalf)*naxes0+(ii+xhalf)]);
                 }
         }
         if(naxis==3)
@@ -901,7 +930,7 @@ int permut(const char *ID_name)
                 for (jj = 0; jj < yhalf; jj++)
                     for (ii = 0; ii < xhalf; ii++)
                     {
-                        CSWAP(data.image[ID].array.CD[kk*naxes0*naxes1+jj*naxes0+ii], data.image[ID].array.CD[kk*naxes0*naxes1+(jj+yhalf)*naxes0+(ii+xhalf)])
+                        CSWAPcd(data.image[ID].array.CD[kk*naxes0*naxes1+jj*naxes0+ii], data.image[ID].array.CD[kk*naxes0*naxes1+(jj+yhalf)*naxes0+(ii+xhalf)]);
                     }
             printf(" - ");
             fflush(stdout);
@@ -910,7 +939,7 @@ int permut(const char *ID_name)
                 for (jj = yhalf; jj < naxes1; jj++)
                     for (ii = 0; ii < xhalf; ii++)
                     {
-                        CSWAP(data.image[ID].array.CD[kk*naxes0*naxes1+jj*naxes0+ii], data.image[ID].array.CD[kk*naxes0*naxes1+(jj-yhalf)*naxes0+(ii+xhalf)])
+                        CSWAPcd(data.image[ID].array.CD[kk*naxes0*naxes1+jj*naxes0+ii], data.image[ID].array.CD[kk*naxes0*naxes1+(jj-yhalf)*naxes0+(ii+xhalf)]);
                     }
         }
     }
