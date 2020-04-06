@@ -2,7 +2,7 @@
 #define _FFT_H
 
 
-void __attribute__ ((constructor)) libinit_fft();
+void __attribute__((constructor)) libinit_fft();
 
 
 errno_t import_wisdom();
@@ -29,13 +29,15 @@ long do2dfft(const char *in_name, const char *out_name);
 
 long do2dffti(const char *in_name, const char *out_name);
 
-int pupfft(const char *ID_name_ampl, const char *ID_name_pha, const char *ID_name_ampl_out, const char *ID_name_pha_out, const char *options);
+int pupfft(const char *ID_name_ampl, const char *ID_name_pha,
+           const char *ID_name_ampl_out, const char *ID_name_pha_out, const char *options);
 
 long do2drfft(const char *in_name, const char *out_name);
 
 long do2drffti(const char *in_name, const char *out_name);
 
-long fft_correlation(const char *ID_name1, const char *ID_name2, const char *ID_nameout);
+long fft_correlation(const char *ID_name1, const char *ID_name2,
+                     const char *ID_nameout);
 
 int autocorrelation(const char *ID_name, const char *ID_out);
 
@@ -64,8 +66,10 @@ imageID fft_DFTinsertFPM(
     const char *pupout_name
 );
 
-long fft_DFTinsertFPM_re( const char *pupin_name, const char *fpmz_name, double zfactor, const char *pupout_name);
+long fft_DFTinsertFPM_re(const char *pupin_name, const char *fpmz_name,
+                         double zfactor, const char *pupout_name);
 
-int fft_image_translate(const char *ID_name, const char *ID_out, double xtransl, double ytransl);
+int fft_image_translate(const char *ID_name, const char *ID_out, double xtransl,
+                        double ytransl);
 
 #endif
