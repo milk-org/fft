@@ -423,30 +423,10 @@ static errno_t init_module_CLI()
 
 
 
-errno_t init_fft()
-{
-    init_module_CLI();
-    return RETURN_SUCCESS;
-}
 
 
-static void __attribute__((constructor)) libinit_module()
-{
-    if(INITSTATUS_module == 0)
-    {
-        strcpy(data.moduleshortname_default, MODULE_SHORTNAME_DEFAULT);
-        strcpy(data.modulename, MODULE_NAME);
-        init_module_CLI();
-        RegisterModule(__FILE__, MODULE_APPLICATION, MODULE_DESCRIPTION);
-        INITSTATUS_module = 1;
-        strcpy(data.modulename, "");
-        strcpy(data.moduleshortname_default, "");
-        strcpy(data.moduleshortname, "");
-    }
-}
 
-
-static void __attribute__((destructor)) libclose_module()
+static void __attribute__((destructor)) close_fftwlib()
 {
     if(INITSTATUS_module == 1)
     {
