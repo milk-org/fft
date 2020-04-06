@@ -3,7 +3,6 @@
 
 
 void __attribute__ ((constructor)) libinit_fft();
-errno_t init_fft();
 
 
 errno_t import_wisdom();

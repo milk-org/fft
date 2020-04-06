@@ -14,8 +14,6 @@
 /* ================================================================== */
 /* ================================================================== */
 
-#define MODULE_NAME              "fft"
-
 // module default short name
 // all CLI calls to this module functions will be <shortname>.<funcname>
 // if set to "", then calls use <funcname>
@@ -139,32 +137,33 @@ y.im = swaptmp;    \
 static int INITSTATUS_module = 0;
 
 
-// Forward references
-
-/*
-int init_fftw_plans0 ( );
-int fft_setNthreads(int nt);
-int import_wisdom();
-int export_wisdom();
-int test_fftspeed(int nmax);
-long fft_correlation(char *ID_name1, char *ID_name2, char *ID_nameout);
-*/
 
 
-// CLI commands
+
+
+/* ================================================================== */
+/* ================================================================== */
+/*            INITIALIZE LIBRARY                                      */
+/* ================================================================== */
+/* ================================================================== */
+
+// Module initialization macro in CLIcore.h
+// macro argument defines module name for bindings
 //
-// function CLI_checkarg used to check arguments
-// 1: float
-// 2: long
-// 3: string
-// 4: existing image
-//
+INIT_MODULE_LIB(fft)
+
+
+/* ================================================================== */
+/* ================================================================== */
+/*            COMMAND LINE INTERFACE (CLI) FUNCTIONS                  */
+/* ================================================================== */
+/* ================================================================== */
 
 
 errno_t fft_permut_cli()
 {
     if(
-        CLI_checkarg(1, 4)
+        CLI_checkarg(1, CLIARG_IMG)
         == 0)
     {
         permut(data.cmdargtoken[1].val.string);
@@ -182,8 +181,8 @@ errno_t fft_permut_cli()
 errno_t fft_do1dfft_cli()
 {
     if(
-        CLI_checkarg(1, 4) +
-        CLI_checkarg(2, 3)
+        CLI_checkarg(1, CLIARG_IMG) +
+        CLI_checkarg(2, CLIARG_STR_NOT_IMG)
         == 0)
     {
         do1dfft(
@@ -203,8 +202,8 @@ errno_t fft_do1dfft_cli()
 errno_t fft_do1drfft_cli()
 {
     if(
-        CLI_checkarg(1, 4) +
-        CLI_checkarg(2, 3)
+        CLI_checkarg(1, CLIARG_IMG) +
+        CLI_checkarg(2, CLIARG_STR_NOT_IMG)
         == 0)
     {
         do1drfft(
@@ -224,8 +223,8 @@ errno_t fft_do1drfft_cli()
 errno_t fft_do2dfft_cli()
 {
     if(
-        CLI_checkarg(1, 4) +
-        CLI_checkarg(2, 3)
+        CLI_checkarg(1, CLIARG_IMG) +
+        CLI_checkarg(2, CLIARG_STR_NOT_IMG)
         == 0)
     {
         do2dfft(
@@ -247,7 +246,7 @@ errno_t fft_do2dfft_cli()
 errno_t test_fftspeed_cli()
 {
     if(
-        CLI_checkarg(1, 2)
+        CLI_checkarg(1, CLIARG_LONG)
         == 0)
     {
         test_fftspeed(
@@ -266,10 +265,10 @@ errno_t test_fftspeed_cli()
 errno_t fft_image_translate_cli()
 {
     if(
-        CLI_checkarg(1, 4) +
-        CLI_checkarg(2, 3) +
-        CLI_checkarg(3, 1) +
-        CLI_checkarg(4, 1)
+        CLI_checkarg(1, CLIARG_IMG) +
+        CLI_checkarg(2, CLIARG_STR_NOT_IMG) +
+        CLI_checkarg(3, CLIARG_FLOAT) +
+        CLI_checkarg(4, CLIARG_FLOAT)
         == 0)
     {
         fft_image_translate(
@@ -292,9 +291,9 @@ errno_t fft_image_translate_cli()
 errno_t fft_correlation_cli()
 {
     if(
-        CLI_checkarg(1, 4) +
-        CLI_checkarg(2, 4) +
-        CLI_checkarg(3, 3)
+        CLI_checkarg(1, CLIARG_IMG) +
+        CLI_checkarg(2, CLIARG_IMG) +
+        CLI_checkarg(3, CLIARG_STR_NOT_IMG)
         == 0)
     {
         fft_correlation(
