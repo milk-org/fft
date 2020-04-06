@@ -7,6 +7,31 @@
  */
 
 
+
+/* ================================================================== */
+/* ================================================================== */
+/*            MODULE INFO                                             */
+/* ================================================================== */
+/* ================================================================== */
+
+#define MODULE_NAME              "fft"
+
+// module default short name
+// all CLI calls to this module functions will be <shortname>.<funcname>
+// if set to "", then calls use <funcname>
+#define MODULE_SHORTNAME_DEFAULT ""
+
+// Module short description
+#define MODULE_DESCRIPTION       "FFTW wrapper"
+
+// Application to which module belongs
+#define MODULE_APPLICATION       "milk"
+
+
+
+
+
+
 #include <stdint.h>
 #include <string.h>
 #include <math.h>
@@ -108,7 +133,7 @@ y.im = swaptmp;    \
 
 //extern DATA data;
 
-static int INITSTATUS_fft = 0;
+static int INITSTATUS_module = 0;
 
 
 // Forward references
@@ -281,52 +306,11 @@ errno_t fft_correlation_cli()
 
 
 
-/*
- * Library initialization function.
- * Called when shared object is loaded
- * 
- */ 
-void __attribute__ ((constructor)) libinit_fft()
-{
-	if ( INITSTATUS_fft == 0 )
-	{
-		init_fft();
-		RegisterModule(__FILE__, "milk", "FFTW wrapper");
-		INITSTATUS_fft = 1;
-	}
-}
-
-
-/*
- * Library close function.
- * Called when shared object in unloaded, or program exit.
- *
- */
-void __attribute__ ((destructor)) libclose_fft()
-{
-    if ( INITSTATUS_fft == 1 )
-    {
-        fftw_forget_wisdom();
-        fftwf_forget_wisdom();
-
-# ifdef FFTWMT
-        fftw_cleanup_threads();
-        fftwf_cleanup_threads();
-# endif
-
-# ifndef FFTWMT
-        fftw_cleanup();
-        fftwf_cleanup();
-# endif
-    }
-
-}
 
 
 
 
-
-errno_t init_fft()
+static errno_t init_module_CLI()
 {
 
 # ifdef FFTWMT
@@ -427,6 +411,52 @@ errno_t init_fft()
 
     return RETURN_SUCCESS;
 }
+
+
+
+errno_t init_fft()
+{
+    init_module_CLI();
+    return RETURN_SUCCESS;
+}
+
+
+static void __attribute__((constructor)) libinit_module()
+{
+    if(INITSTATUS_module == 0)
+    {
+        strcpy(data.moduleshortname_default, MODULE_SHORTNAME_DEFAULT);
+        strcpy(data.modulename, MODULE_NAME);
+        init_module_CLI();
+        RegisterModule(__FILE__, MODULE_APPLICATION, MODULE_DESCRIPTION);
+        INITSTATUS_module = 1;
+        strcpy(data.modulename, "");
+        strcpy(data.moduleshortname_default, "");
+        strcpy(data.moduleshortname, "");
+    }
+}
+
+
+static void __attribute__((destructor)) libclose_module()
+{
+    if(INITSTATUS_module == 1)
+    {
+        fftw_forget_wisdom();
+        fftwf_forget_wisdom();
+
+# ifdef FFTWMT
+        fftw_cleanup_threads();
+        fftwf_cleanup_threads();
+# endif
+
+# ifndef FFTWMT
+        fftw_cleanup();
+        fftwf_cleanup();
+# endif
+    }
+}
+
+
 
 
 
