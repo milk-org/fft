@@ -499,15 +499,13 @@ errno_t import_wisdom()
                  FFTCONFIGDIR);
     if(n >= SBUFFERSIZE)
     {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
+        PRINT_ERROR("Attempted to write string buffer with too many characters");
     }
     n = snprintf(wisdom_file_double, SBUFFERSIZE, "%s/fftw_mt_wisdom.dat",
                  FFTCONFIGDIR);
     if(n >= SBUFFERSIZE)
     {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
+        PRINT_ERROR("Attempted to write string buffer with too many characters");
     }
 # endif
 
@@ -516,15 +514,13 @@ errno_t import_wisdom()
                  FFTCONFIGDIR);
     if(n >= SBUFFERSIZE)
     {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
+        PRINT_ERROR("Attempted to write string buffer with too many characters");
     }
     n = snprintf(wisdom_file_double, SBUFFERSIZE, "%s/fftw_wisdom.dat",
                  FFTCONFIGDIR);
     if(n >= SBUFFERSIZE)
     {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
+        PRINT_ERROR("Attempted to write string buffer with too many characters");
     }
 # endif
 
@@ -544,15 +540,15 @@ errno_t import_wisdom()
                 wisdom_file_single);
 
         if(n >= SBUFFERSIZE)
-            printERROR(__FILE__,__func__,__LINE__,"Attempted to write string buffer with too many characters");
-        printWARNING(__FILE__,__func__,__LINE__,warnmessg);
+            PRINT_ERROR("Attempted to write string buffer with too many characters");
+        PRINT_WARNING(warnmessg);
         */
     }
     else
     {
         if(fftwf_import_wisdom_from_file(fp) == 0)
         {
-            printERROR(__FILE__, __func__, __LINE__, "Error reading wisdom");
+            PRINT_ERROR("Error reading wisdom");
         }
         fclose(fp);
     }
@@ -569,14 +565,14 @@ errno_t import_wisdom()
                   " to create the wisdom file (this will take time)",
                   wisdom_file_double);
           if(n >= SBUFFERSIZE)
-              printERROR(__FILE__,__func__,__LINE__,"Attempted to write string buffer with too many characters");
-          printWARNING(__FILE__,__func__,__LINE__,warnmessg);*/
+              PRINT_ERROR("Attempted to write string buffer with too many characters");
+          PRINT_WARNING(warnmessg);*/
     }
     else
     {
         if(fftw_import_wisdom_from_file(fp) == 0)
         {
-            printERROR(__FILE__, __func__, __LINE__, "Error reading wisdom");
+            PRINT_ERROR("Error reading wisdom");
         }
         fclose(fp);
     }
@@ -604,7 +600,7 @@ errno_t export_wisdom()
     sprintf(command, "mkdir -p %s", FFTCONFIGDIR);
     if(system(command) != 0)
     {
-        printERROR(__FILE__, __func__, __LINE__, "system() returns non-zero value");
+       PRINT_ERROR("system() returns non-zero value");
     }
 
 # ifdef FFTWMT
@@ -612,15 +608,13 @@ errno_t export_wisdom()
                  FFTCONFIGDIR);
     if(n >= SBUFFERSIZE)
     {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
+        PRINT_ERROR("Attempted to write string buffer with too many characters");
     }
     n = snprintf(wisdom_file_double, SBUFFERSIZE, "%s/fftw_mt_wisdom.dat",
                  FFTCONFIGDIR);
     if(n >= SBUFFERSIZE)
     {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
+        PRINT_ERROR("Attempted to write string buffer with too many characters");
     }
 # endif
 
@@ -629,15 +623,13 @@ errno_t export_wisdom()
                  FFTCONFIGDIR);
     if(n >= SBUFFERSIZE)
     {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
+        PRINT_ERROR("Attempted to write string buffer with too many characters");
     }
     n = snprintf(wisdom_file_double, SBUFFERSIZE, "%s/fftw_wisdom.dat",
                  FFTCONFIGDIR);
     if(n >= SBUFFERSIZE)
     {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
+        PRINT_ERROR("Attempted to write string buffer with too many characters");
     }
 # endif
 
@@ -648,10 +640,9 @@ errno_t export_wisdom()
                      wisdom_file_single);
         if(n >= SBUFFERSIZE)
         {
-            printERROR(__FILE__, __func__, __LINE__,
-                       "Attempted to write string buffer with too many characters");
+            PRINT_ERROR("Attempted to write string buffer with too many characters");
         }
-        printERROR(__FILE__, __func__, __LINE__, errmessg);
+        PRINT_ERROR(errmessg);
         exit(0);
     }
     fftwf_export_wisdom_to_file(fp);
@@ -663,10 +654,9 @@ errno_t export_wisdom()
                      wisdom_file_double);
         if(n >= SBUFFERSIZE)
         {
-            printERROR(__FILE__, __func__, __LINE__,
-                       "Attempted to write string buffer with too many characters");
+            PRINT_ERROR("Attempted to write string buffer with too many characters");
         }
-        printERROR(__FILE__, __func__, __LINE__, errmessg);
+        PRINT_ERROR(errmessg);
         exit(0);
     }
     fftw_export_wisdom_to_file(fp);
@@ -1352,8 +1342,7 @@ long do1drfft(const char *in_name, const char *out_name)
     n = snprintf(ffttmpname, SBUFFERSIZE, "_ffttmpname_%d", (int) getpid());
     if(n >= SBUFFERSIZE)
     {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
+        PRINT_ERROR("Attempted to write string buffer with too many characters");
     }
     // IDtmp = create_image_ID(ffttmpname, naxis, naxestmp, CDtype, data.SHARED_DFT, data.NBKEWORD_DFT);
 
@@ -1540,8 +1529,7 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
                 n = snprintf(ffttmpcpyname, SBUFFERSIZE, "_ffttmpcpyname_%d", (int) getpid());
                 if(n >= SBUFFERSIZE)
                 {
-                    printERROR(__FILE__, __func__, __LINE__,
-                               "Attempted to write string buffer with too many characters");
+                    PRINT_ERROR("Attempted to write string buffer with too many characters");
                 }
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
@@ -1571,8 +1559,7 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
                 n = snprintf(ffttmpcpyname, SBUFFERSIZE, "_ffttmpcpyname_%d", (int) getpid());
                 if(n >= SBUFFERSIZE)
                 {
-                    printERROR(__FILE__, __func__, __LINE__,
-                               "Attempted to write string buffer with too many characters");
+                    PRINT_ERROR("Attempted to write string buffer with too many characters");
                 }
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
@@ -1610,8 +1597,7 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
                 n = snprintf(ffttmpcpyname, SBUFFERSIZE, "_ffttmpcpyname_%d", (int) getpid());
                 if(n >= SBUFFERSIZE)
                 {
-                    printERROR(__FILE__, __func__, __LINE__,
-                               "Attempted to write string buffer with too many characters");
+                    PRINT_ERROR("Attempted to write string buffer with too many characters");
                 }
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
@@ -1643,8 +1629,7 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
                 n = snprintf(ffttmpcpyname, SBUFFERSIZE, "_ffttmpcpyname_%d", (int) getpid());
                 if(n >= SBUFFERSIZE)
                 {
-                    printERROR(__FILE__, __func__, __LINE__,
-                               "Attempted to write string buffer with too many characters");
+                    PRINT_ERROR("Attempted to write string buffer with too many characters");
                 }
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
@@ -1744,8 +1729,7 @@ int pupfft(const char *ID_name_ampl, const char *ID_name_pha,
     n = snprintf(Ctmpname, SBUFFERSIZE, "_Ctmp_%d", (int) getpid());
     if(n >= SBUFFERSIZE)
     {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
+        PRINT_ERROR("Attempted to write string buffer with too many characters");
     }
     if(reim == 0)
     {
@@ -1761,8 +1745,7 @@ int pupfft(const char *ID_name_ampl, const char *ID_name_pha,
     n = snprintf(C1tmpname, SBUFFERSIZE, "_C1tmp_%d", (int) getpid());
     if(n >= SBUFFERSIZE)
     {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
+        PRINT_ERROR("Attempted to write string buffer with too many characters");
     }
     if(inv == 0)
     {
@@ -1849,8 +1832,7 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
     n = snprintf(ffttmpname, SBUFFERSIZE, "_ffttmp_%d", (int) getpid());
     if(n >= SBUFFERSIZE)
     {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
+        PRINT_ERROR("Attempted to write string buffer with too many characters");
     }
 
     if(datatype == _DATATYPE_FLOAT)
@@ -1887,8 +1869,7 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
                 n = snprintf(ffttmpcpyname, SBUFFERSIZE, "_ffttmpcpy_%d", (int) getpid());
                 if(n >= SBUFFERSIZE)
                 {
-                    printERROR(__FILE__, __func__, __LINE__,
-                               "Attempted to write string buffer with too many characters");
+                    PRINT_ERROR("Attempted to write string buffer with too many characters");
                 }
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
@@ -1942,8 +1923,7 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
                 n = snprintf(ffttmpcpyname, SBUFFERSIZE, "_ffttmpcpy_%d", (int) getpid());
                 if(n >= SBUFFERSIZE)
                 {
-                    printERROR(__FILE__, __func__, __LINE__,
-                               "Attempted to write string buffer with too many characters");
+                    PRINT_ERROR("Attempted to write string buffer with too many characters");
                 }
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
@@ -2007,8 +1987,7 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
                 n = snprintf(ffttmpcpyname, SBUFFERSIZE, "_ffttmpcpy_%d", (int) getpid());
                 if(n >= SBUFFERSIZE)
                 {
-                    printERROR(__FILE__, __func__, __LINE__,
-                               "Attempted to write string buffer with too many characters");
+                    PRINT_ERROR("Attempted to write string buffer with too many characters");
                 }
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
@@ -2062,8 +2041,7 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
                 n = snprintf(ffttmpcpyname, SBUFFERSIZE, "_ffttmpcpy_%d", (int) getpid());
                 if(n >= SBUFFERSIZE)
                 {
-                    printERROR(__FILE__, __func__, __LINE__,
-                               "Attempted to write string buffer with too many characters");
+                    PRINT_ERROR("Attempted to write string buffer with too many characters");
                 }
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
@@ -2161,80 +2139,34 @@ imageID fft_correlation(
     imageID ID1, IDout;
     long nelement;
 
-    char ft1name[SBUFFERSIZE];
-    char ft2name[SBUFFERSIZE];
-    char fta1name[SBUFFERSIZE];
-    char fta2name[SBUFFERSIZE];
-    char ftp1name[SBUFFERSIZE];
-    char ftp2name[SBUFFERSIZE];
-    char fta12name[SBUFFERSIZE];
-    char ftp12name[SBUFFERSIZE];
-    char fftname[SBUFFERSIZE];
-    char fft1name[SBUFFERSIZE];
-    char fft1pname[SBUFFERSIZE];
-    int n;
+    char ft1name[STRINGMAXLEN_IMGNAME];
+    char ft2name[STRINGMAXLEN_IMGNAME];
+    char fta1name[STRINGMAXLEN_IMGNAME];
+    char fta2name[STRINGMAXLEN_IMGNAME];
+    char ftp1name[STRINGMAXLEN_IMGNAME];
+    char ftp2name[STRINGMAXLEN_IMGNAME];
+    char fta12name[STRINGMAXLEN_IMGNAME];
+    char ftp12name[STRINGMAXLEN_IMGNAME];
+    char fftname[STRINGMAXLEN_IMGNAME];
+    char fft1name[STRINGMAXLEN_IMGNAME];
+    char fft1pname[STRINGMAXLEN_IMGNAME];
 
     ID1 = image_ID(ID_name1);
     nelement = data.image[ID1].md[0].nelement;
 
 
-    n = snprintf(ft1name, SBUFFERSIZE, "_ft1_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
+	WRITE_IMAGENAME(ft1name, "_ft1_%d", (int) getpid());
     do2drfft(ID_name1, ft1name);
 
-    n = snprintf(ft2name, SBUFFERSIZE, "_ft2_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
+    WRITE_IMAGENAME(ft2name, "_ft2_%d", (int) getpid());
     do2drfft(ID_name2, ft2name);
 
-    n = snprintf(fta1name, SBUFFERSIZE, "_%s_a_%d", ft1name, (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
-
-    n = snprintf(ftp1name, SBUFFERSIZE, "_%s_p_%d", ft1name, (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
-
-    n = snprintf(fta2name, SBUFFERSIZE, "_%s_a_%d", ft2name, (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
-
-    n = snprintf(ftp2name, SBUFFERSIZE, "_%s_p_%d", ft2name, (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
-
-    n = snprintf(fta12name, SBUFFERSIZE, "_%s_12a_%d", ft1name, (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
-
-    n = snprintf(ftp12name, SBUFFERSIZE, "_%s_12p_%d", ft1name, (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
+    WRITE_IMAGENAME(fta1name, "_%s_a_%d", ft1name, (int) getpid());
+    WRITE_IMAGENAME(ftp1name, "_%s_p_%d", ft1name, (int) getpid());
+    WRITE_IMAGENAME(fta2name, "_%s_a_%d", ft2name, (int) getpid());
+    WRITE_IMAGENAME(ftp2name, "_%s_p_%d", ft2name, (int) getpid());
+    WRITE_IMAGENAME(fta12name, "_%s_12a_%d", ft1name, (int) getpid());
+    WRITE_IMAGENAME(ftp12name, "_%s_12p_%d", ft1name, (int) getpid());
 
     mk_amph_from_complex(ft1name, fta1name, ftp1name, 0);
     mk_amph_from_complex(ft2name, fta2name, ftp2name, 0);
@@ -2252,33 +2184,19 @@ imageID fft_correlation(
 
     arith_image_cstmult_inplace(fta12name, 1.0 / sqrt(nelement) / (1.0 * nelement));
 
-    n = snprintf(fftname, SBUFFERSIZE, "_fft_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
+    WRITE_IMAGENAME(fftname, "_fft_%d", (int) getpid());
 
     mk_complex_from_amph(fta12name, ftp12name, fftname, 0);
     delete_image_ID(fta12name);
     delete_image_ID(ftp12name);
 
-    n = snprintf(fft1name, SBUFFERSIZE, "_fft1_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
+    WRITE_IMAGENAME(fft1name, "_fft1_%d", (int) getpid());
 
     do2dfft(fftname, fft1name);
     delete_image_ID(fftname);
 
-    n = snprintf(fft1pname, SBUFFERSIZE, "_fft1p_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
+    WRITE_IMAGENAME(fft1pname, "_fft1p_%d", (int) getpid());
+
 
     mk_amph_from_complex(fft1name, ID_nameout, fft1pname, 0);
     permut(ID_nameout);
@@ -2295,16 +2213,20 @@ imageID fft_correlation(
 
 
 
-int fftczoom(const char *ID_name, const char *ID_out, long factor)
+int fftczoom(
+    const char *ID_name,
+    const char *IDout_name,
+    long factor
+)
 {
-    long ID, ID1;
-    long naxes[2];
-    long ii, jj;
+    imageID ID;
+    imageID ID1;
+    uint32_t naxes[2];
     double coeff;
 
-    char tmpzname[SBUFFERSIZE];
-    char tmpz1name[SBUFFERSIZE];
-    int n;
+    char tmpzname[STRINGMAXLEN_IMGNAME];
+    char tmpz1name[STRINGMAXLEN_IMGNAME];
+
 
     ID = image_ID(ID_name);
 
@@ -2314,13 +2236,7 @@ int fftczoom(const char *ID_name, const char *ID_out, long factor)
     coeff = 1.0 / (factor * factor * naxes[0] * naxes[1]);
     permut(ID_name);
 
-    n = snprintf(tmpzname, SBUFFERSIZE, "_tmpz_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
-
+    WRITE_IMAGENAME(tmpzname, "_tmpz_%d", (int) getpid());
     do2dfft(ID_name, tmpzname);
 
 
@@ -2328,17 +2244,12 @@ int fftczoom(const char *ID_name, const char *ID_out, long factor)
     permut(tmpzname);
     ID = image_ID(tmpzname);
 
-    n = snprintf(tmpz1name, SBUFFERSIZE, "_tmpz1_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
+    WRITE_IMAGENAME(tmpz1name, "_tmpz1_%d", (int) getpid());
 
     ID1 = create_2DCimage_ID(tmpz1name, factor * naxes[0], factor * naxes[1]);
 
-    for(ii = 0; ii < naxes[0]; ii++)
-        for(jj = 0; jj < naxes[1]; jj++)
+    for(uint32_t ii = 0; ii < naxes[0]; ii++)
+        for(uint32_t jj = 0; jj < naxes[1]; jj++)
         {
             data.image[ID1].array.CF[(jj + factor * naxes[1] / 2 - naxes[1] / 2)
                                      *naxes[0]*factor + (ii + factor * naxes[0] / 2 - naxes[0] / 2)].re =
@@ -2350,8 +2261,8 @@ int fftczoom(const char *ID_name, const char *ID_out, long factor)
     delete_image_ID(tmpzname);
 
     permut(tmpz1name);
-    do2dffti(tmpz1name, ID_out);
-    permut(ID_out);
+    do2dffti(tmpz1name, IDout_name);
+    permut(IDout_name);
     delete_image_ID(tmpz1name);
 
     return(0);
@@ -2360,17 +2271,21 @@ int fftczoom(const char *ID_name, const char *ID_out, long factor)
 
 
 
-int fftzoom(const char *ID_name, const char *ID_out, long factor)
+int fftzoom(
+    const char *ID_name,
+    const char *IDout_name,
+    long factor
+)
 {
-    long ID, ID1;
-    long naxes[2];
-    long ii, jj;
+    imageID ID;
+    imageID ID1;
+    uint32_t naxes[2];
     double coeff;
 
-    char tmpzname[SBUFFERSIZE];
-    char tmpz1name[SBUFFERSIZE];
-    char tmpz2name[SBUFFERSIZE];
-    char tbename[SBUFFERSIZE];
+    char tmpzname[STRINGMAXLEN_IMGNAME];
+    char tmpz1name[STRINGMAXLEN_IMGNAME];
+    char tmpz2name[STRINGMAXLEN_IMGNAME];
+    char tbename[STRINGMAXLEN_IMGNAME];
     int n;
 
     ID = image_ID(ID_name);
@@ -2381,12 +2296,7 @@ int fftzoom(const char *ID_name, const char *ID_out, long factor)
     coeff = 1.0 / (factor * factor * naxes[0] * naxes[1]);
     permut(ID_name);
 
-    n = snprintf(tmpzname, SBUFFERSIZE, "_tmpz_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
+    WRITE_IMAGENAME(tmpzname, "_tmpz_%d", (int) getpid());
 
     do2drfft(ID_name, tmpzname);
 
@@ -2394,17 +2304,12 @@ int fftzoom(const char *ID_name, const char *ID_out, long factor)
     permut(tmpzname);
     ID = image_ID(tmpzname);
 
-    n = snprintf(tmpz1name, SBUFFERSIZE, "_tmpz1_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
+    WRITE_IMAGENAME(tmpz1name, "_tmpz1_%d", (int) getpid());
 
     ID1 = create_2DCimage_ID(tmpz1name, factor * naxes[0], factor * naxes[1]);
 
-    for(ii = 0; ii < naxes[0]; ii++)
-        for(jj = 0; jj < naxes[1]; jj++)
+    for(uint32_t ii = 0; ii < naxes[0]; ii++)
+        for(uint32_t jj = 0; jj < naxes[1]; jj++)
         {
             data.image[ID1].array.CF[(jj + factor * naxes[1] / 2 - naxes[1] / 2)
                                      *naxes[0]*factor + (ii + factor * naxes[0] / 2 - naxes[0] / 2)].re =
@@ -2417,24 +2322,14 @@ int fftzoom(const char *ID_name, const char *ID_out, long factor)
 
     permut(tmpz1name);
 
-    n = snprintf(tmpz2name, SBUFFERSIZE, "_tmpz2_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
+    WRITE_IMAGENAME(tmpz2name, "_tmpz2_%d", (int) getpid());
 
     do2dffti(tmpz1name, tmpz2name);
 
     permut(tmpz2name);
     delete_image_ID(tmpz1name);
 
-    n = snprintf(tbename, SBUFFERSIZE, "_tbe_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
+    WRITE_IMAGENAME(tbename, "_tbe_%d", (int) getpid());
 
     mk_reim_from_complex(tmpz2name, ID_out, tbename, 0);
 
