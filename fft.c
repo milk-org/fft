@@ -2,7 +2,7 @@
  * @file    fft.c
  * @brief   Fourier Transform
  *
- * Wrapper to fftw
+ * Wrapper to fftw and FFT tools
  *
  */
 
@@ -80,6 +80,9 @@ static int clock_gettime(int clk_id, struct mach_timespec *t)
 #include "COREMOD_iofits/COREMOD_iofits.h"
 #include "COREMOD_arith/COREMOD_arith.h"
 #include "COREMOD_tools/COREMOD_tools.h"
+
+#include "fft_autocorrelation.h"
+#include "fft_structure_function.h"
 
 #include "fft/fft.h"
 
@@ -2287,81 +2290,6 @@ imageID fft_correlation(
 
 
     return IDout;
-}
-
-
-int autocorrelation(const char *ID_name, const char *ID_out)
-{
-    long ID;
-    long nelement;
-
-    char atmp1name[SBUFFERSIZE];
-    char aampname[SBUFFERSIZE];
-    char aphaname[SBUFFERSIZE];
-    char sqaampname[SBUFFERSIZE];
-    char sqaamp1name[SBUFFERSIZE];
-    int n;
-
-
-    ID = image_ID(ID_name);
-    nelement = data.image[ID].md[0].nelement;
-
-    n = snprintf(atmp1name, SBUFFERSIZE, "_atmp1_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
-
-    do2drfft(ID_name, atmp1name);
-
-    n = snprintf(aampname, SBUFFERSIZE, "_aamp_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
-
-    n = snprintf(aphaname, SBUFFERSIZE, "_apha_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
-
-    mk_amph_from_complex(atmp1name, aampname, aphaname, 0);
-
-    n = snprintf(sqaampname, SBUFFERSIZE, "_sqaamp_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
-
-    arith_image_mult(aampname, aampname, sqaampname);
-    delete_image_ID(aampname);
-    delete_image_ID(aphaname);
-    delete_image_ID(atmp1name);
-
-    n = snprintf(sqaamp1name, SBUFFERSIZE, "_sqaamp1_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        printERROR(__FILE__, __func__, __LINE__,
-                   "Attempted to write string buffer with too many characters");
-    }
-
-    arith_image_cstmult(sqaampname, 1.0 / sqrt(nelement) / (1.0 * nelement),
-                        sqaamp1name);
-    delete_image_ID(sqaampname);
-
-    do2drfft(sqaamp1name, atmp1name);
-    mk_reim_from_complex(atmp1name, ID_out, aphaname, 0);
-    delete_image_ID(sqaamp1name);
-    delete_image_ID(atmp1name);
-    delete_image_ID(aphaname);
-
-
-    return(0);
 }
 
 

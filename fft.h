@@ -39,8 +39,6 @@ long do2drffti(const char *in_name, const char *out_name);
 long fft_correlation(const char *ID_name1, const char *ID_name2,
                      const char *ID_nameout);
 
-int autocorrelation(const char *ID_name, const char *ID_out);
-
 int fftzoom(const char *ID_name, const char *ID_out, long factor);
 
 int fftczoom(const char *ID_name, const char *ID_out, long factor);
