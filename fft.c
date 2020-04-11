@@ -17,14 +17,13 @@
 // module default short name
 // all CLI calls to this module functions will be <shortname>.<funcname>
 // if set to "", then calls use <funcname>
-#define MODULE_SHORTNAME_DEFAULT ""
+#define MODULE_SHORTNAME_DEFAULT "fft"
 
 // Module short description
-#define MODULE_DESCRIPTION       "FFTW wrapper"
+#define MODULE_DESCRIPTION       "FFTW wrapper and FFT-related functions"
 
 // Application to which module belongs
 #define MODULE_APPLICATION       "milk"
-
 
 
 
@@ -488,40 +487,18 @@ int fft_setNthreads(
 errno_t import_wisdom()
 {
     FILE *fp;
-    char wisdom_file_single[SBUFFERSIZE];
-    char wisdom_file_double[SBUFFERSIZE];
-    int n;
-
+    char wisdom_file_single[STRINGMAXLEN_FULLFILENAME];
+    char wisdom_file_double[STRINGMAXLEN_FULLFILENAME];
 
 
 # ifdef FFTWMT
-    n = snprintf(wisdom_file_single, SBUFFERSIZE, "%s/fftwf_mt_wisdom.dat",
-                 FFTCONFIGDIR);
-    if(n >= SBUFFERSIZE)
-    {
-        PRINT_ERROR("Attempted to write string buffer with too many characters");
-    }
-    n = snprintf(wisdom_file_double, SBUFFERSIZE, "%s/fftw_mt_wisdom.dat",
-                 FFTCONFIGDIR);
-    if(n >= SBUFFERSIZE)
-    {
-        PRINT_ERROR("Attempted to write string buffer with too many characters");
-    }
+    WRITE_FULLFILENAME(wisdom_file_single, "%s/fftwf_mt_wisdom.dat", FFTCONFIGDIR);
+    WRITE_FULLFILENAME(wisdom_file_double, "%s/fftw_mt_wisdom.dat", FFTCONFIGDIR);
 # endif
 
 # ifndef FFTWMT
-    n = snprintf(wisdom_file_single, SBUFFERSIZE, "%s/fftwf_wisdom.dat",
-                 FFTCONFIGDIR);
-    if(n >= SBUFFERSIZE)
-    {
-        PRINT_ERROR("Attempted to write string buffer with too many characters");
-    }
-    n = snprintf(wisdom_file_double, SBUFFERSIZE, "%s/fftw_wisdom.dat",
-                 FFTCONFIGDIR);
-    if(n >= SBUFFERSIZE)
-    {
-        PRINT_ERROR("Attempted to write string buffer with too many characters");
-    }
+    WRITE_FULLFILENAME(wisdom_file_single, "%s/fftwf_wisdom.dat", FFTCONFIGDIR);
+    WRITE_FULLFILENAME(wisdom_file_double, "%s/fftw_wisdom.dat", FFTCONFIGDIR);
 # endif
 
 
@@ -591,73 +568,35 @@ errno_t import_wisdom()
 errno_t export_wisdom()
 {
     FILE *fp;
-    char wisdom_file_single[SBUFFERSIZE];
-    char wisdom_file_double[SBUFFERSIZE];
+    char wisdom_file_single[STRINGMAXLEN_FULLFILENAME];
+    char wisdom_file_double[STRINGMAXLEN_FULLFILENAME];
     char errmessg[SBUFFERSIZE];
-    int n;
-    char command[200];
 
-    sprintf(command, "mkdir -p %s", FFTCONFIGDIR);
-    if(system(command) != 0)
-    {
-       PRINT_ERROR("system() returns non-zero value");
-    }
+    EXECUTE_SYSTEM_COMMAND("mkdir -p %s", FFTCONFIGDIR);
 
 # ifdef FFTWMT
-    n = snprintf(wisdom_file_single, SBUFFERSIZE, "%s/fftwf_mt_wisdom.dat",
-                 FFTCONFIGDIR);
-    if(n >= SBUFFERSIZE)
-    {
-        PRINT_ERROR("Attempted to write string buffer with too many characters");
-    }
-    n = snprintf(wisdom_file_double, SBUFFERSIZE, "%s/fftw_mt_wisdom.dat",
-                 FFTCONFIGDIR);
-    if(n >= SBUFFERSIZE)
-    {
-        PRINT_ERROR("Attempted to write string buffer with too many characters");
-    }
+    WRITE_FULLFILENAME(wisdom_file_single, "%s/fftwf_mt_wisdom.dat", FFTCONFIGDIR);
+    WRITE_FULLFILENAME(wisdom_file_double, "%s/fftw_mt_wisdom.dat", FFTCONFIGDIR);
 # endif
 
 # ifndef FFTWMT
-    n = snprintf(wisdom_file_single, SBUFFERSIZE, "%s/fftwf_wisdom.dat",
-                 FFTCONFIGDIR);
-    if(n >= SBUFFERSIZE)
-    {
-        PRINT_ERROR("Attempted to write string buffer with too many characters");
-    }
-    n = snprintf(wisdom_file_double, SBUFFERSIZE, "%s/fftw_wisdom.dat",
-                 FFTCONFIGDIR);
-    if(n >= SBUFFERSIZE)
-    {
-        PRINT_ERROR("Attempted to write string buffer with too many characters");
-    }
+    WRITE_FULLFILENAME(wisdom_file_single, "%s/fftwf_wisdom.dat", FFTCONFIGDIR);
+    WRITE_FULLFILENAME(wisdom_file_double, "%s/fftw_wisdom.dat", FFTCONFIGDIR);
 # endif
 
 
     if((fp = fopen(wisdom_file_single, "w")) == NULL)
     {
-        n = snprintf(errmessg, SBUFFERSIZE, "Error creating wisdom file \"%s\"",
-                     wisdom_file_single);
-        if(n >= SBUFFERSIZE)
-        {
-            PRINT_ERROR("Attempted to write string buffer with too many characters");
-        }
-        PRINT_ERROR(errmessg);
-        exit(0);
+        PRINT_ERROR("Error creating wisdom file \"%s\"", wisdom_file_single);
+        abort();
     }
     fftwf_export_wisdom_to_file(fp);
     fclose(fp);
 
     if((fp = fopen(wisdom_file_double, "w")) == NULL)
     {
-        n = snprintf(errmessg, SBUFFERSIZE, "Error creating wisdom file \"%s\"",
-                     wisdom_file_double);
-        if(n >= SBUFFERSIZE)
-        {
-            PRINT_ERROR("Attempted to write string buffer with too many characters");
-        }
-        PRINT_ERROR(errmessg);
-        exit(0);
+        PRINT_ERROR("Error creating wisdom file \"%s\"", wisdom_file_double);
+        abort();
     }
     fftw_export_wisdom_to_file(fp);
     fclose(fp);
@@ -1298,13 +1237,17 @@ long FFT_do1dfft(const char *in_name, const char *out_name, int dir)
 
 /* 1d real -> complex fft */
 // supports single and double precision
-long do1drfft(const char *in_name, const char *out_name)
+imageID do1drfft(
+    const char *in_name,
+    const char *out_name
+)
 {
     int *naxes;
     uint32_t *naxesl;
     uint32_t *naxesout;
     long naxis;
-    long IDin, IDout;
+    imageID IDin;
+    imageID IDout;
     long i;
     int OK = 0;
     long jj;
@@ -1316,8 +1259,6 @@ long do1drfft(const char *in_name, const char *out_name)
     double *inptr_double;
     uint8_t datatype;
 
-    char ffttmpname[SBUFFERSIZE];
-    int n;
 
     IDin = image_ID(in_name);
     naxis = data.image[IDin].md[0].naxis;
@@ -1337,15 +1278,6 @@ long do1drfft(const char *in_name, const char *out_name)
             naxesout[i] = data.image[IDin].md[0].size[i] / 2 + 1;
         }
     }
-
-
-    n = snprintf(ffttmpname, SBUFFERSIZE, "_ffttmpname_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        PRINT_ERROR("Attempted to write string buffer with too many characters");
-    }
-    // IDtmp = create_image_ID(ffttmpname, naxis, naxestmp, CDtype, data.SHARED_DFT, data.NBKEWORD_DFT);
-
 
     if(datatype == _DATATYPE_FLOAT)
     {
@@ -1429,7 +1361,6 @@ long do1drfft(const char *in_name, const char *out_name)
     free(naxes);
     free(naxesl);
     free(naxesout);
-    // delete_image_ID(ffttmpname);
 
     return(IDout);
 }
@@ -1783,25 +1714,26 @@ int pupfft(const char *ID_name_ampl, const char *ID_name_pha,
 
 /* real fft : real to complex */
 // supports single and double precisions
-long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
+imageID FFT_do2drfft(
+    const char *in_name,
+    const char *out_name,
+    int dir
+)
 {
     int *naxes;  // int format for fftw
     uint32_t *naxesl;
     uint32_t *naxestmp;
 
     long naxis;
-    long IDin, IDout, IDtmp;
-    long i;
+    imageID IDin;
+    imageID IDout;
+    imageID IDtmp;
+
     int OK = 0;
-//    long idist;
-    long ii, jj, kk;
     fftwf_plan plan;
     fftw_plan plan_double;
     long tmp1;
 
-    char ffttmpname[SBUFFERSIZE];
-    char ffttmpcpyname[SBUFFERSIZE];
-    int n;
 
     uint8_t datatype;
     uint8_t datatypeout;
@@ -1818,7 +1750,7 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
 
 
 
-    for(i = 0; i < naxis; i++)
+    for(int i = 0; i < naxis; i++)
     {
         naxes[i] = (int) data.image[IDin].md[0].size[i];
         naxesl[i] = (uint32_t) data.image[IDin].md[0].size[i];
@@ -1829,11 +1761,8 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
         }
     }
 
-    n = snprintf(ffttmpname, SBUFFERSIZE, "_ffttmp_%d", (int) getpid());
-    if(n >= SBUFFERSIZE)
-    {
-        PRINT_ERROR("Attempted to write string buffer with too many characters");
-    }
+    char ffttmpname[STRINGMAXLEN_IMGNAME];
+    WRITE_IMAGENAME(ffttmpname, "_ffttmp_%d", (int) getpid());
 
     if(datatype == _DATATYPE_FLOAT)
     {
@@ -1866,11 +1795,9 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
                         naxes[0]);
                 fflush(stdout);
 
-                n = snprintf(ffttmpcpyname, SBUFFERSIZE, "_ffttmpcpy_%d", (int) getpid());
-                if(n >= SBUFFERSIZE)
-                {
-                    PRINT_ERROR("Attempted to write string buffer with too many characters");
-                }
+                char ffttmpcpyname[STRINGMAXLEN_IMGNAME];
+                WRITE_IMAGENAME(ffttmpcpyname, "_ffttmpcpy_%d", (int) getpid());
+
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
                 plan = fftwf_plan_dft_r2c_2d(naxes[1], naxes[0], data.image[IDin].array.F,
@@ -1885,21 +1812,21 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
 
             if(dir == -1)
             {
-                for(ii = 0; ii < naxes[0] / 2 + 1; ii++)
-                    for(jj = 0; jj < naxes[1]; jj++)
+                for(uint32_t ii = 0; ii < naxes[0] / 2 + 1; ii++)
+                    for(uint32_t jj = 0; jj < naxes[1]; jj++)
                     {
                         data.image[IDout].array.CF[jj * naxes[0] + ii] = data.image[IDtmp].array.CF[jj *
                                 naxestmp[0] + ii];
                     }
 
-                for(ii = 1; ii < naxes[0] / 2 + 1; ii++)
+                for(uint32_t ii = 1; ii < naxes[0] / 2 + 1; ii++)
                 {
-                    jj = 0;
+                    uint32_t jj = 0;
                     data.image[IDout].array.CF[jj * naxes[0] + (naxes[0] - ii)].re =
                         data.image[IDtmp].array.CF[jj * naxestmp[0] + ii].re;
                     data.image[IDout].array.CF[jj * naxes[0] + (naxes[0] - ii)].im =
                         -data.image[IDtmp].array.CF[jj * naxestmp[0] + ii].im;
-                    for(jj = 1; jj < naxes[1]; jj++)
+                    for(uint32_t jj = 1; jj < naxes[1]; jj++)
                     {
                         data.image[IDout].array.CF[jj * naxes[0] + (naxes[0] - ii)].re =
                             data.image[IDtmp].array.CF[(naxes[1] - jj) * naxestmp[0] + ii].re;
@@ -1920,11 +1847,9 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
                         naxes[0]);
                 fflush(stdout);
 
-                n = snprintf(ffttmpcpyname, SBUFFERSIZE, "_ffttmpcpy_%d", (int) getpid());
-                if(n >= SBUFFERSIZE)
-                {
-                    PRINT_ERROR("Attempted to write string buffer with too many characters");
-                }
+                char ffttmpcpyname[STRINGMAXLEN_IMGNAME];
+                WRITE_IMAGENAME(ffttmpcpyname, "_ffttmpcpy_%d", (int) getpid());
+
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
                 plan_double = fftw_plan_dft_r2c_2d(naxes[1], naxes[0], data.image[IDin].array.D,
@@ -1939,21 +1864,21 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
 
             if(dir == -1)
             {
-                for(ii = 0; ii < naxes[0] / 2 + 1; ii++)
-                    for(jj = 0; jj < naxes[1]; jj++)
+                for(uint32_t ii = 0; ii < naxes[0] / 2 + 1; ii++)
+                    for(uint32_t jj = 0; jj < naxes[1]; jj++)
                     {
                         data.image[IDout].array.CD[jj * naxes[0] + ii] = data.image[IDtmp].array.CD[jj *
                                 naxestmp[0] + ii];
                     }
 
-                for(ii = 1; ii < naxes[0] / 2 + 1; ii++)
+                for(uint32_t ii = 1; ii < naxes[0] / 2 + 1; ii++)
                 {
-                    jj = 0;
+                    uint32_t jj = 0;
                     data.image[IDout].array.CD[jj * naxes[0] + (naxes[0] - ii)].re =
                         data.image[IDtmp].array.CD[jj * naxestmp[0] + ii].re;
                     data.image[IDout].array.CD[jj * naxes[0] + (naxes[0] - ii)].im =
                         -data.image[IDtmp].array.CD[jj * naxestmp[0] + ii].im;
-                    for(jj = 1; jj < naxes[1]; jj++)
+                    for(uint32_t jj = 1; jj < naxes[1]; jj++)
                     {
                         data.image[IDout].array.CD[jj * naxes[0] + (naxes[0] - ii)].re =
                             data.image[IDtmp].array.CD[(naxes[1] - jj) * naxestmp[0] + ii].re;
@@ -1984,11 +1909,8 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
                 //	  if ( Debug > 2) fprintf(stdout,"New FFT size [do2drfft %d x %d x %d]: optimizing ...",naxes[1],naxes[0],naxes[2]);
                 fflush(stdout);
 
-                n = snprintf(ffttmpcpyname, SBUFFERSIZE, "_ffttmpcpy_%d", (int) getpid());
-                if(n >= SBUFFERSIZE)
-                {
-                    PRINT_ERROR("Attempted to write string buffer with too many characters");
-                }
+                char ffttmpcpyname[STRINGMAXLEN_IMGNAME];
+                WRITE_IMAGENAME(ffttmpcpyname, "_ffttmpcpy_%d", (int) getpid());
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
                 plan = fftwf_plan_many_dft_r2c(2, naxes, naxes[2], data.image[IDin].array.F,
@@ -2011,9 +1933,9 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
                 naxes[0] = naxes[1];
                 naxes[1] = tmp1;
 
-                for(ii = 0; ii < naxes[0] / 2 + 1; ii++)
-                    for(jj = 0; jj < naxes[1]; jj++)
-                        for(kk = 0; kk < naxes[2]; kk++)
+                for(uint32_t ii = 0; ii < naxes[0] / 2 + 1; ii++)
+                    for(uint32_t jj = 0; jj < naxes[1]; jj++)
+                        for(uint32_t kk = 0; kk < naxes[2]; kk++)
                         {
                             data.image[IDout].array.CF[naxes[0]*naxes[1]*kk + jj * naxes[0] + ii] =
                                 data.image[IDtmp].array.CF[naxestmp[0] * naxestmp[1] * kk + jj * naxestmp[0] +
@@ -2038,11 +1960,9 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
                 //	  if ( Debug > 2) fprintf(stdout,"New FFT size [do2drfft %d x %d x %d]: optimizing ...",naxes[1],naxes[0],naxes[2]);
                 //				fflush(stdout);
 
-                n = snprintf(ffttmpcpyname, SBUFFERSIZE, "_ffttmpcpy_%d", (int) getpid());
-                if(n >= SBUFFERSIZE)
-                {
-                    PRINT_ERROR("Attempted to write string buffer with too many characters");
-                }
+                char ffttmpcpyname[STRINGMAXLEN_IMGNAME];
+                WRITE_IMAGENAME(ffttmpcpyname, "_ffttmpcpy_%d", (int) getpid());
+
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
                 plan_double = fftw_plan_many_dft_r2c(2, naxes, naxes[2],
@@ -2066,9 +1986,9 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
                 naxes[0] = naxes[1];
                 naxes[1] = tmp1;
 
-                for(ii = 0; ii < naxes[0] / 2 + 1; ii++)
-                    for(jj = 0; jj < naxes[1]; jj++)
-                        for(kk = 0; kk < naxes[2]; kk++)
+                for(uint32_t ii = 0; ii < naxes[0] / 2 + 1; ii++)
+                    for(uint32_t jj = 0; jj < naxes[1]; jj++)
+                        for(uint32_t kk = 0; kk < naxes[2]; kk++)
                         {
                             data.image[IDout].array.CD[naxes[0]*naxes[1]*kk + jj * naxes[0] + ii] =
                                 data.image[IDtmp].array.CD[naxestmp[0] * naxestmp[1] * kk + jj * naxestmp[0] +
@@ -2095,30 +2015,36 @@ long FFT_do2drfft(const char *in_name, const char *out_name, int dir)
     free(naxesl);
     free(naxes);
 
-    return(IDout);
+    return IDout;
 }
 
 
 
 
-long do2drfft(const char *in_name, const char *out_name)
+imageID do2drfft(
+    const char *in_name,
+    const char *out_name
+)
 {
-    long IDout;
+    imageID IDout;
 
     IDout = FFT_do2drfft(in_name, out_name, -1);
 
-    return(IDout);
+    return IDout;
 }
 
 
 
-long do2drffti(const char *in_name, const char *out_name)
+imageID do2drffti(
+    const char *in_name,
+    const char *out_name
+)
 {
-    long IDout;
+    imageID IDout;
 
     IDout = FFT_do2drfft(in_name, out_name, 1);
 
-    return(IDout);
+    return IDout;
 }
 
 
@@ -2136,7 +2062,8 @@ imageID fft_correlation(
     const char *ID_nameout
 )
 {
-    imageID ID1, IDout;
+    imageID ID1;
+    imageID IDout;
     long nelement;
 
     char ft1name[STRINGMAXLEN_IMGNAME];
@@ -2282,11 +2209,6 @@ int fftzoom(
     uint32_t naxes[2];
     double coeff;
 
-    char tmpzname[STRINGMAXLEN_IMGNAME];
-    char tmpz1name[STRINGMAXLEN_IMGNAME];
-    char tmpz2name[STRINGMAXLEN_IMGNAME];
-    char tbename[STRINGMAXLEN_IMGNAME];
-    int n;
 
     ID = image_ID(ID_name);
 
@@ -2296,7 +2218,7 @@ int fftzoom(
     coeff = 1.0 / (factor * factor * naxes[0] * naxes[1]);
     permut(ID_name);
 
-    WRITE_IMAGENAME(tmpzname, "_tmpz_%d", (int) getpid());
+    CREATE_IMAGENAME(tmpzname, "_tmpz_%d", (int) getpid());
 
     do2drfft(ID_name, tmpzname);
 
@@ -2304,7 +2226,7 @@ int fftzoom(
     permut(tmpzname);
     ID = image_ID(tmpzname);
 
-    WRITE_IMAGENAME(tmpz1name, "_tmpz1_%d", (int) getpid());
+    CREATE_IMAGENAME(tmpz1name, "_tmpz1_%d", (int) getpid());
 
     ID1 = create_2DCimage_ID(tmpz1name, factor * naxes[0], factor * naxes[1]);
 
@@ -2322,16 +2244,16 @@ int fftzoom(
 
     permut(tmpz1name);
 
-    WRITE_IMAGENAME(tmpz2name, "_tmpz2_%d", (int) getpid());
+    CREATE_IMAGENAME(tmpz2name, "_tmpz2_%d", (int) getpid());
 
     do2dffti(tmpz1name, tmpz2name);
 
     permut(tmpz2name);
     delete_image_ID(tmpz1name);
 
-    WRITE_IMAGENAME(tbename, "_tbe_%d", (int) getpid());
+    CREATE_IMAGENAME(tbename, "_tbe_%d", (int) getpid());
 
-    mk_reim_from_complex(tmpz2name, ID_out, tbename, 0);
+    mk_reim_from_complex(tmpz2name, IDout_name, tbename, 0);
 
     delete_image_ID(tbename);
     delete_image_ID(tmpz2name);
