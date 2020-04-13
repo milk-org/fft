@@ -1,9 +1,14 @@
 # library name
-set(LIBNAME "fft")
+set(LIBNAME "milkfft")
+
 
 set(SOURCEFILES
+	fft.c
 	fft_autocorrelation.c
 	fft_structure_function.c)
+
+set(INCLUDEFILES
+	fft.h)
 
 
 # DEFAULT SETTINGS 
@@ -19,10 +24,10 @@ include_directories ("${PROJECT_SOURCE_DIR}/..")
 # Library can be compiled from multiple source files
 # Convention: the main souce file is named <libname>.c
 # 
-add_library(${LIBNAME} SHARED ${LIBNAME}.c ${SOURCEFILES})
+add_library(${LIBNAME} SHARED ${SOURCEFILES})
 
 set_target_properties(${LIBNAME} PROPERTIES COMPILE_FLAGS "-DFFTCONFIGDIR=\\\"${PROJECT_SOURCE_DIR}/config\\\"")
 
 install(TARGETS ${LIBNAME} DESTINATION lib)
-install(FILES ${LIBNAME}.h DESTINATION include)
+install(FILES ${INCLUDEFILES} DESTINATION include)
 

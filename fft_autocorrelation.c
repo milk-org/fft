@@ -12,6 +12,7 @@
 #include "COREMOD_arith/COREMOD_arith.h"
 #include "fft.h"
 
+
 imageID autocorrelation(
     const char *IDin_name,
     const char *IDout_name
