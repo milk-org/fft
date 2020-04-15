@@ -1,14 +1,15 @@
 # library name
 set(LIBNAME "milkfft")
+set(SRCNAME "fft")
 
 
 set(SOURCEFILES
-	fft.c
+	${SRCNAME}.c
 	fft_autocorrelation.c
 	fft_structure_function.c)
 
 set(INCLUDEFILES
-	fft.h)
+	${SRCNAME}.h)
 
 
 # DEFAULT SETTINGS 
@@ -29,5 +30,5 @@ add_library(${LIBNAME} SHARED ${SOURCEFILES})
 set_target_properties(${LIBNAME} PROPERTIES COMPILE_FLAGS "-DFFTCONFIGDIR=\\\"${PROJECT_SOURCE_DIR}/config\\\"")
 
 install(TARGETS ${LIBNAME} DESTINATION lib)
-install(FILES ${INCLUDEFILES} DESTINATION include)
+install(FILES ${INCLUDEFILES} DESTINATION include/${SRCNAME})
 
