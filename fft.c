@@ -568,7 +568,6 @@ errno_t export_wisdom()
     FILE *fp;
     char wisdom_file_single[STRINGMAXLEN_FULLFILENAME];
     char wisdom_file_double[STRINGMAXLEN_FULLFILENAME];
-    char errmessg[SBUFFERSIZE];
 
     EXECUTE_SYSTEM_COMMAND("mkdir -p %s", FFTCONFIGDIR);
 
@@ -1741,7 +1740,7 @@ imageID FFT_do2drfft(
 
     datatype = data.image[IDin].md[0].datatype;
     naxis = data.image[IDin].md[0].naxis;
-    naxes = (int *) malloc(naxis * sizeof(int));
+    naxes = (int *) malloc(naxis * sizeof(uint32_t));
     naxesl = (uint32_t *) malloc(naxis * sizeof(uint32_t));
     naxestmp = (uint32_t *) malloc(naxis * sizeof(uint32_t));
 
@@ -1810,21 +1809,21 @@ imageID FFT_do2drfft(
 
             if(dir == -1)
             {
-                for(uint32_t ii = 0; ii < naxes[0] / 2 + 1; ii++)
-                    for(uint32_t jj = 0; jj < naxes[1]; jj++)
+                for(uint32_t ii = 0; ii < (uint32_t) (naxes[0] / 2 + 1); ii++)
+                    for(uint32_t jj = 0; jj < (uint32_t) naxes[1]; jj++)
                     {
                         data.image[IDout].array.CF[jj * naxes[0] + ii] = data.image[IDtmp].array.CF[jj *
                                 naxestmp[0] + ii];
                     }
 
-                for(uint32_t ii = 1; ii < naxes[0] / 2 + 1; ii++)
+                for(uint32_t ii = 1; ii < (uint32_t) (naxes[0] / 2 + 1); ii++)
                 {
                     uint32_t jj = 0;
                     data.image[IDout].array.CF[jj * naxes[0] + (naxes[0] - ii)].re =
                         data.image[IDtmp].array.CF[jj * naxestmp[0] + ii].re;
                     data.image[IDout].array.CF[jj * naxes[0] + (naxes[0] - ii)].im =
                         -data.image[IDtmp].array.CF[jj * naxestmp[0] + ii].im;
-                    for(uint32_t jj = 1; jj < naxes[1]; jj++)
+                    for(uint32_t jj = 1; jj < (uint32_t) naxes[1]; jj++)
                     {
                         data.image[IDout].array.CF[jj * naxes[0] + (naxes[0] - ii)].re =
                             data.image[IDtmp].array.CF[(naxes[1] - jj) * naxestmp[0] + ii].re;
@@ -1862,21 +1861,21 @@ imageID FFT_do2drfft(
 
             if(dir == -1)
             {
-                for(uint32_t ii = 0; ii < naxes[0] / 2 + 1; ii++)
-                    for(uint32_t jj = 0; jj < naxes[1]; jj++)
+                for(uint32_t ii = 0; ii < (uint32_t) (naxes[0] / 2 + 1); ii++)
+                    for(uint32_t jj = 0; jj < (uint32_t) naxes[1]; jj++)
                     {
                         data.image[IDout].array.CD[jj * naxes[0] + ii] = data.image[IDtmp].array.CD[jj *
                                 naxestmp[0] + ii];
                     }
 
-                for(uint32_t ii = 1; ii < naxes[0] / 2 + 1; ii++)
+                for(uint32_t ii = 1; ii < (uint32_t) (naxes[0] / 2 + 1); ii++)
                 {
                     uint32_t jj = 0;
                     data.image[IDout].array.CD[jj * naxes[0] + (naxes[0] - ii)].re =
                         data.image[IDtmp].array.CD[jj * naxestmp[0] + ii].re;
                     data.image[IDout].array.CD[jj * naxes[0] + (naxes[0] - ii)].im =
                         -data.image[IDtmp].array.CD[jj * naxestmp[0] + ii].im;
-                    for(uint32_t jj = 1; jj < naxes[1]; jj++)
+                    for(uint32_t jj = 1; jj < (uint32_t) naxes[1]; jj++)
                     {
                         data.image[IDout].array.CD[jj * naxes[0] + (naxes[0] - ii)].re =
                             data.image[IDtmp].array.CD[(naxes[1] - jj) * naxestmp[0] + ii].re;
@@ -1931,9 +1930,9 @@ imageID FFT_do2drfft(
                 naxes[0] = naxes[1];
                 naxes[1] = tmp1;
 
-                for(uint32_t ii = 0; ii < naxes[0] / 2 + 1; ii++)
-                    for(uint32_t jj = 0; jj < naxes[1]; jj++)
-                        for(uint32_t kk = 0; kk < naxes[2]; kk++)
+                for(uint32_t ii = 0; ii < (uint32_t) (naxes[0] / 2 + 1); ii++)
+                    for(uint32_t jj = 0; jj < (uint32_t) naxes[1]; jj++)
+                        for(uint32_t kk = 0; kk < (uint32_t) naxes[2]; kk++)
                         {
                             data.image[IDout].array.CF[naxes[0]*naxes[1]*kk + jj * naxes[0] + ii] =
                                 data.image[IDtmp].array.CF[naxestmp[0] * naxestmp[1] * kk + jj * naxestmp[0] +
@@ -1984,9 +1983,9 @@ imageID FFT_do2drfft(
                 naxes[0] = naxes[1];
                 naxes[1] = tmp1;
 
-                for(uint32_t ii = 0; ii < naxes[0] / 2 + 1; ii++)
-                    for(uint32_t jj = 0; jj < naxes[1]; jj++)
-                        for(uint32_t kk = 0; kk < naxes[2]; kk++)
+                for(uint32_t ii = 0; ii < (uint32_t) (naxes[0] / 2 + 1); ii++)
+                    for(uint32_t jj = 0; jj < (uint32_t) naxes[1]; jj++)
+                        for(uint32_t kk = 0; kk < (uint32_t) naxes[2]; kk++)
                         {
                             data.image[IDout].array.CD[naxes[0]*naxes[1]*kk + jj * naxes[0] + ii] =
                                 data.image[IDtmp].array.CD[naxestmp[0] * naxestmp[1] * kk + jj * naxestmp[0] +
