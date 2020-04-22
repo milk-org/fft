@@ -22,8 +22,6 @@
 // Module short description
 #define MODULE_DESCRIPTION       "FFTW wrapper and FFT-related functions"
 
-// Application to which module belongs
-#define MODULE_APPLICATION       "milk"
 
 
 
