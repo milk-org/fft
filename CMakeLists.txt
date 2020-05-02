@@ -30,6 +30,8 @@ set(INCLUDEFILES
 	fftcorrelation.h
 	ffttranslate.h
 	fftzoom.h
+	fft_autocorrelation.h
+	fft_structure_function.h
 	init_fftwplan.h
 	permut.h
 	pupfft.h
