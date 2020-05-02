@@ -26,9 +26,8 @@
 
 
 
-static int INITSTATUS_module = 0;
-
-
+// auto-generate libinit_<modulename>
+// initialize INITSTATUS_<modulename>
 INIT_MODULE_LIB(fft)
 
 
@@ -66,7 +65,7 @@ static errno_t init_module_CLI()
 
 static void __attribute__((destructor)) close_fftwlib()
 {
-    if(INITSTATUS_module == 1)
+    if(INITSTATUS_fft == 1)
     {
         fftw_forget_wisdom();
         fftwf_forget_wisdom();
