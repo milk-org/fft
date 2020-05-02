@@ -9,11 +9,33 @@ pkg_check_modules(FFTWF REQUIRED fftw3f)
 
 set(SOURCEFILES
 	${SRCNAME}.c
+	DFT.c
+	dofft.c
+	fftcorrelation.c
+	ffttranslate.c
+	fftzoom.c
 	fft_autocorrelation.c
-	fft_structure_function.c)
+	fft_structure_function.c
+	init_fftwplan.c
+	permut.c
+	pupfft.c
+	testfftspeed.c
+	wisdom.c
+)
 
 set(INCLUDEFILES
-	${SRCNAME}.h)
+	${SRCNAME}.h
+	DFT.h
+	dofft.h
+	fftcorrelation.h
+	ffttranslate.h
+	fftzoom.h
+	init_fftwplan.h
+	permut.h
+	pupfft.h
+	testfftspeed.h
+	wisdom.h
+)
 
 
 
