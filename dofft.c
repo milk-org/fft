@@ -512,7 +512,8 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
     int *naxes;
     uint32_t *naxesl;
     long naxis;
-    long IDin, IDout;
+    imageID IDin;
+    imageID IDout;
     long i;
     int OK = 0;
     fftwf_plan plan;
@@ -520,7 +521,6 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
     long tmp1;
 
     char ffttmpcpyname[STRINGMAXLEN_IMGNAME];
-    int n;
     uint8_t datatype;
 
 
