@@ -13,15 +13,19 @@
 /* inverse = pupil plane -> focal plane equ. fft2d(..,..,..,0) */
 /* options :  -reim  takes real/imaginary input and creates real/imaginary output
                -inv  for inverse fft (inv=1) */
-int pupfft(const char *ID_name_ampl, const char *ID_name_pha,
-           const char *ID_name_ampl_out, const char *ID_name_pha_out, const char *options)
+errno_t pupfft(
+    const char *ID_name_ampl,
+    const char *ID_name_pha,
+    const char *ID_name_ampl_out,
+    const char *ID_name_pha_out,
+    const char *options
+)
 {
     int reim;
     int inv;
 
     char Ctmpname[STRINGMAXLEN_IMGNAME];
     char C1tmpname[STRINGMAXLEN_IMGNAME];
-    int n;
 
     reim = 0;
     inv = 0;
@@ -40,7 +44,7 @@ int pupfft(const char *ID_name_ampl, const char *ID_name_pha,
 
 
     WRITE_IMAGENAME(Ctmpname, "_Ctmp_%d", (int) getpid());
-    
+
     if(reim == 0)
     {
         mk_complex_from_amph(ID_name_ampl, ID_name_pha, Ctmpname, 0);
@@ -53,7 +57,7 @@ int pupfft(const char *ID_name_ampl, const char *ID_name_pha,
     permut(Ctmpname);
 
     WRITE_IMAGENAME(C1tmpname, "_C1tmp_%d", (int) getpid());
-    
+
     if(inv == 0)
     {
         do2dfft(Ctmpname, C1tmpname);    /* equ. fft2d(..,1) */
@@ -81,5 +85,5 @@ int pupfft(const char *ID_name_ampl, const char *ID_name_pha,
     permut(ID_name_ampl_out);
     permut(ID_name_pha_out);
 
-    return(0);
+    return RETURN_SUCCESS;
 }
