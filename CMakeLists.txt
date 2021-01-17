@@ -6,6 +6,7 @@ set(SRCNAME "fft")
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FFTW REQUIRED fftw3)
 pkg_check_modules(FFTWF REQUIRED fftw3f)
+pkg_check_modules(CFITSIO REQUIRED cfitsio)
 
 set(SOURCEFILES
 	${SRCNAME}.c
@@ -42,7 +43,7 @@ set(INCLUDEFILES
 
 
 
-# DEFAULT SETTINGS 
+# DEFAULT SETTINGS
 # Do not change unless needed
 # =====================================================================
 
@@ -52,16 +53,19 @@ project(lib_${LIBNAME}_project)
 include_directories ("${PROJECT_SOURCE_DIR}/src")
 include_directories ("${PROJECT_SOURCE_DIR}/..")
 
+link_directories(${CFITSIO_LIBRARY_DIRS})
 
 # Library can be compiled from multiple source files
 # Convention: the main souce file is named <libname>.c
-# 
+#
 add_library(${LIBNAME} SHARED ${SOURCEFILES})
 
-target_link_libraries(${LIBNAME} PUBLIC ${FFTW_LIBRARIES} ${FFTWF_LIBRARIES})
+target_compile_definitions(${LIBNAME} PRIVATE USE_CFITSIO=1)
+target_include_directories(${LIBNAME} PRIVATE ${CFITSIO_INCLUDE_DIRS})
+
+target_link_libraries(${LIBNAME} PUBLIC ${FFTW_LIBRARIES} ${FFTWF_LIBRARIES} ${CFITSIO_LIBRARIES} CLIcore)
 
 set_target_properties(${LIBNAME} PROPERTIES COMPILE_FLAGS "-DFFTCONFIGDIR=\\\"${PROJECT_SOURCE_DIR}/config\\\"")
 
 install(TARGETS ${LIBNAME} DESTINATION lib)
 install(FILES ${INCLUDEFILES} DESTINATION include/${SRCNAME})
-
