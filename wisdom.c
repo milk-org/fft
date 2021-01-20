@@ -1,4 +1,4 @@
-/** 
+/**
  * @file wisdom.c
  */
 
@@ -78,7 +78,7 @@ errno_t import_wisdom()
 
     if(nowisdomWarning == 1)
     {
-        printf("(no fftw wisdom file, run initfft to create)");
+        printf("    [no fftw wisdom file, run initfft to create in %s]\n", FFTCONFIGDIR);
     }
 
     return RETURN_SUCCESS;
