@@ -2,6 +2,8 @@
 set(LIBNAME "milkfft")
 set(SRCNAME "fft")
 
+message("")
+message(" SRCNAME = ${SRCNAME} -> LIBNAME = ${LIBNAME}")
 
 find_package(PkgConfig REQUIRED)
 pkg_check_modules(FFTW REQUIRED fftw3)
