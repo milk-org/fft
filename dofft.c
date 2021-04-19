@@ -224,7 +224,7 @@ long FFT_do1dfft(const char *in_name, const char *out_name, int dir)
     }
     datatype = data.image[IDin].md[0].datatype;
     IDout = create_image_ID(out_name, naxis, naxesl, datatype, data.SHARED_DFT,
-                            data.NBKEWORD_DFT);
+                            data.NBKEYWORD_DFT);
 
     if(naxis == 1)
     {
@@ -395,12 +395,12 @@ imageID do1drfft(
     if(datatype == _DATATYPE_FLOAT)
     {
         IDout = create_image_ID(out_name, naxis, naxesout, _DATATYPE_COMPLEX_FLOAT,
-                                data.SHARED_DFT, data.NBKEWORD_DFT);
+                                data.SHARED_DFT, data.NBKEYWORD_DFT);
     }
     else
     {
         IDout = create_image_ID(out_name, naxis, naxesout, _DATATYPE_COMPLEX_DOUBLE,
-                                data.SHARED_DFT, data.NBKEWORD_DFT);
+                                data.SHARED_DFT, data.NBKEYWORD_DFT);
     }
 
     if(naxis == 2)
@@ -540,7 +540,7 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
 
     datatype = data.image[IDin].md[0].datatype;
     IDout = create_image_ID(out_name, naxis, naxesl, datatype, data.SHARED_DFT,
-                            data.NBKEWORD_DFT);
+                            data.NBKEYWORD_DFT);
 
 
 
@@ -570,7 +570,7 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
                         naxes[0]);
                 fflush(stdout);
 
-				WRITE_IMAGENAME(ffttmpcpyname, "_ffttmpcpyname_%d", (int) getpid());                
+                WRITE_IMAGENAME(ffttmpcpyname, "_ffttmpcpyname_%d", (int) getpid());
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
                 plan = fftwf_plan_dft_2d(naxes[0], naxes[1],
@@ -596,7 +596,7 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
                         naxes[0]);
                 fflush(stdout);
 
-				WRITE_IMAGENAME(ffttmpcpyname, "_ffttmpcpyname_%d", (int) getpid());
+                WRITE_IMAGENAME(ffttmpcpyname, "_ffttmpcpyname_%d", (int) getpid());
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
                 plan_double = fftw_plan_dft_2d(naxes[0], naxes[1],
@@ -629,7 +629,7 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
                 fprintf(stdout, "New FFT size [do2dfft %d x %d x %d]: optimizing ...", naxes[1],
                         naxes[0], naxes[2]);
                 fflush(stdout);
-                
+
                 WRITE_IMAGENAME(ffttmpcpyname, "_ffttmpcpyname_%d", (int) getpid());
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
@@ -657,7 +657,7 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
                 fprintf(stdout, "New FFT size [do2dfft %d x %d x %d]: optimizing ...", naxes[1],
                         naxes[0], naxes[2]);
                 fflush(stdout);
-                
+
                 WRITE_IMAGENAME(ffttmpcpyname, "_ffttmpcpyname_%d", (int) getpid());
                 copy_image_ID(in_name, ffttmpcpyname, 0);
 
@@ -776,10 +776,10 @@ imageID FFT_do2drfft(
     }
 
     IDtmp = create_image_ID(ffttmpname, naxis, naxestmp, datatypeout,
-                            data.SHARED_DFT, data.NBKEWORD_DFT);
+                            data.SHARED_DFT, data.NBKEYWORD_DFT);
 
     IDout = create_image_ID(out_name, naxis, naxesl, datatypeout, data.SHARED_DFT,
-                            data.NBKEWORD_DFT);
+                            data.NBKEYWORD_DFT);
 
     if(naxis == 2)
     {
@@ -814,14 +814,14 @@ imageID FFT_do2drfft(
 
             if(dir == -1)
             {
-                for(uint32_t ii = 0; ii < (uint32_t) (naxes[0] / 2 + 1); ii++)
+                for(uint32_t ii = 0; ii < (uint32_t)(naxes[0] / 2 + 1); ii++)
                     for(uint32_t jj = 0; jj < (uint32_t) naxes[1]; jj++)
                     {
                         data.image[IDout].array.CF[jj * naxes[0] + ii] = data.image[IDtmp].array.CF[jj *
                                 naxestmp[0] + ii];
                     }
 
-                for(uint32_t ii = 1; ii < (uint32_t) (naxes[0] / 2 + 1); ii++)
+                for(uint32_t ii = 1; ii < (uint32_t)(naxes[0] / 2 + 1); ii++)
                 {
                     uint32_t jj = 0;
                     data.image[IDout].array.CF[jj * naxes[0] + (naxes[0] - ii)].re =
@@ -866,14 +866,14 @@ imageID FFT_do2drfft(
 
             if(dir == -1)
             {
-                for(uint32_t ii = 0; ii < (uint32_t) (naxes[0] / 2 + 1); ii++)
+                for(uint32_t ii = 0; ii < (uint32_t)(naxes[0] / 2 + 1); ii++)
                     for(uint32_t jj = 0; jj < (uint32_t) naxes[1]; jj++)
                     {
                         data.image[IDout].array.CD[jj * naxes[0] + ii] = data.image[IDtmp].array.CD[jj *
                                 naxestmp[0] + ii];
                     }
 
-                for(uint32_t ii = 1; ii < (uint32_t) (naxes[0] / 2 + 1); ii++)
+                for(uint32_t ii = 1; ii < (uint32_t)(naxes[0] / 2 + 1); ii++)
                 {
                     uint32_t jj = 0;
                     data.image[IDout].array.CD[jj * naxes[0] + (naxes[0] - ii)].re =
@@ -935,7 +935,7 @@ imageID FFT_do2drfft(
                 naxes[0] = naxes[1];
                 naxes[1] = tmp1;
 
-                for(uint32_t ii = 0; ii < (uint32_t) (naxes[0] / 2 + 1); ii++)
+                for(uint32_t ii = 0; ii < (uint32_t)(naxes[0] / 2 + 1); ii++)
                     for(uint32_t jj = 0; jj < (uint32_t) naxes[1]; jj++)
                         for(uint32_t kk = 0; kk < (uint32_t) naxes[2]; kk++)
                         {
@@ -988,7 +988,7 @@ imageID FFT_do2drfft(
                 naxes[0] = naxes[1];
                 naxes[1] = tmp1;
 
-                for(uint32_t ii = 0; ii < (uint32_t) (naxes[0] / 2 + 1); ii++)
+                for(uint32_t ii = 0; ii < (uint32_t)(naxes[0] / 2 + 1); ii++)
                     for(uint32_t jj = 0; jj < (uint32_t) naxes[1]; jj++)
                         for(uint32_t kk = 0; kk < (uint32_t) naxes[2]; kk++)
                         {
