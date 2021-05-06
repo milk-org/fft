@@ -141,53 +141,53 @@ int array_index(long size)
 
     switch(size)
     {
-        case 1:
-            i = 0;
-            break;
-        case 2:
-            i = 1;
-            break;
-        case 4:
-            i = 2;
-            break;
-        case 8:
-            i = 3;
-            break;
-        case 16:
-            i = 4;
-            break;
-        case 32:
-            i = 5;
-            break;
-        case 64:
-            i = 6;
-            break;
-        case 128:
-            i = 7;
-            break;
-        case 256:
-            i = 8;
-            break;
-        case 512:
-            i = 9;
-            break;
-        case 1024:
-            i = 10;
-            break;
-        case 2048:
-            i = 11;
-            break;
-        case 4096:
-            i = 12;
-            break;
-        case 8192:
-            i = 13;
-            break;
-        case 16384:
-            i = 14;
-            break;
-        default:
-            i = 100;
+    case 1:
+        i = 0;
+        break;
+    case 2:
+        i = 1;
+        break;
+    case 4:
+        i = 2;
+        break;
+    case 8:
+        i = 3;
+        break;
+    case 16:
+        i = 4;
+        break;
+    case 32:
+        i = 5;
+        break;
+    case 64:
+        i = 6;
+        break;
+    case 128:
+        i = 7;
+        break;
+    case 256:
+        i = 8;
+        break;
+    case 512:
+        i = 9;
+        break;
+    case 1024:
+        i = 10;
+        break;
+    case 2048:
+        i = 11;
+        break;
+    case 4096:
+        i = 12;
+        break;
+    case 8192:
+        i = 13;
+        break;
+    case 16384:
+        i = 14;
+        break;
+    default:
+        i = 100;
     }
 
     return(i);
@@ -215,8 +215,19 @@ long FFT_do1dfft(const char *in_name, const char *out_name, int dir)
 
     IDin = image_ID(in_name);
     naxis = data.image[IDin].md[0].naxis;
+
     naxes = (int *) malloc(naxis * sizeof(int));
+    if(naxes == NULL) {
+        PRINT_ERROR("malloc returns NULL pointer");
+        abort();
+    }
+
     naxesl = (uint32_t *) malloc(naxis * sizeof(uint32_t));
+    if(naxesl == NULL) {
+        PRINT_ERROR("malloc returns NULL pointer");
+        abort();
+    }
+
     for(i = 0; i < naxis; i++)
     {
         naxesl[i] = data.image[IDin].md[0].size[i];
@@ -297,7 +308,17 @@ long FFT_do1dfft(const char *in_name, const char *out_name, int dir)
             if(datatype == _DATATYPE_COMPLEX_FLOAT)
             {
                 inptr = (fftwf_complex *) malloc(sizeof(fftwf_complex) * naxes[0]);
+                if(inptr == NULL) {
+                    PRINT_ERROR("malloc returns NULL pointer");
+                    abort();
+                }
+
                 outptr = (fftwf_complex *) malloc(sizeof(fftwf_complex) * naxes[0]);
+                if(outptr == NULL) {
+                    PRINT_ERROR("malloc returns NULL pointer");
+                    abort();
+                }
+
                 plan = fftwf_plan_dft_1d(naxes[0], inptr, outptr, dir, FFTWOPTMODE);
 
                 for(jj = 0; jj < naxes[1]; jj++)
@@ -315,7 +336,17 @@ long FFT_do1dfft(const char *in_name, const char *out_name, int dir)
             else
             {
                 inptr_double = (fftw_complex *) malloc(sizeof(fftw_complex) * naxes[0]);
+                if(inptr_double == NULL) {
+                    PRINT_ERROR("malloc returns NULL pointer");
+                    abort();
+                }
+
                 outptr_double = (fftw_complex *) malloc(sizeof(fftw_complex) * naxes[0]);
+                if(outptr_double == NULL) {
+                    PRINT_ERROR("malloc returns NULL pointer");
+                    abort();
+                }
+
                 plan_double = fftw_plan_dft_1d(naxes[0], inptr_double, outptr_double, dir,
                                                FFTWOPTMODE);
 
@@ -375,9 +406,24 @@ imageID do1drfft(
 
     IDin = image_ID(in_name);
     naxis = data.image[IDin].md[0].naxis;
+
     naxes = (int *) malloc(naxis * sizeof(int));
+    if(naxes == NULL) {
+        PRINT_ERROR("malloc returns NULL pointer");
+        abort();
+    }
+
     naxesl = (uint32_t *) malloc(naxis * sizeof(uint32_t));
+    if(naxesl == NULL) {
+        PRINT_ERROR("malloc returns NULL pointer");
+        abort();
+    }
+
     naxesout = (uint32_t *) malloc(naxis * sizeof(uint32_t));
+    if(naxesout == NULL) {
+        PRINT_ERROR("malloc returns NULL pointer");
+        abort();
+    }
 
     datatype = data.image[IDin].md[0].datatype;
 
@@ -429,7 +475,17 @@ imageID do1drfft(
             if(datatype == _DATATYPE_FLOAT)
             {
                 inptr = (float *) malloc(sizeof(float) * naxes[0]);
+                if(inptr == NULL) {
+                    PRINT_ERROR("malloc returns NULL pointer");
+                    abort();
+                }
+
                 outptr = (fftwf_complex *) malloc(sizeof(fftwf_complex) * naxes[0]);
+                if(outptr == NULL) {
+                    PRINT_ERROR("malloc returns NULL pointer");
+                    abort();
+                }
+
                 plan = fftwf_plan_dft_r2c_1d(naxes[0], inptr, outptr, FFTWOPTMODE);
 
                 for(jj = 0; jj < naxes[1]; jj++)
@@ -447,7 +503,17 @@ imageID do1drfft(
             else
             {
                 inptr_double = (double *) malloc(sizeof(double) * naxes[0]);
+                if(inptr_double == NULL) {
+                    PRINT_ERROR("malloc returns NULL pointer");
+                    abort();
+                }
+
                 outptr_double = (fftw_complex *) malloc(sizeof(fftw_complex) * naxes[0]);
+                if(outptr_double == NULL) {
+                    PRINT_ERROR("malloc returns NULL pointer");
+                    abort();
+                }
+
                 plan_double = fftw_plan_dft_r2c_1d(naxes[0], inptr_double, outptr_double,
                                                    FFTWOPTMODE);
 
@@ -527,8 +593,18 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
 
     IDin = image_ID(in_name);
     naxis = data.image[IDin].md[0].naxis;
+
     naxes = (int *) malloc(naxis * sizeof(int));
+    if(naxes == NULL) {
+        PRINT_ERROR("malloc returns NULL pointer");
+        abort();
+    }
+
     naxesl = (uint32_t *) malloc(naxis * sizeof(uint32_t));
+    if(naxesl == NULL) {
+        PRINT_ERROR("malloc returns NULL pointer");
+        abort();
+    }
 
     for(i = 0; i < naxis; i++)
     {
@@ -745,9 +821,24 @@ imageID FFT_do2drfft(
 
     datatype = data.image[IDin].md[0].datatype;
     naxis = data.image[IDin].md[0].naxis;
+
     naxes = (int *) malloc(naxis * sizeof(uint32_t));
+    if(naxes == NULL) {
+        PRINT_ERROR("malloc returns NULL pointer");
+        abort();
+    }
+
     naxesl = (uint32_t *) malloc(naxis * sizeof(uint32_t));
+    if(naxesl == NULL) {
+        PRINT_ERROR("malloc returns NULL pointer");
+        abort();
+    }
+
     naxestmp = (uint32_t *) malloc(naxis * sizeof(uint32_t));
+    if(naxestmp == NULL) {
+        PRINT_ERROR("malloc returns NULL pointer");
+        abort();
+    }
 
 
 
