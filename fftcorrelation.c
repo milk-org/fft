@@ -120,28 +120,28 @@ imageID fft_correlation(
     mk_amph_from_complex(ft2name, fta2name, ftp2name, 0);
 
 
-    delete_image_ID(ft1name);
-    delete_image_ID(ft2name);
+    delete_image_ID(ft1name, DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID(ft2name, DELETE_IMAGE_ERRMODE_WARNING);
 
     arith_image_mult(fta1name, fta2name, fta12name);
     arith_image_sub(ftp1name, ftp2name, ftp12name);
-    delete_image_ID(fta1name);
-    delete_image_ID(fta2name);
-    delete_image_ID(ftp1name);
-    delete_image_ID(ftp2name);
+    delete_image_ID(fta1name, DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID(fta2name, DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID(ftp1name, DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID(ftp2name, DELETE_IMAGE_ERRMODE_WARNING);
 
     arith_image_cstmult_inplace(fta12name, 1.0 / sqrt(nelement) / (1.0 * nelement));
 
     WRITE_IMAGENAME(fftname, "_fft_%d", (int) getpid());
 
     mk_complex_from_amph(fta12name, ftp12name, fftname, 0);
-    delete_image_ID(fta12name);
-    delete_image_ID(ftp12name);
+    delete_image_ID(fta12name, DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID(ftp12name, DELETE_IMAGE_ERRMODE_WARNING);
 
     WRITE_IMAGENAME(fft1name, "_fft1_%d", (int) getpid());
 
     do2dfft(fftname, fft1name);
-    delete_image_ID(fftname);
+    delete_image_ID(fftname, DELETE_IMAGE_ERRMODE_WARNING);
 
     WRITE_IMAGENAME(fft1pname, "_fft1p_%d", (int) getpid());
 
@@ -149,8 +149,8 @@ imageID fft_correlation(
     mk_amph_from_complex(fft1name, ID_nameout, fft1pname, 0);
     permut(ID_nameout);
 
-    delete_image_ID(fft1name);
-    delete_image_ID(fft1pname);
+    delete_image_ID(fft1name, DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID(fft1pname, DELETE_IMAGE_ERRMODE_WARNING);
 
     IDout = image_ID(ID_nameout);
 

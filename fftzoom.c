@@ -54,12 +54,12 @@ int fftczoom(
                                      *naxes[0]*factor + (ii + factor * naxes[0] / 2 - naxes[0] / 2)].im =
                                          data.image[ID].array.CF[jj * naxes[0] + ii].im * coeff;
         }
-    delete_image_ID(tmpzname);
+    delete_image_ID(tmpzname, DELETE_IMAGE_ERRMODE_WARNING);
 
     permut(tmpz1name);
     do2dffti(tmpz1name, IDout_name);
     permut(IDout_name);
-    delete_image_ID(tmpz1name);
+    delete_image_ID(tmpz1name, DELETE_IMAGE_ERRMODE_WARNING);
 
     return(0);
 }
@@ -109,7 +109,7 @@ int fftzoom(
                                      *naxes[0]*factor + (ii + factor * naxes[0] / 2 - naxes[0] / 2)].im =
                                          data.image[ID].array.CF[jj * naxes[0] + ii].im * coeff;
         }
-    delete_image_ID(tmpzname);
+    delete_image_ID(tmpzname, DELETE_IMAGE_ERRMODE_WARNING);
 
     permut(tmpz1name);
 
@@ -118,14 +118,14 @@ int fftzoom(
     do2dffti(tmpz1name, tmpz2name);
 
     permut(tmpz2name);
-    delete_image_ID(tmpz1name);
+    delete_image_ID(tmpz1name, DELETE_IMAGE_ERRMODE_WARNING);
 
     CREATE_IMAGENAME(tbename, "_tbe_%d", (int) getpid());
 
     mk_reim_from_complex(tmpz2name, IDout_name, tbename, 0);
 
-    delete_image_ID(tbename);
-    delete_image_ID(tmpz2name);
+    delete_image_ID(tbename, DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID(tmpz2name, DELETE_IMAGE_ERRMODE_WARNING);
 
     return(0);
 }

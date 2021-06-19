@@ -412,10 +412,10 @@ imageID fft_DFT(
     free(cosvalinpha);
     free(sinvalinpha);
 
-    delete_image_ID("_cosXX");
-    delete_image_ID("_sinXX");
-    delete_image_ID("_cosYY");
-    delete_image_ID("_sinYY");
+    delete_image_ID("_cosXX", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("_sinXX", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("_cosYY", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("_sinYY", DELETE_IMAGE_ERRMODE_WARNING);
 
     free(XinarrayActive);
     free(YinarrayActive);
@@ -632,8 +632,8 @@ imageID fft_DFTinsertFPM(
             mk_amph_from_complex("_foc0", "_foc0_amp", "_foc0_pha", 0);
             save_fl_fits("_foc0_amp", "!_foc_amp.fits");
             save_fl_fits("_foc0_pha", "!_foc_pha.fits");
-            delete_image_ID("_foc0_amp");
-            delete_image_ID("_foc0_pha");
+            delete_image_ID("_foc0_amp", DELETE_IMAGE_ERRMODE_WARNING);
+            delete_image_ID("_foc0_pha", DELETE_IMAGE_ERRMODE_WARNING);
         }
         printf("\n");
 
@@ -665,8 +665,8 @@ imageID fft_DFTinsertFPM(
             mk_amph_from_complex("_foc0", "tmp_foc0_a", "tmp_foc0_p", 0);
             save_fl_fits("tmp_foc0_a", "!_DFT_foca.fits");
             save_fl_fits("tmp_foc0_p", "!_DFT_focp.fits");
-            delete_image_ID("tmp_foc0_a");
-            delete_image_ID("tmp_foc0_p");
+            delete_image_ID("tmp_foc0_a", DELETE_IMAGE_ERRMODE_WARNING);
+            delete_image_ID("tmp_foc0_p", DELETE_IMAGE_ERRMODE_WARNING);
         }
 
 
@@ -692,11 +692,11 @@ imageID fft_DFTinsertFPM(
             data.image[IDout].array.CF[k * xsize * ysize + ii].im =
                 data.image[IDout2D].array.CF[ii].im / (xsize * ysize);
         }
-        delete_image_ID("_pupout2D");
-        delete_image_ID("_foc0");
+        delete_image_ID("_pupout2D", DELETE_IMAGE_ERRMODE_WARNING);
+        delete_image_ID("_foc0", DELETE_IMAGE_ERRMODE_WARNING);
 
-        delete_image_ID("_DFTpupmask");
-        delete_image_ID("_fpmzmask");
+        delete_image_ID("_DFTpupmask", DELETE_IMAGE_ERRMODE_WARNING);
+        delete_image_ID("_fpmzmask", DELETE_IMAGE_ERRMODE_WARNING);
     }
 
     return IDout;
@@ -815,8 +815,8 @@ imageID fft_DFTinsertFPM_re(
         save_fl_fits("tmp_foc0_a", fname);
         sprintf(fname, "!%s/_DFT_focp", data.SAVEDIR);
         save_fl_fits("tmp_foc0_p", fname);
-        delete_image_ID("tmp_foc0_a");
-        delete_image_ID("tmp_foc0_p");
+        delete_image_ID("tmp_foc0_a", DELETE_IMAGE_ERRMODE_WARNING);
+        delete_image_ID("tmp_foc0_p", DELETE_IMAGE_ERRMODE_WARNING);
     }
 
     /* for(ii=0; ii<xsize; ii++)
@@ -838,10 +838,10 @@ imageID fft_DFTinsertFPM_re(
         data.image[IDout].array.CF[ii].im /= xsize * ysize;
     }
 
-    delete_image_ID("_foc0");
+    delete_image_ID("_foc0", DELETE_IMAGE_ERRMODE_WARNING);
 
-    delete_image_ID("_DFTpupmask");
-    delete_image_ID("_fpmzmask");
+    delete_image_ID("_DFTpupmask", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("_fpmzmask", DELETE_IMAGE_ERRMODE_WARNING);
 
     return IDout;
 }

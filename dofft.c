@@ -653,7 +653,7 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
                                          (fftwf_complex *) data.image[IDin].array.CF,
                                          (fftwf_complex *) data.image[IDout].array.CF, dir, FFTWOPTMODE);
                 copy_image_ID(ffttmpcpyname, in_name, 0);
-                delete_image_ID(ffttmpcpyname);
+                delete_image_ID(ffttmpcpyname, DELETE_IMAGE_ERRMODE_WARNING);
                 export_wisdom();
                 fprintf(stdout, "\n");
             }
@@ -679,7 +679,7 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
                                                (fftw_complex *) data.image[IDin].array.CD,
                                                (fftw_complex *) data.image[IDout].array.CD, dir, FFTWOPTMODE);
                 copy_image_ID(ffttmpcpyname, in_name, 0);
-                delete_image_ID(ffttmpcpyname);
+                delete_image_ID(ffttmpcpyname, DELETE_IMAGE_ERRMODE_WARNING);
                 export_wisdom();
                 fprintf(stdout, "\n");
             }
@@ -714,7 +714,7 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
                                            (fftwf_complex *) data.image[IDout].array.CF, NULL, 1, naxes[0] * naxes[1], dir,
                                            FFTWOPTMODE);
                 copy_image_ID(ffttmpcpyname, in_name, 0);
-                delete_image_ID(ffttmpcpyname);
+                delete_image_ID(ffttmpcpyname, DELETE_IMAGE_ERRMODE_WARNING);
                 export_wisdom();
                 fprintf(stdout, "\n");
             }
@@ -742,7 +742,7 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
                                                  (fftw_complex *) data.image[IDout].array.CD, NULL, 1, naxes[0] * naxes[1], dir,
                                                  FFTWOPTMODE);
                 copy_image_ID(ffttmpcpyname, in_name, 0);
-                delete_image_ID(ffttmpcpyname);
+                delete_image_ID(ffttmpcpyname, DELETE_IMAGE_ERRMODE_WARNING);
                 export_wisdom();
                 fprintf(stdout, "\n");
             }
@@ -896,7 +896,7 @@ imageID FFT_do2drfft(
                 plan = fftwf_plan_dft_r2c_2d(naxes[1], naxes[0], data.image[IDin].array.F,
                                              (fftwf_complex *) data.image[IDtmp].array.CF, FFTWOPTMODE);
                 copy_image_ID(ffttmpcpyname, in_name, 0);
-                delete_image_ID(ffttmpcpyname);
+                delete_image_ID(ffttmpcpyname, DELETE_IMAGE_ERRMODE_WARNING);
                 export_wisdom();
                 fprintf(stdout, "\n");
             }
@@ -948,7 +948,7 @@ imageID FFT_do2drfft(
                 plan_double = fftw_plan_dft_r2c_2d(naxes[1], naxes[0], data.image[IDin].array.D,
                                                    (fftw_complex *) data.image[IDtmp].array.CD, FFTWOPTMODE);
                 copy_image_ID(ffttmpcpyname, in_name, 0);
-                delete_image_ID(ffttmpcpyname);
+                delete_image_ID(ffttmpcpyname, DELETE_IMAGE_ERRMODE_WARNING);
                 export_wisdom();
                 fprintf(stdout, "\n");
             }
@@ -1011,7 +1011,7 @@ imageID FFT_do2drfft(
                                                NULL, 1, naxes[0] * naxes[1], FFTWOPTMODE);
 
                 copy_image_ID(ffttmpcpyname, in_name, 0);
-                delete_image_ID(ffttmpcpyname);
+                delete_image_ID(ffttmpcpyname, DELETE_IMAGE_ERRMODE_WARNING);
                 export_wisdom();
                 fprintf(stdout, "\n");
             }
@@ -1064,7 +1064,7 @@ imageID FFT_do2drfft(
                                                      FFTWOPTMODE);
 
                 copy_image_ID(ffttmpcpyname, in_name, 0);
-                delete_image_ID(ffttmpcpyname);
+                delete_image_ID(ffttmpcpyname, DELETE_IMAGE_ERRMODE_WARNING);
                 export_wisdom();
                 fprintf(stdout, "\n");
             }
@@ -1102,7 +1102,7 @@ imageID FFT_do2drfft(
         printf("Error : image dimension not appropriate for FFT\n");
     }
 
-    delete_image_ID(ffttmpname);
+    delete_image_ID(ffttmpname, DELETE_IMAGE_ERRMODE_WARNING);
 
     free(naxestmp);
     free(naxesl);

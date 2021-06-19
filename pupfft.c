@@ -67,7 +67,7 @@ errno_t pupfft(
         do2dffti(Ctmpname, C1tmpname);    /* equ. fft2d(..,0) */
     }
 
-    delete_image_ID(Ctmpname);
+    delete_image_ID(Ctmpname, DELETE_IMAGE_ERRMODE_WARNING);
 
     if(reim == 0)
     {
@@ -80,7 +80,7 @@ errno_t pupfft(
         mk_reim_from_complex(C1tmpname, ID_name_ampl_out, ID_name_pha_out, 0);
     }
 
-    delete_image_ID(C1tmpname);
+    delete_image_ID(C1tmpname, DELETE_IMAGE_ERRMODE_WARNING);
 
     permut(ID_name_ampl_out);
     permut(ID_name_pha_out);

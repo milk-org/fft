@@ -124,8 +124,8 @@ int test_fftspeed(int nmax)
             {
                 create_2DCimage_ID("tmp", size, size);
                 do2dfft("tmp", "tmpf");
-                delete_image_ID("tmp");
-                delete_image_ID("tmpf");
+                delete_image_ID("tmp", DELETE_IMAGE_ERRMODE_WARNING);
+                delete_image_ID("tmpf", DELETE_IMAGE_ERRMODE_WARNING);
             }
 
 #if _POSIX_TIMERS > 0
@@ -140,7 +140,7 @@ int test_fftspeed(int nmax)
             for(iter = 0; iter < nbiter; iter++)
             {
                 create_2DCimage_ID("tmp", size, size);
-                delete_image_ID("tmp");
+                delete_image_ID("tmp", DELETE_IMAGE_ERRMODE_WARNING);
             }
 
 #if _POSIX_TIMERS > 0

@@ -111,26 +111,26 @@ int fft_image_translate(const char *ID_name, const char *ID_out, double xtransl,
     mk_amph_from_complex("ffttmp1", "amptmp", "phatmp", 0);
 
 
-    delete_image_ID("ffttmp1");
+    delete_image_ID("ffttmp1", DELETE_IMAGE_ERRMODE_WARNING);
     arith_make_slopexy("sltmp", naxes[0], naxes[1], xtransl * 2.0 * M_PI / naxes[0],
                        ytransl * 2.0 * M_PI / naxes[1]);
     permut("sltmp");
 
     arith_image_add("phatmp", "sltmp", "phatmp1");
-    delete_image_ID("phatmp");
-    delete_image_ID("sltmp");
+    delete_image_ID("phatmp", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("sltmp",DELETE_IMAGE_ERRMODE_WARNING);
 
 
     mk_complex_from_amph("amptmp", "phatmp1", "ffttmp2", 0);
-    delete_image_ID("amptmp");
-    delete_image_ID("phatmp1");
+    delete_image_ID("amptmp", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("phatmp1", DELETE_IMAGE_ERRMODE_WARNING);
     do2dffti("ffttmp2", "ffttmp3");
-    delete_image_ID("ffttmp2");
+    delete_image_ID("ffttmp2", DELETE_IMAGE_ERRMODE_WARNING);
     mk_reim_from_complex("ffttmp3", "retmp", "imtmp", 0);
     arith_image_cstmult("retmp", 1.0 / naxes[0] / naxes[1], ID_out);
-    delete_image_ID("ffttmp3");
-    delete_image_ID("retmp");
-    delete_image_ID("imtmp");
+    delete_image_ID("ffttmp3", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("retmp", DELETE_IMAGE_ERRMODE_WARNING);
+    delete_image_ID("imtmp",DELETE_IMAGE_ERRMODE_WARNING);
     // }
     // else
     //{
