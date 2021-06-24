@@ -9,6 +9,10 @@
 #include "COREMOD_iofits/COREMOD_iofits.h"
 
 
+# ifdef _OPENMP
+# include <omp.h>
+# endif
+
 /* ----------------- CUSTOM DFT ------------- */
 
 //
@@ -284,9 +288,8 @@ imageID fft_DFT(
     printf(" <");
     fflush(stdout);
 
-    //#ifdef _OPENMP
-#ifdef HAVE_LIBGOMP
-    printf("HAVE_LIBGOMP");
+#ifdef _OPENMP
+    printf("Using openMP %d", omp_get_max_threads());
     #pragma omp parallel default(shared) private(pixiiout, pixiiin, iiout, iiin, pha, cospha, sinpha)
     {
         #pragma omp for
@@ -307,8 +310,7 @@ imageID fft_DFT(
 
             }
         }
-# ifdef HAVE_LIBGOMP
-        // # ifdef _OPENMP
+# ifdef _OPENMP
     }
 # endif
 
@@ -321,8 +323,7 @@ imageID fft_DFT(
     printf(" <");
     fflush(stdout);
 
-    //# ifdef _OPENMP
-# ifdef HAVE_LIBGOMP
+# ifdef _OPENMP
     #pragma omp parallel default(shared) private(pixjjout, pixjjin, jjout, jjin, pha, cospha, sinpha)
     {
         #pragma omp for
@@ -342,8 +343,7 @@ imageID fft_DFT(
 
             }
         }
-# ifdef HAVE_LIBGOMP
-        // # ifdef _OPENMP
+# ifdef _OPENMP
     }
 # endif
     printf("> ");
@@ -355,7 +355,9 @@ imageID fft_DFT(
 
     printf(" <");
     fflush(stdout);
-#ifdef HAVE_LIBGOMP
+
+
+#ifdef _OPENMP
     printf(" -omp- %d ", omp_get_max_threads());
     fflush(stdout);
     #pragma omp parallel default(shared) private(kout, k, pha, re, im, cospha, sinpha, iiin, jjin, iiout, jjout, cosXX, cosYY, sinXX, sinYY, cosXY, sinXY)
@@ -403,7 +405,7 @@ imageID fft_DFT(
                     Zfactor;
         }
 
-#ifdef HAVE_LIBGOMP
+#ifdef _OPENMP
     }
 #endif
     printf("> ");
@@ -730,7 +732,6 @@ imageID fft_DFTinsertFPM_re(
     long ii;
     double re, im, rein, imin, amp, ampin, phain, amp2;
     double total = 0;
-    char fname[600];
     imageID ID_DFTmask00;
 
     IDin = image_ID(pupin_name);
@@ -810,10 +811,12 @@ imageID fft_DFTinsertFPM_re(
 
     if(1) // TEST
     {
+        char fname[STRINGMAXLEN_FULLFILENAME];
+
         mk_amph_from_complex("_foc0", "tmp_foc0_a", "tmp_foc0_p", 0);
-        sprintf(fname, "!%s/_DFT_foca", data.SAVEDIR);
+        WRITE_FULLFILENAME(fname, "%s/_DFT_foca", data.SAVEDIR);
         save_fl_fits("tmp_foc0_a", fname);
-        sprintf(fname, "!%s/_DFT_focp", data.SAVEDIR);
+        WRITE_FULLFILENAME(fname, "%s/_DFT_focp", data.SAVEDIR);
         save_fl_fits("tmp_foc0_p", fname);
         delete_image_ID("tmp_foc0_a", DELETE_IMAGE_ERRMODE_WARNING);
         delete_image_ID("tmp_foc0_p", DELETE_IMAGE_ERRMODE_WARNING);
