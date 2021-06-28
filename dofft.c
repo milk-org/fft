@@ -234,8 +234,8 @@ long FFT_do1dfft(const char *in_name, const char *out_name, int dir)
         naxes[i] = (int) data.image[IDin].md[0].size[i];
     }
     datatype = data.image[IDin].md[0].datatype;
-    IDout = create_image_ID(out_name, naxis, naxesl, datatype, data.SHARED_DFT,
-                            data.NBKEYWORD_DFT, 0);
+    create_image_ID(out_name, naxis, naxesl, datatype, data.SHARED_DFT,
+                    data.NBKEYWORD_DFT, 0, &IDout);
 
     if(naxis == 1)
     {
@@ -440,13 +440,13 @@ imageID do1drfft(
 
     if(datatype == _DATATYPE_FLOAT)
     {
-        IDout = create_image_ID(out_name, naxis, naxesout, _DATATYPE_COMPLEX_FLOAT,
-                                data.SHARED_DFT, data.NBKEYWORD_DFT, 0);
+        create_image_ID(out_name, naxis, naxesout, _DATATYPE_COMPLEX_FLOAT,
+                        data.SHARED_DFT, data.NBKEYWORD_DFT, 0, &IDout);
     }
     else
     {
-        IDout = create_image_ID(out_name, naxis, naxesout, _DATATYPE_COMPLEX_DOUBLE,
-                                data.SHARED_DFT, data.NBKEYWORD_DFT, 0);
+        create_image_ID(out_name, naxis, naxesout, _DATATYPE_COMPLEX_DOUBLE,
+                        data.SHARED_DFT, data.NBKEYWORD_DFT, 0, &IDout);
     }
 
     if(naxis == 2)
@@ -615,8 +615,8 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
 
 
     datatype = data.image[IDin].md[0].datatype;
-    IDout = create_image_ID(out_name, naxis, naxesl, datatype, data.SHARED_DFT,
-                            data.NBKEYWORD_DFT, 0);
+    create_image_ID(out_name, naxis, naxesl, datatype, data.SHARED_DFT,
+                    data.NBKEYWORD_DFT, 0, &IDout);
 
 
 
@@ -866,11 +866,11 @@ imageID FFT_do2drfft(
         datatypeout = _DATATYPE_COMPLEX_DOUBLE;
     }
 
-    IDtmp = create_image_ID(ffttmpname, naxis, naxestmp, datatypeout,
-                            data.SHARED_DFT, data.NBKEYWORD_DFT, 0);
+    create_image_ID(ffttmpname, naxis, naxestmp, datatypeout,
+                    data.SHARED_DFT, data.NBKEYWORD_DFT, 0, &IDtmp);
 
-    IDout = create_image_ID(out_name, naxis, naxesl, datatypeout, data.SHARED_DFT,
-                            data.NBKEYWORD_DFT, 0);
+    create_image_ID(out_name, naxis, naxesl, datatypeout, data.SHARED_DFT,
+                    data.NBKEYWORD_DFT, 0, &IDout);
 
     if(naxis == 2)
     {
