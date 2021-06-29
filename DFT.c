@@ -273,15 +273,15 @@ imageID fft_DFT(
             }
         }
 
-    IDout = create_2DCimage_ID(IDout_name, xsize, ysize);
+    create_2DCimage_ID(IDout_name, xsize, ysize, &IDout);
 
 
 
 
-    IDcosXX = create_2Dimage_ID("_cosXX", xsize, xsize);
-    IDsinXX = create_2Dimage_ID("_sinXX", xsize, xsize);
-    IDcosYY = create_2Dimage_ID("_cosYY", ysize, ysize);
-    IDsinYY = create_2Dimage_ID("_sinYY", ysize, ysize);
+    create_2Dimage_ID("_cosXX", xsize, xsize, &IDcosXX);
+    create_2Dimage_ID("_sinXX", xsize, xsize, &IDsinXX);
+    create_2Dimage_ID("_cosYY", ysize, ysize, &IDcosYY);
+    create_2Dimage_ID("_sinYY", ysize, ysize, &IDsinYY);
 
 
 
@@ -513,7 +513,7 @@ imageID fft_DFTinsertFPM(
     printf("zsize = %ld\n", zsize);
     size2 = xsize * ysize;
 
-    IDout = create_3DCimage_ID(pupout_name, xsize, ysize, zsize);
+    create_3DCimage_ID(pupout_name, xsize, ysize, zsize, &IDout);
 
 
     for(k = 0; k < zsize; k++) // increment slice (= wavelength)
@@ -522,7 +522,7 @@ imageID fft_DFTinsertFPM(
         // Create default input mask for DFT
         // if amplitude above threshold value, turn pixel "on"
         //
-        IDpupin_mask = create_2Dimage_ID("_DFTpupmask", xsize, ysize);
+        create_2Dimage_ID("_DFTpupmask", xsize, ysize, &IDpupin_mask);
         for(ii = 0; ii < xsize * ysize; ii++)
         {
             re = data.image[IDin].array.CF[k * size2 + ii].re;
@@ -554,7 +554,7 @@ imageID fft_DFTinsertFPM(
         // If amplitude >eps, turn pixel ON, save result in _fpmzmask
         //
         IDfpmz = image_ID(fpmz_name);
-        IDfpmz_mask = create_2Dimage_ID("_fpmzmask", xsize, ysize);
+        create_2Dimage_ID("_fpmzmask", xsize, ysize, &IDfpmz_mask);
         for(ii = 0; ii < xsize * ysize; ii++)
         {
             re = data.image[IDfpmz].array.CF[k * size2 + ii].re;
@@ -743,7 +743,7 @@ imageID fft_DFTinsertFPM_re(
 
     printf("zfactor = %f\n", zfactor);
 
-    IDpupin_mask = create_2Dimage_ID("_DFTpupmask", xsize, ysize);
+    create_2Dimage_ID("_DFTpupmask", xsize, ysize, &IDpupin_mask);
     for(ii = 0; ii < xsize * ysize; ii++)
     {
         re = data.image[IDin].array.CF[ii].re;
@@ -772,7 +772,7 @@ imageID fft_DFTinsertFPM_re(
 
 
     IDfpmz = image_ID(fpmz_name);
-    IDfpmz_mask = create_2Dimage_ID("_fpmzmask", xsize, ysize);
+    create_2Dimage_ID("_fpmzmask", xsize, ysize, &IDfpmz_mask);
     for(ii = 0; ii < xsize * ysize; ii++)
     {
         amp = fabs(data.image[IDfpmz].array.F[ii]);

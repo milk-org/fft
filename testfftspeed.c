@@ -122,7 +122,7 @@ int test_fftspeed(int nmax)
             //	  clock_gettime(CLOCK_REALTIME, &tS0);
             for(iter = 0; iter < nbiter; iter++)
             {
-                create_2DCimage_ID("tmp", size, size);
+                create_2DCimage_ID("tmp", size, size, NULL);
                 do2dfft("tmp", "tmpf");
                 delete_image_ID("tmp", DELETE_IMAGE_ERRMODE_WARNING);
                 delete_image_ID("tmpf", DELETE_IMAGE_ERRMODE_WARNING);
@@ -139,7 +139,7 @@ int test_fftspeed(int nmax)
 
             for(iter = 0; iter < nbiter; iter++)
             {
-                create_2DCimage_ID("tmp", size, size);
+                create_2DCimage_ID("tmp", size, size, NULL);
                 delete_image_ID("tmp", DELETE_IMAGE_ERRMODE_WARNING);
             }
 

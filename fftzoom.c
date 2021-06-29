@@ -42,7 +42,7 @@ int fftczoom(
 
     WRITE_IMAGENAME(tmpz1name, "_tmpz1_%d", (int) getpid());
 
-    ID1 = create_2DCimage_ID(tmpz1name, factor * naxes[0], factor * naxes[1]);
+    create_2DCimage_ID(tmpz1name, factor * naxes[0], factor * naxes[1], &ID1);
 
     for(uint32_t ii = 0; ii < naxes[0]; ii++)
         for(uint32_t jj = 0; jj < naxes[1]; jj++)
@@ -97,7 +97,7 @@ int fftzoom(
 
     CREATE_IMAGENAME(tmpz1name, "_tmpz1_%d", (int) getpid());
 
-    ID1 = create_2DCimage_ID(tmpz1name, factor * naxes[0], factor * naxes[1]);
+    create_2DCimage_ID(tmpz1name, factor * naxes[0], factor * naxes[1], &ID1);
 
     for(uint32_t ii = 0; ii < naxes[0]; ii++)
         for(uint32_t jj = 0; jj < naxes[1]; jj++)
