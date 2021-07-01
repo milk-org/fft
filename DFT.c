@@ -212,8 +212,8 @@ errno_t fft_DFT(
                                     ysize;
     }
 
-    printf("%u output points (%du %du) \n", NBptsout, NBpixact_iiout,
-           NBpixact_jjout);
+    printf("%u output points (%u %u) \n",
+           NBptsout, NBpixact_iiout, NBpixact_jjout);
 
 
 
@@ -900,7 +900,7 @@ errno_t fft_DFTinsertFPM_re(
         );
     }
 
-    
+
 
     FUNC_CHECK_RETURN(
         fft_DFT("_foc0", "_fpmzmask", pupout_name, "_DFTpupmask", zfactor, 1, 0, &IDout)
