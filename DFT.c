@@ -38,51 +38,10 @@ errno_t fft_DFT(
     imageID IDinmask;
     imageID IDoutmask;
 
-    uint32_t NBptsin;
-    uint32_t NBptsout;
+    //uint32_t NBptsin;
+    //uint32_t NBptsout;
 
-    uint32_t xsize, ysize;
-    uint32_t ii, jj, k, kout;
-    double val;
-    double re, im;
-    float pha;
-
-    uint_fast16_t *iiinarray;
-    uint_fast16_t *jjinarray;
-    double *xinarray;
-    double *yinarray;
-    double *valinamp;
-    double *valinpha;
-    float *cosvalinpha;
-    float *sinvalinpha;
-
-    uint_fast16_t *iioutarray;
-    uint_fast16_t *jjoutarray;
-    double *xoutarray;
-    double *youtarray;
-
-    float cospha, sinpha;
-
-    long IDcosXX, IDcosYY, IDsinXX, IDsinYY;
-
-    // list of active coordinates
-    uint_fast16_t *iiinarrayActive;
-    uint_fast16_t *jjinarrayActive;
-    uint_fast16_t *iioutarrayActive;
-    uint_fast16_t *jjoutarrayActive;
-    uint_fast16_t pixiiin, pixiiout, pixjjin, pixjjout;
-
-    uint_fast8_t pixact;
-    uint_fast16_t NBpixact_iiin, NBpixact_jjin;
-    uint_fast16_t NBpixact_iiout, NBpixact_jjout;
-
-    float *XinarrayActive;
-    float *YinarrayActive;
-    float *XoutarrayActive;
-    float *YoutarrayActive;
-    uint_fast16_t iiin, jjin, iiout, jjout;
-
-    float cosXX, sinXX, cosYY, sinYY, cosXY, sinXY;
+    imageID IDcosXX, IDcosYY, IDsinXX, IDsinYY;
 
 
 
@@ -91,25 +50,25 @@ errno_t fft_DFT(
     IDin = image_ID(IDin_name);
 
     IDinmask = image_ID(IDinmask_name);
-    xsize = data.image[IDinmask].md[0].size[0];
-    ysize = data.image[IDinmask].md[0].size[1];
-    iiinarrayActive = (uint_fast16_t *) malloc(sizeof(uint_fast16_t) * xsize);
-    jjinarrayActive = (uint_fast16_t *) malloc(sizeof(uint_fast16_t) * ysize);
-    iioutarrayActive = (uint_fast16_t *) malloc(sizeof(uint_fast16_t) * xsize);
-    jjoutarrayActive = (uint_fast16_t *) malloc(sizeof(uint_fast16_t) * ysize);
+    uint32_t xsize = data.image[IDinmask].md[0].size[0];
+    uint32_t ysize = data.image[IDinmask].md[0].size[1];
+    uint64_t xysize = xsize;
+    xysize *= ysize;
 
+    // list of active coordinates
+    uint32_t *iiinarrayActive = (uint32_t *) malloc(sizeof(uint32_t) * xsize);
+    uint32_t *jjinarrayActive = (uint32_t *) malloc(sizeof(uint32_t) * ysize);
+    uint32_t *iioutarrayActive = (uint32_t *) malloc(sizeof(uint32_t) * xsize);
+    uint32_t *jjoutarrayActive = (uint32_t *) malloc(sizeof(uint32_t) * ysize);
 
-
-
-
-    NBptsin = 0;
-    NBpixact_iiin = 0;
-    for(ii = 0; ii < xsize; ii++)
+    uint32_t NBptsin = 0;
+    uint32_t NBpixact_iiin = 0;
+    for(uint32_t ii = 0; ii < xsize; ii++)
     {
-        pixact = 0;
-        for(jj = 0; jj < ysize; jj++)
+        int pixact = 0;
+        for(uint32_t jj = 0; jj < ysize; jj++)
         {
-            val = data.image[IDinmask].array.F[jj * xsize + ii];
+            float val = data.image[IDinmask].array.F[jj * xsize + ii];
             if(val > 0.5)
             {
                 pixact = 1;
@@ -123,13 +82,13 @@ errno_t fft_DFT(
         }
     }
 
-    NBpixact_jjin = 0;
-    for(jj = 0; jj < ysize; jj++)
+    uint32_t NBpixact_jjin = 0;
+    for(uint32_t jj = 0; jj < ysize; jj++)
     {
-        pixact = 0;
-        for(ii = 0; ii < xsize; ii++)
+        int pixact = 0;
+        for(uint32_t ii = 0; ii < xsize; ii++)
         {
-            val = data.image[IDinmask].array.F[jj * xsize + ii];
+            float val = data.image[IDinmask].array.F[jj * xsize + ii];
             if(val > 0.5)
             {
                 pixact = 1;
@@ -142,68 +101,69 @@ errno_t fft_DFT(
         }
     }
 
-    XinarrayActive = (float *) malloc(sizeof(float) * NBpixact_iiin);
-    YinarrayActive = (float *) malloc(sizeof(float) * NBpixact_jjin);
+    float *XinarrayActive = (float *) malloc(sizeof(float) * NBpixact_iiin);
+    float *YinarrayActive = (float *) malloc(sizeof(float) * NBpixact_jjin);
 
-    for(pixiiin = 0; pixiiin < NBpixact_iiin; pixiiin++)
+    for(uint32_t pixiiin = 0; pixiiin < NBpixact_iiin; pixiiin++)
     {
-        iiin = iiinarrayActive[pixiiin];
+        uint32_t iiin = iiinarrayActive[pixiiin];
         XinarrayActive[pixiiin] = (1.0 * iiin / xsize - 0.5);
     }
-    for(pixjjin = 0; pixjjin < NBpixact_jjin; pixjjin++)
+    for(uint32_t pixjjin = 0; pixjjin < NBpixact_jjin; pixjjin++)
     {
-        jjin = jjinarrayActive[pixjjin];
+        uint32_t jjin = jjinarrayActive[pixjjin];
         YinarrayActive[pixjjin] = (1.0 * jjin / ysize - 0.5);
     }
 
-    printf("DFT (factor %f, slice %ld):  %u input points (%ld %ld)-> ", Zfactor,
+    printf("DFT (factor %f, slice %ld):  %u input points (%u %u)-> ", Zfactor,
            kin, NBptsin, NBpixact_iiin, NBpixact_jjin);
 
-    iiinarray = (uint_fast16_t *) malloc(sizeof(uint_fast16_t) * NBptsin);
-    jjinarray = (uint_fast16_t *) malloc(sizeof(uint_fast16_t) * NBptsin);
-    xinarray = (double *) malloc(sizeof(double) * NBptsin);
-    yinarray = (double *) malloc(sizeof(double) * NBptsin);
-    valinamp = (double *) malloc(sizeof(double) * NBptsin);
-    valinpha = (double *) malloc(sizeof(double) * NBptsin);
-    cosvalinpha = (float *) malloc(sizeof(float) * NBptsin);
-    sinvalinpha = (float *) malloc(sizeof(float) * NBptsin);
-    k = 0;
+    uint32_t *iiinarray = (uint32_t *) malloc(sizeof(uint32_t) * NBptsin);
+    uint32_t *jjinarray = (uint32_t *) malloc(sizeof(uint32_t) * NBptsin);
+    double *xinarray = (double *) malloc(sizeof(double) * NBptsin);
+    double *yinarray = (double *) malloc(sizeof(double) * NBptsin);
+    double *valinamp = (double *) malloc(sizeof(double) * NBptsin);
+    double *valinpha = (double *) malloc(sizeof(double) * NBptsin);
+    float *cosvalinpha = (float *) malloc(sizeof(float) * NBptsin);
+    float *sinvalinpha = (float *) malloc(sizeof(float) * NBptsin);
 
 
-
-    for(ii = 0; ii < xsize; ii++)
-        for(jj = 0; jj < ysize; jj++)
-        {
-            val = data.image[IDinmask].array.F[jj * xsize + ii];
-            if(val > 0.5)
+    {
+        uint32_t k = 0;
+        for(uint32_t ii = 0; ii < xsize; ii++)
+            for(uint32_t jj = 0; jj < ysize; jj++)
             {
-                iiinarray[k] = ii;
-                jjinarray[k] = jj;
-                xinarray[k] = 1.0 * ii / xsize - 0.5;
-                yinarray[k] = 1.0 * jj / xsize - 0.5;
-                re = data.image[IDin].array.CF[kin * xsize * ysize + jj * xsize + ii].re;
-                im = data.image[IDin].array.CF[kin * xsize * ysize + jj * xsize + ii].im;
-                valinamp[k] = sqrt(re * re + im * im);
-                valinpha[k] = atan2(im, re);
-                cosvalinpha[k] = cosf(valinpha[k]);
-                sinvalinpha[k] = sinf(valinpha[k]);
-                k++;
+                float val = data.image[IDinmask].array.F[jj * xsize + ii];
+                if(val > 0.5)
+                {
+                    iiinarray[k] = ii;
+                    jjinarray[k] = jj;
+                    xinarray[k] = 1.0 * ii / xsize - 0.5;
+                    yinarray[k] = 1.0 * jj / xsize - 0.5;
+                    float re = data.image[IDin].array.CF[kin * xsize * ysize + jj * xsize + ii].re;
+                    float im = data.image[IDin].array.CF[kin * xsize * ysize + jj * xsize + ii].im;
+                    valinamp[k] = sqrt(re * re + im * im);
+                    valinpha[k] = atan2(im, re);
+                    cosvalinpha[k] = cosf(valinpha[k]);
+                    sinvalinpha[k] = sinf(valinpha[k]);
+                    k++;
+                }
             }
-        }
+    }
 
 
 
 
     IDoutmask = image_ID(IDoutmask_name);
 
-    NBptsout = 0;
-    NBpixact_iiout = 0;
-    for(ii = 0; ii < xsize; ii++)
+    uint32_t NBptsout = 0;
+    uint32_t NBpixact_iiout = 0;
+    for(uint32_t ii = 0; ii < xsize; ii++)
     {
-        pixact = 0;
-        for(jj = 0; jj < ysize; jj++)
+        int pixact = 0;
+        for(uint32_t jj = 0; jj < ysize; jj++)
         {
-            val = data.image[IDoutmask].array.F[jj * xsize + ii];
+            float val = data.image[IDoutmask].array.F[jj * xsize + ii];
             if(val > 0.5)
             {
                 pixact = 1;
@@ -217,13 +177,13 @@ errno_t fft_DFT(
         }
     }
 
-    NBpixact_jjout = 0;
-    for(jj = 0; jj < ysize; jj++)
+    uint32_t NBpixact_jjout = 0;
+    for(uint32_t jj = 0; jj < ysize; jj++)
     {
-        pixact = 0;
-        for(ii = 0; ii < xsize; ii++)
+        int pixact = 0;
+        for(uint32_t ii = 0; ii < xsize; ii++)
         {
-            val = data.image[IDoutmask].array.F[jj * xsize + ii];
+            float val = data.image[IDoutmask].array.F[jj * xsize + ii];
             if(val > 0.5)
             {
                 pixact = 1;
@@ -235,78 +195,94 @@ errno_t fft_DFT(
             NBpixact_jjout++;
         }
     }
-    XoutarrayActive = (float *) malloc(sizeof(float) * NBpixact_iiout);
-    YoutarrayActive = (float *) malloc(sizeof(float) * NBpixact_jjout);
+    float *XoutarrayActive = (float *) malloc(sizeof(float) * NBpixact_iiout);
+    float *YoutarrayActive = (float *) malloc(sizeof(float) * NBpixact_jjout);
 
-    for(pixiiout = 0; pixiiout < NBpixact_iiout; pixiiout++)
+    for(uint32_t pixiiout = 0; pixiiout < NBpixact_iiout; pixiiout++)
     {
-        iiout = iioutarrayActive[pixiiout];
+        uint32_t iiout = iioutarrayActive[pixiiout];
         XoutarrayActive[pixiiout] = (1.0 / Zfactor) * (1.0 * iiout / xsize - 0.5) *
                                     xsize;
     }
 
-    for(pixjjout = 0; pixjjout < NBpixact_jjout; pixjjout++)
+    for(uint32_t pixjjout = 0; pixjjout < NBpixact_jjout; pixjjout++)
     {
-        jjout = jjoutarrayActive[pixjjout];
+        uint32_t jjout = jjoutarrayActive[pixjjout];
         YoutarrayActive[pixjjout] = (1.0 / Zfactor) * (1.0 * jjout / ysize - 0.5) *
                                     ysize;
     }
 
-    printf("%u output points (%ld %ld) \n", NBptsout, NBpixact_iiout,
+    printf("%u output points (%du %du) \n", NBptsout, NBpixact_iiout,
            NBpixact_jjout);
 
 
 
-    iioutarray = (uint_fast16_t *) malloc(sizeof(uint_fast16_t) * NBptsout);
-    jjoutarray = (uint_fast16_t *) malloc(sizeof(uint_fast16_t) * NBptsout);
-    xoutarray = (double *) malloc(sizeof(double) * NBptsout);
-    youtarray = (double *) malloc(sizeof(double) * NBptsout);
-    kout = 0;
-    for(ii = 0; ii < xsize; ii++)
-        for(jj = 0; jj < ysize; jj++)
-        {
-            val = data.image[IDoutmask].array.F[jj * xsize + ii];
-            if(val > 0.5)
+    uint32_t *iioutarray = (uint32_t *) malloc(sizeof(uint32_t) * NBptsout);
+    uint32_t *jjoutarray = (uint32_t *) malloc(sizeof(uint32_t) * NBptsout);
+    double *xoutarray = (double *) malloc(sizeof(double) * NBptsout);
+    double *youtarray = (double *) malloc(sizeof(double) * NBptsout);
+
+    {
+        uint32_t kout = 0;
+        for(uint32_t ii = 0; ii < xsize; ii++)
+            for(uint32_t jj = 0; jj < ysize; jj++)
             {
-                iioutarray[kout] = ii;
-                jjoutarray[kout] = jj;
-                xoutarray[kout] = (1.0 / Zfactor) * (1.0 * ii / xsize - 0.5) * xsize;
-                youtarray[kout] = (1.0 / Zfactor) * (1.0 * jj / ysize - 0.5) * ysize;
-                kout++;
+                float val = data.image[IDoutmask].array.F[jj * xsize + ii];
+                if(val > 0.5)
+                {
+                    iioutarray[kout] = ii;
+                    jjoutarray[kout] = jj;
+                    xoutarray[kout] = (1.0 / Zfactor) * (1.0 * ii / xsize - 0.5) * xsize;
+                    youtarray[kout] = (1.0 / Zfactor) * (1.0 * jj / ysize - 0.5) * ysize;
+                    kout++;
+                }
             }
-        }
+    }
 
-    create_2DCimage_ID(IDout_name, xsize, ysize, &IDout);
-
-
-
-
-    create_2Dimage_ID("_cosXX", xsize, xsize, &IDcosXX);
-    create_2Dimage_ID("_sinXX", xsize, xsize, &IDsinXX);
-    create_2Dimage_ID("_cosYY", ysize, ysize, &IDcosYY);
-    create_2Dimage_ID("_sinYY", ysize, ysize, &IDsinYY);
+    FUNC_CHECK_RETURN(
+        create_2DCimage_ID(IDout_name, xsize, ysize, &IDout)
+    );
 
 
+
+
+    FUNC_CHECK_RETURN(
+        create_2Dimage_ID("_cosXX", xsize, xsize, &IDcosXX)
+    );
+
+    FUNC_CHECK_RETURN(
+        create_2Dimage_ID("_sinXX", xsize, xsize, &IDsinXX)
+    );
+
+    FUNC_CHECK_RETURN(
+        create_2Dimage_ID("_cosYY", ysize, ysize, &IDcosYY)
+    );
+
+    FUNC_CHECK_RETURN(
+        create_2Dimage_ID("_sinYY", ysize, ysize, &IDsinYY)
+    );
+
+    DEBUG_TRACEPOINT(" ");
 
     printf(" <");
     fflush(stdout);
 
 #ifdef _OPENMP
     printf("Using openMP %d", omp_get_max_threads());
-    #pragma omp parallel default(shared) private(pixiiout, pixiiin, iiout, iiin, pha, cospha, sinpha)
+    #pragma omp parallel
     {
         #pragma omp for
 #endif
 
-        for(pixiiout = 0; pixiiout < NBpixact_iiout; pixiiout++)
+        for(uint32_t pixiiout = 0; pixiiout < NBpixact_iiout; pixiiout++)
         {
-            iiout = iioutarrayActive[pixiiout];
-            for(pixiiin = 0; pixiiin < NBpixact_iiin; pixiiin++)
+            uint32_t iiout = iioutarrayActive[pixiiout];
+            for(uint32_t pixiiin = 0; pixiiin < NBpixact_iiin; pixiiin++)
             {
-                iiin = iiinarrayActive[pixiiin];
-                pha = 2.0 * dir * M_PI * (XinarrayActive[pixiiin] * XoutarrayActive[pixiiout]);
-                cospha = cosf(pha);
-                sinpha = sinf(pha);
+                uint32_t iiin = iiinarrayActive[pixiiin];
+                float pha = 2.0 * dir * M_PI * (XinarrayActive[pixiiin] * XoutarrayActive[pixiiout]);
+                float cospha = cosf(pha);
+                float sinpha = sinf(pha);
 
                 data.image[IDcosXX].array.F[iiout * xsize + iiin] = cospha;
                 data.image[IDsinXX].array.F[iiout * xsize + iiin] = sinpha;
@@ -320,26 +296,26 @@ errno_t fft_DFT(
     printf("> ");
     fflush(stdout);
 
-
+    DEBUG_TRACEPOINT(" ");
 
 
     printf(" <");
     fflush(stdout);
 
 # ifdef _OPENMP
-    #pragma omp parallel default(shared) private(pixjjout, pixjjin, jjout, jjin, pha, cospha, sinpha)
+    #pragma omp parallel
     {
         #pragma omp for
 # endif
-        for(pixjjout = 0; pixjjout < NBpixact_jjout; pixjjout++)
+        for(uint32_t pixjjout = 0; pixjjout < NBpixact_jjout; pixjjout++)
         {
-            jjout = jjoutarrayActive[pixjjout];
-            for(pixjjin = 0; pixjjin < NBpixact_jjin; pixjjin++)
+            uint32_t jjout = jjoutarrayActive[pixjjout];
+            for(uint32_t pixjjin = 0; pixjjin < NBpixact_jjin; pixjjin++)
             {
-                jjin = jjinarrayActive[pixjjin];
-                pha = 2.0 * dir * M_PI * (YinarrayActive[pixjjin] * YoutarrayActive[pixjjout]);
-                cospha = cosf(pha);
-                sinpha = sinf(pha);
+                uint32_t jjin = jjinarrayActive[pixjjin];
+                float pha = 2.0 * dir * M_PI * (YinarrayActive[pixjjin] * YoutarrayActive[pixjjout]);
+                float cospha = cosf(pha);
+                float sinpha = sinf(pha);
 
                 data.image[IDcosYY].array.F[jjout * ysize + jjin] = cospha;
                 data.image[IDsinYY].array.F[jjout * ysize + jjin] = sinpha;
@@ -354,7 +330,7 @@ errno_t fft_DFT(
 
 
     // DFT
-
+    DEBUG_TRACEPOINT(" ");
 
     printf(" <");
     fflush(stdout);
@@ -363,7 +339,7 @@ errno_t fft_DFT(
 #ifdef _OPENMP
     printf(" -omp- %d ", omp_get_max_threads());
     fflush(stdout);
-    #pragma omp parallel default(shared) private(kout, k, pha, re, im, cospha, sinpha, iiin, jjin, iiout, jjout, cosXX, cosYY, sinXX, sinYY, cosXY, sinXY)
+    #pragma omp parallel
     {
         #pragma omp master
         {
@@ -374,38 +350,38 @@ errno_t fft_DFT(
         #pragma omp for
 #endif
 
-        for(kout = 0; kout < NBptsout; kout++)
+        for(uint32_t kout = 0; kout < NBptsout; kout++)
         {
-            iiout = iioutarray[kout];
-            jjout = jjoutarray[kout];
+            uint32_t iiout = iioutarray[kout];
+            uint32_t jjout = jjoutarray[kout];
 
-            re = 0.0;
-            im = 0.0;
-            for(k = 0; k < NBptsin; k++)
+            float re = 0.0;
+            float im = 0.0;
+            for(uint32_t k = 0; k < NBptsin; k++)
             {
-                iiin = iiinarray[k];
-                jjin = jjinarray[k];
+                uint32_t iiin = iiinarray[k];
+                uint32_t jjin = jjinarray[k];
 
-                cosXX = data.image[IDcosXX].array.F[iiout * xsize + iiin];
-                cosYY = data.image[IDcosYY].array.F[jjout * ysize + jjin];
+                float cosXX = data.image[IDcosXX].array.F[iiout * xsize + iiin];
+                float cosYY = data.image[IDcosYY].array.F[jjout * ysize + jjin];
 
-                sinXX = data.image[IDsinXX].array.F[iiout * xsize + iiin];
-                sinYY = data.image[IDsinYY].array.F[jjout * ysize + jjin];
+                float sinXX = data.image[IDsinXX].array.F[iiout * xsize + iiin];
+                float sinYY = data.image[IDsinYY].array.F[jjout * ysize + jjin];
 
-                cosXY = cosXX * cosYY - sinXX * sinYY;
-                sinXY = sinXX * cosYY + cosXX * sinYY;
+                float cosXY = cosXX * cosYY - sinXX * sinYY;
+                float sinXY = sinXX * cosYY + cosXX * sinYY;
 
-                cospha = cosvalinpha[k] * cosXY - sinvalinpha[k] * sinXY;
-                sinpha = sinvalinpha[k] * cosXY + cosvalinpha[k] * sinXY;
+                float cospha = cosvalinpha[k] * cosXY - sinvalinpha[k] * sinXY;
+                float sinpha = sinvalinpha[k] * cosXY + cosvalinpha[k] * sinXY;
 
 
                 re += valinamp[k] * cospha;
                 im += valinamp[k] * sinpha;
             }
-            data.image[IDout].array.CF[jjoutarray[kout]*xsize + iioutarray[kout]].re = re /
-                    Zfactor;
-            data.image[IDout].array.CF[jjoutarray[kout]*xsize + iioutarray[kout]].im = im /
-                    Zfactor;
+            data.image[IDout].array.CF[jjoutarray[kout]*xsize + iioutarray[kout]].re
+                = re / Zfactor;
+            data.image[IDout].array.CF[jjoutarray[kout]*xsize + iioutarray[kout]].im
+                = im / Zfactor;
         }
 
 #ifdef _OPENMP
@@ -414,13 +390,26 @@ errno_t fft_DFT(
     printf("> ");
     fflush(stdout);
 
+    DEBUG_TRACEPOINT(" ");
+
     free(cosvalinpha);
     free(sinvalinpha);
 
-    delete_image_ID("_cosXX", DELETE_IMAGE_ERRMODE_WARNING);
-    delete_image_ID("_sinXX", DELETE_IMAGE_ERRMODE_WARNING);
-    delete_image_ID("_cosYY", DELETE_IMAGE_ERRMODE_WARNING);
-    delete_image_ID("_sinYY", DELETE_IMAGE_ERRMODE_WARNING);
+    FUNC_CHECK_RETURN(
+        delete_image_ID("_cosXX", DELETE_IMAGE_ERRMODE_WARNING)
+    );
+
+    FUNC_CHECK_RETURN(
+        delete_image_ID("_sinXX", DELETE_IMAGE_ERRMODE_WARNING)
+    );
+
+    FUNC_CHECK_RETURN(
+        delete_image_ID("_cosYY", DELETE_IMAGE_ERRMODE_WARNING)
+    );
+
+    FUNC_CHECK_RETURN(
+        delete_image_ID("_sinYY", DELETE_IMAGE_ERRMODE_WARNING)
+    );
 
     free(XinarrayActive);
     free(YinarrayActive);
@@ -445,7 +434,9 @@ errno_t fft_DFT(
     free(xoutarray);
     free(youtarray);
 
-    if(outID==NULL)
+    DEBUG_TRACEPOINT("IDout = %ld", IDout);
+
+    if(outID != NULL)
     {
         *outID = IDout;
     }
@@ -522,8 +513,9 @@ errno_t fft_DFTinsertFPM(
     }
     printf("zsize = %ld\n", (long) zsize);
 
-    create_3DCimage_ID(pupout_name, xsize, ysize, zsize, &IDout);
-
+    FUNC_CHECK_RETURN(
+        create_3DCimage_ID(pupout_name, xsize, ysize, zsize, &IDout)
+    );
 
     for(uint32_t k = 0; k < zsize; k++) // increment slice (= wavelength)
     {
@@ -531,7 +523,10 @@ errno_t fft_DFTinsertFPM(
         // Create default input mask for DFT
         // if amplitude above threshold value, turn pixel "on"
         //
-        create_2Dimage_ID("_DFTpupmask", xsize, ysize, &IDpupin_mask);
+        FUNC_CHECK_RETURN(
+            create_2Dimage_ID("_DFTpupmask", xsize, ysize, &IDpupin_mask)
+        );
+
         for(uint64_t ii = 0; ii < xysize; ii++)
         {
             double re = data.image[IDin].array.CF[k * xysize + ii].re;
@@ -563,7 +558,10 @@ errno_t fft_DFTinsertFPM(
         // If amplitude >eps, turn pixel ON, save result in _fpmzmask
         //
         IDfpmz = image_ID(fpmz_name);
-        create_2Dimage_ID("_fpmzmask", xsize, ysize, &IDfpmz_mask);
+        FUNC_CHECK_RETURN(
+            create_2Dimage_ID("_fpmzmask", xsize, ysize, &IDfpmz_mask)
+        );
+
         for(uint64_t ii = 0; ii < xysize; ii++)
         {
             double re = data.image[IDfpmz].array.CF[k * xysize + ii].re;
@@ -583,7 +581,9 @@ errno_t fft_DFTinsertFPM(
 
 
 
-        fft_DFT(pupin_name, "_DFTpupmask", "_foc0", "_fpmzmask", zfactor, -1, k, &ID);
+        FUNC_CHECK_RETURN(
+            fft_DFT(pupin_name, "_DFTpupmask", "_foc0", "_fpmzmask", zfactor, -1, k, &ID)
+        );
 
         total = 0.0;
         double tx = 0.0;
@@ -639,11 +639,25 @@ errno_t fft_DFTinsertFPM(
                 }
             printf("  ->   %.18lf %.18lf", tx / tcx, ty / tcy);
 
-            mk_amph_from_complex("_foc0", "_foc0_amp", "_foc0_pha", 0);
-            save_fl_fits("_foc0_amp", "!_foc_amp.fits");
-            save_fl_fits("_foc0_pha", "!_foc_pha.fits");
-            delete_image_ID("_foc0_amp", DELETE_IMAGE_ERRMODE_WARNING);
-            delete_image_ID("_foc0_pha", DELETE_IMAGE_ERRMODE_WARNING);
+            FUNC_CHECK_RETURN(
+                mk_amph_from_complex("_foc0", "_foc0_amp", "_foc0_pha", 0)
+            );
+
+            FUNC_CHECK_RETURN(
+                save_fl_fits("_foc0_amp", "!_foc_amp.fits")
+            );
+
+            FUNC_CHECK_RETURN(
+                save_fl_fits("_foc0_pha", "!_foc_pha.fits")
+            );
+
+            FUNC_CHECK_RETURN(
+                delete_image_ID("_foc0_amp", DELETE_IMAGE_ERRMODE_WARNING)
+            );
+
+            FUNC_CHECK_RETURN(
+                delete_image_ID("_foc0_pha", DELETE_IMAGE_ERRMODE_WARNING)
+            );
         }
         printf("\n");
 
@@ -672,7 +686,9 @@ errno_t fft_DFTinsertFPM(
         {
             /// @warning This internal test could crash the process as multiple write operations to the same filename may occurr: leave option OFF for production
 
-            mk_amph_from_complex("_foc0", "tmp_foc0_a", "tmp_foc0_p", 0);
+            FUNC_CHECK_RETURN(
+                mk_amph_from_complex("_foc0", "tmp_foc0_a", "tmp_foc0_p", 0)
+            );
 
             FUNC_CHECK_RETURN(
                 save_fl_fits("tmp_foc0_a", "_DFT_foca.fits")
@@ -706,13 +722,19 @@ errno_t fft_DFTinsertFPM(
             fft_DFT("_foc0", "_fpmzmask", "_pupout2D", "_DFTpupmask", zfactor, 1, 0, &IDout2D)
         );
 
+
+        DEBUG_TRACEPOINT("k %u / %u  IDout = %ld  IDout2D = %ld", k, zsize, IDout, IDout2D);
+        DEBUG_TRACEPOINT("xysize = %lu", xysize);
+
         for(uint64_t ii = 0; ii < xysize; ii++)
         {
-            data.image[IDout].array.CF[k * xsize * ysize + ii].re =
-                data.image[IDout2D].array.CF[ii].re / (xsize * ysize);
-            data.image[IDout].array.CF[k * xsize * ysize + ii].im =
-                data.image[IDout2D].array.CF[ii].im / (xsize * ysize);
+            data.image[IDout].array.CF[k * xysize + ii].re =
+                data.image[IDout2D].array.CF[ii].re / (xysize);
+            data.image[IDout].array.CF[k * xysize + ii].im =
+                data.image[IDout2D].array.CF[ii].im / (xysize);
         }
+
+        DEBUG_TRACEPOINT("IDout image content written");
 
         FUNC_CHECK_RETURN(
             delete_image_ID("_pupout2D", DELETE_IMAGE_ERRMODE_WARNING)
@@ -853,7 +875,7 @@ errno_t fft_DFTinsertFPM_re(
     }
 
 
-    if(1) // TEST
+    if(0) // TEST
     {
         char fname[STRINGMAXLEN_FULLFILENAME];
 
@@ -878,15 +900,7 @@ errno_t fft_DFTinsertFPM_re(
         );
     }
 
-    /* for(ii=0; ii<xsize; ii++)
-      for(jj=0; jj<ysize; jj++)
-        {
-    x = 1.0*ii-xsize/2;
-    y = 1.0*jj-ysize/2;
-    r = sqrt(x*x+y*y);
-    if(r<150.0)
-      data.image[IDpupin_mask].array.F[jj*xsize+ii] = 1.0;
-      }*/
+    
 
     FUNC_CHECK_RETURN(
         fft_DFT("_foc0", "_fpmzmask", pupout_name, "_DFTpupmask", zfactor, 1, 0, &IDout)
