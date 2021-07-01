@@ -20,16 +20,19 @@
 // dir = -1 for FT, 1 for inverse FT
 // kin in selects slice in IDin_name if this is a cube
 //
-imageID fft_DFT(
+errno_t fft_DFT(
     const char *IDin_name,
     const char *IDinmask_name,
     const char *IDout_name,
     const char *IDoutmask_name,
     double      Zfactor,
     int         dir,
-    long        kin
+    long        kin,
+    imageID    *outID
 )
 {
+    DEBUG_TRACE_FSTART();
+
     imageID IDin;
     imageID IDout;
     imageID IDinmask;
@@ -442,7 +445,13 @@ imageID fft_DFT(
     free(xoutarray);
     free(youtarray);
 
-    return IDout;
+    if(outID==NULL)
+    {
+        *outID = IDout;
+    }
+
+    DEBUG_TRACE_FEXIT();
+    return RETURN_SUCCESS;
 }
 
 
@@ -460,31 +469,29 @@ imageID fft_DFT(
  * Forces computation over pixels >0.5 in _DFTmask00 if it exists
  *
  */
-imageID fft_DFTinsertFPM(
+errno_t fft_DFTinsertFPM(
     const char *pupin_name,
     const char *fpmz_name,
     double      zfactor,
-    const char *pupout_name
+    const char *pupout_name,
+    imageID    *outID
 )
 {
+    DEBUG_TRACE_FSTART();
+
     double eps = 1.0e-16;
     imageID ID;
     imageID IDpupin_mask;
     imageID IDfpmz;
     imageID IDfpmz_mask;
-    long xsize, ysize, zsize;
+    uint32_t xsize, ysize, zsize;
     imageID IDin, IDout;
-    long ii, jj, k;
-    double re, im, rein, imin, amp, pha, ampin, phain, amp2;
-    double x, y;
     double total = 0;
     imageID IDout2D;
     int FORCE_IMZERO = 0;
     //double imresidual = 0.0;
-    double tx, ty, tcx, tcy;
-    long size2;
 
-    long ID_DFTmask00;
+    imageID ID_DFTmask00;
 
 
     if(variable_ID("_FORCE_IMZERO") != -1)
@@ -502,6 +509,9 @@ imageID fft_DFTinsertFPM(
     IDin = image_ID(pupin_name);
     xsize = data.image[IDin].md[0].size[0];
     ysize = data.image[IDin].md[0].size[1];
+    uint64_t xysize = (uint64_t) xsize;
+    xysize *= ysize;
+
     if(data.image[IDin].md[0].naxis > 2)
     {
         zsize = data.image[IDin].md[0].size[2];
@@ -510,24 +520,23 @@ imageID fft_DFTinsertFPM(
     {
         zsize = 1;
     }
-    printf("zsize = %ld\n", zsize);
-    size2 = xsize * ysize;
+    printf("zsize = %ld\n", (long) zsize);
 
     create_3DCimage_ID(pupout_name, xsize, ysize, zsize, &IDout);
 
 
-    for(k = 0; k < zsize; k++) // increment slice (= wavelength)
+    for(uint32_t k = 0; k < zsize; k++) // increment slice (= wavelength)
     {
         //
         // Create default input mask for DFT
         // if amplitude above threshold value, turn pixel "on"
         //
         create_2Dimage_ID("_DFTpupmask", xsize, ysize, &IDpupin_mask);
-        for(ii = 0; ii < xsize * ysize; ii++)
+        for(uint64_t ii = 0; ii < xysize; ii++)
         {
-            re = data.image[IDin].array.CF[k * size2 + ii].re;
-            im = data.image[IDin].array.CF[k * size2 + ii].im;
-            amp2 = re * re + im * im;
+            double re = data.image[IDin].array.CF[k * xysize + ii].re;
+            double im = data.image[IDin].array.CF[k * xysize + ii].im;
+            double amp2 = re * re + im * im;
             if(amp2 > eps)
             {
                 data.image[IDpupin_mask].array.F[ii] = 1.0;
@@ -541,7 +550,7 @@ imageID fft_DFTinsertFPM(
         // If _DFTmask00 exists, make corresponding pixels = 1
         //
         if(ID_DFTmask00 != -1)
-            for(ii = 0; ii < xsize * ysize; ii++)
+            for(uint64_t ii = 0; ii < xsize * ysize; ii++)
             {
                 if(data.image[ID_DFTmask00].array.F[ii] > 0.5)
                 {
@@ -555,11 +564,11 @@ imageID fft_DFTinsertFPM(
         //
         IDfpmz = image_ID(fpmz_name);
         create_2Dimage_ID("_fpmzmask", xsize, ysize, &IDfpmz_mask);
-        for(ii = 0; ii < xsize * ysize; ii++)
+        for(uint64_t ii = 0; ii < xysize; ii++)
         {
-            re = data.image[IDfpmz].array.CF[k * size2 + ii].re;
-            im = data.image[IDfpmz].array.CF[k * size2 + ii].im;
-            amp2 = re * re + im * im;
+            double re = data.image[IDfpmz].array.CF[k * xysize + ii].re;
+            double im = data.image[IDfpmz].array.CF[k * xysize + ii].im;
+            double amp2 = re * re + im * im;
             if(amp2 > eps)
             {
                 data.image[IDfpmz_mask].array.F[ii] = 1.0;
@@ -574,28 +583,27 @@ imageID fft_DFTinsertFPM(
 
 
 
-        fft_DFT(pupin_name, "_DFTpupmask", "_foc0", "_fpmzmask", zfactor, -1, k);
+        fft_DFT(pupin_name, "_DFTpupmask", "_foc0", "_fpmzmask", zfactor, -1, k, &ID);
 
-        ID = image_ID("_foc0");
         total = 0.0;
-        tx = 0.0;
-        ty = 0.0;
-        tcx = 0.0;
-        tcy = 0.0;
-        for(ii = 0; ii < xsize; ii++)
-            for(jj = 0; jj < ysize; jj++)
+        double tx = 0.0;
+        double ty = 0.0;
+        double tcx = 0.0;
+        double tcy = 0.0;
+        for(uint32_t ii = 0; ii < xsize; ii++)
+            for(uint32_t jj = 0; jj < ysize; jj++)
             {
-                x = 1.0 * ii - 0.5 * xsize;
-                y = 1.0 * jj - 0.5 * ysize;
-                re = data.image[IDfpmz].array.CF[k * size2 + jj * xsize + ii].re;
-                im = data.image[IDfpmz].array.CF[k * size2 + jj * xsize + ii].im;
-                amp = sqrt(re * re + im * im);
-                pha = atan2(im, re);
+                double x = 1.0 * ii - 0.5 * xsize;
+                double y = 1.0 * jj - 0.5 * ysize;
+                double re = data.image[IDfpmz].array.CF[k * xysize + jj * xsize + ii].re;
+                double im = data.image[IDfpmz].array.CF[k * xysize + jj * xsize + ii].im;
+                double amp = sqrt(re * re + im * im);
+                double pha = atan2(im, re);
 
-                rein = data.image[ID].array.CF[jj * xsize + ii].re;
-                imin = data.image[ID].array.CF[jj * xsize + ii].im;
-                ampin = sqrt(rein * rein + imin * imin);
-                phain = atan2(imin, rein);
+                double rein = data.image[ID].array.CF[jj * xsize + ii].re;
+                double imin = data.image[ID].array.CF[jj * xsize + ii].im;
+                double ampin = sqrt(rein * rein + imin * imin);
+                double phain = atan2(imin, rein);
 
                 ampin *= amp;
                 total += ampin * ampin;
@@ -614,15 +622,15 @@ imageID fft_DFTinsertFPM(
         {
             tx = 0.0;
             ty = 0.0;
-            for(ii = 0; ii < xsize; ii++)
-                for(jj = 0; jj < ysize; jj++)
+            for(uint32_t ii = 0; ii < xsize; ii++)
+                for(uint32_t jj = 0; jj < ysize; jj++)
                 {
-                    x = 1.0 * ii - 0.5 * xsize;
-                    y = 1.0 * jj - 0.5 * ysize;
+                    double x = 1.0 * ii - 0.5 * xsize;
+                    double y = 1.0 * jj - 0.5 * ysize;
 
-                    re = data.image[ID].array.CF[jj * xsize + ii].re;
-                    im = data.image[ID].array.CF[jj * xsize + ii].im;
-                    amp = sqrt(re * re + im * im);
+                    double re = data.image[ID].array.CF[jj * xsize + ii].re;
+                    double im = data.image[ID].array.CF[jj * xsize + ii].im;
+                    double amp = sqrt(re * re + im * im);
 
                     data.image[ID].array.CF[jj * xsize + ii].im -= amp * (x * tx / tcx + y * ty /
                             tcy);
@@ -665,10 +673,22 @@ imageID fft_DFTinsertFPM(
             /// @warning This internal test could crash the process as multiple write operations to the same filename may occurr: leave option OFF for production
 
             mk_amph_from_complex("_foc0", "tmp_foc0_a", "tmp_foc0_p", 0);
-            save_fl_fits("tmp_foc0_a", "!_DFT_foca.fits");
-            save_fl_fits("tmp_foc0_p", "!_DFT_focp.fits");
-            delete_image_ID("tmp_foc0_a", DELETE_IMAGE_ERRMODE_WARNING);
-            delete_image_ID("tmp_foc0_p", DELETE_IMAGE_ERRMODE_WARNING);
+
+            FUNC_CHECK_RETURN(
+                save_fl_fits("tmp_foc0_a", "_DFT_foca.fits")
+            );
+
+            FUNC_CHECK_RETURN(
+                save_fl_fits("tmp_foc0_p", "_DFT_focp.fits")
+            );
+
+            FUNC_CHECK_RETURN(
+                delete_image_ID("tmp_foc0_a", DELETE_IMAGE_ERRMODE_WARNING);
+            );
+
+            FUNC_CHECK_RETURN(
+                delete_image_ID("tmp_foc0_p", DELETE_IMAGE_ERRMODE_WARNING)
+            );
         }
 
 
@@ -682,26 +702,42 @@ imageID fft_DFTinsertFPM(
          data.image[IDpupin_mask].array.F[jj*xsize+ii] = 1.0;
          }*/
 
-        fft_DFT("_foc0", "_fpmzmask", "_pupout2D", "_DFTpupmask", zfactor, 1, 0);
+        FUNC_CHECK_RETURN(
+            fft_DFT("_foc0", "_fpmzmask", "_pupout2D", "_DFTpupmask", zfactor, 1, 0, &IDout2D)
+        );
 
-        //	save_fits("_DFTpupmask", "!test_DFTpupmask.fits");//TEST
-
-        IDout2D = image_ID("_pupout2D");
-        for(ii = 0; ii < xsize * ysize; ii++)
+        for(uint64_t ii = 0; ii < xysize; ii++)
         {
             data.image[IDout].array.CF[k * xsize * ysize + ii].re =
                 data.image[IDout2D].array.CF[ii].re / (xsize * ysize);
             data.image[IDout].array.CF[k * xsize * ysize + ii].im =
                 data.image[IDout2D].array.CF[ii].im / (xsize * ysize);
         }
-        delete_image_ID("_pupout2D", DELETE_IMAGE_ERRMODE_WARNING);
-        delete_image_ID("_foc0", DELETE_IMAGE_ERRMODE_WARNING);
 
-        delete_image_ID("_DFTpupmask", DELETE_IMAGE_ERRMODE_WARNING);
-        delete_image_ID("_fpmzmask", DELETE_IMAGE_ERRMODE_WARNING);
+        FUNC_CHECK_RETURN(
+            delete_image_ID("_pupout2D", DELETE_IMAGE_ERRMODE_WARNING)
+        );
+
+        FUNC_CHECK_RETURN(
+            delete_image_ID("_foc0", DELETE_IMAGE_ERRMODE_WARNING)
+        );
+
+        FUNC_CHECK_RETURN(
+            delete_image_ID("_DFTpupmask", DELETE_IMAGE_ERRMODE_WARNING)
+        );
+
+        FUNC_CHECK_RETURN(
+            delete_image_ID("_fpmzmask", DELETE_IMAGE_ERRMODE_WARNING)
+        );
     }
 
-    return IDout;
+    if(outID != NULL)
+    {
+        *outID = IDout;
+    }
+
+    DEBUG_TRACE_FEXIT();
+    return RETURN_SUCCESS;
 }
 
 
@@ -715,40 +751,43 @@ imageID fft_DFTinsertFPM(
 //
 //
 //
-imageID fft_DFTinsertFPM_re(
+errno_t fft_DFTinsertFPM_re(
     const char *pupin_name,
     const char *fpmz_name,
     double      zfactor,
-    const char *pupout_name
+    const char *pupout_name,
+    imageID    *outID
 )
 {
+    DEBUG_TRACE_FSTART();
+
     double eps = 1.0e-10;
     imageID ID;
     imageID IDpupin_mask;
     imageID IDfpmz;
     imageID IDfpmz_mask;
-    long xsize, ysize;
-    imageID IDin, IDout;
-    long ii;
-    double re, im, rein, imin, amp, ampin, phain, amp2;
-    double total = 0;
+    imageID IDout;
+
     imageID ID_DFTmask00;
 
-    IDin = image_ID(pupin_name);
-    xsize = data.image[IDin].md[0].size[0];
-    ysize = data.image[IDin].md[0].size[1];
-
+    imageID IDin = image_ID(pupin_name);
+    uint32_t xsize = data.image[IDin].md[0].size[0];
+    uint32_t ysize = data.image[IDin].md[0].size[1];
+    uint64_t xysize = xsize;
+    xysize *= ysize;
 
     ID_DFTmask00 = image_ID("_DFTmask00");
 
     printf("zfactor = %f\n", zfactor);
 
-    create_2Dimage_ID("_DFTpupmask", xsize, ysize, &IDpupin_mask);
-    for(ii = 0; ii < xsize * ysize; ii++)
+    FUNC_CHECK_RETURN(
+        create_2Dimage_ID("_DFTpupmask", xsize, ysize, &IDpupin_mask)
+    );
+    for(uint64_t ii = 0; ii < xysize; ii++)
     {
-        re = data.image[IDin].array.CF[ii].re;
-        im = data.image[IDin].array.CF[ii].im;
-        amp2 = re * re + im * im;
+        double re = data.image[IDin].array.CF[ii].re;
+        double im = data.image[IDin].array.CF[ii].im;
+        double amp2 = re * re + im * im;
         if(amp2 > eps)
         {
             data.image[IDpupin_mask].array.F[ii] = 1.0;
@@ -761,7 +800,7 @@ imageID fft_DFTinsertFPM_re(
     //  save_fl_fits("_DFTpupmask", "!_DFTpupmask.fits");
 
     if(ID_DFTmask00 != -1)
-        for(ii = 0; ii < xsize * ysize; ii++)
+        for(uint64_t ii = 0; ii < xysize; ii++)
         {
             if(data.image[ID_DFTmask00].array.F[ii] > 0.5)
             {
@@ -770,12 +809,15 @@ imageID fft_DFTinsertFPM_re(
         }
 
 
-
+    // ! Why read and re-create ?
     IDfpmz = image_ID(fpmz_name);
-    create_2Dimage_ID("_fpmzmask", xsize, ysize, &IDfpmz_mask);
-    for(ii = 0; ii < xsize * ysize; ii++)
+    FUNC_CHECK_RETURN(
+        create_2Dimage_ID("_fpmzmask", xsize, ysize, &IDfpmz_mask)
+    );
+
+    for(uint64_t ii = 0; ii < xysize; ii++)
     {
-        amp = fabs(data.image[IDfpmz].array.F[ii]);
+        double amp = fabs(data.image[IDfpmz].array.F[ii]);
         if(amp > eps)
         {
             data.image[IDfpmz_mask].array.F[ii] = 1.0;
@@ -786,27 +828,29 @@ imageID fft_DFTinsertFPM_re(
         }
     }
 
-    fft_DFT(pupin_name, "_DFTpupmask", "_foc0", "_fpmzmask", zfactor, -1, 0);
+    FUNC_CHECK_RETURN(
+        fft_DFT(pupin_name, "_DFTpupmask", "_foc0", "_fpmzmask", zfactor, -1, 0, &ID)
+    );
 
-    ID = image_ID("_foc0");
-    total = 0.0;
-    for(ii = 0; ii < xsize * ysize; ii++)
     {
-        amp = data.image[IDfpmz].array.F[ii];
+        double total = 0.0;
+        for(uint64_t ii = 0; ii < xysize; ii++)
+        {
+            double amp = data.image[IDfpmz].array.F[ii];
 
-        rein = data.image[ID].array.CF[ii].re;
-        imin = data.image[ID].array.CF[ii].im;
-        ampin = sqrt(rein * rein + imin * imin);
-        phain = atan2(imin, rein);
+            double rein = data.image[ID].array.CF[ii].re;
+            double imin = data.image[ID].array.CF[ii].im;
+            double ampin = sqrt(rein * rein + imin * imin);
+            double phain = atan2(imin, rein);
 
-        ampin *= amp;
-        total += ampin * ampin;
+            ampin *= amp;
+            total += ampin * ampin;
 
-        data.image[ID].array.CF[ii].re = ampin * cos(phain);
-        data.image[ID].array.CF[ii].im = ampin * sin(phain);
+            data.image[ID].array.CF[ii].re = ampin * cos(phain);
+            data.image[ID].array.CF[ii].im = ampin * sin(phain);
+        }
+        data.FLOATARRAY[0] = (float) total;
     }
-
-    data.FLOATARRAY[0] = (float) total;
 
 
     if(1) // TEST
@@ -814,12 +858,24 @@ imageID fft_DFTinsertFPM_re(
         char fname[STRINGMAXLEN_FULLFILENAME];
 
         mk_amph_from_complex("_foc0", "tmp_foc0_a", "tmp_foc0_p", 0);
+
         WRITE_FULLFILENAME(fname, "%s/_DFT_foca", data.SAVEDIR);
-        save_fl_fits("tmp_foc0_a", fname);
+        FUNC_CHECK_RETURN(
+            save_fl_fits("tmp_foc0_a", fname)
+        );
+
         WRITE_FULLFILENAME(fname, "%s/_DFT_focp", data.SAVEDIR);
-        save_fl_fits("tmp_foc0_p", fname);
-        delete_image_ID("tmp_foc0_a", DELETE_IMAGE_ERRMODE_WARNING);
-        delete_image_ID("tmp_foc0_p", DELETE_IMAGE_ERRMODE_WARNING);
+        FUNC_CHECK_RETURN(
+            save_fl_fits("tmp_foc0_p", fname)
+        );
+
+        FUNC_CHECK_RETURN(
+            delete_image_ID("tmp_foc0_a", DELETE_IMAGE_ERRMODE_WARNING)
+        );
+
+        FUNC_CHECK_RETURN(
+            delete_image_ID("tmp_foc0_p", DELETE_IMAGE_ERRMODE_WARNING)
+        );
     }
 
     /* for(ii=0; ii<xsize; ii++)
@@ -832,21 +888,35 @@ imageID fft_DFTinsertFPM_re(
       data.image[IDpupin_mask].array.F[jj*xsize+ii] = 1.0;
       }*/
 
-    fft_DFT("_foc0", "_fpmzmask", pupout_name, "_DFTpupmask", zfactor, 1, 0);
+    FUNC_CHECK_RETURN(
+        fft_DFT("_foc0", "_fpmzmask", pupout_name, "_DFTpupmask", zfactor, 1, 0, &IDout)
+    );
 
-    IDout = image_ID(pupout_name);
-    for(ii = 0; ii < xsize * ysize; ii++)
+    for(uint64_t ii = 0; ii < xysize; ii++)
     {
         data.image[IDout].array.CF[ii].re /= xsize * ysize;
         data.image[IDout].array.CF[ii].im /= xsize * ysize;
     }
 
-    delete_image_ID("_foc0", DELETE_IMAGE_ERRMODE_WARNING);
+    FUNC_CHECK_RETURN(
+        delete_image_ID("_foc0", DELETE_IMAGE_ERRMODE_WARNING)
+    );
 
-    delete_image_ID("_DFTpupmask", DELETE_IMAGE_ERRMODE_WARNING);
-    delete_image_ID("_fpmzmask", DELETE_IMAGE_ERRMODE_WARNING);
+    FUNC_CHECK_RETURN(
+        delete_image_ID("_DFTpupmask", DELETE_IMAGE_ERRMODE_WARNING)
+    );
 
-    return IDout;
+    FUNC_CHECK_RETURN(
+        delete_image_ID("_fpmzmask", DELETE_IMAGE_ERRMODE_WARNING)
+    );
+
+    if(outID != NULL)
+    {
+        *outID = IDout;
+    }
+
+    DEBUG_TRACE_FEXIT();
+    return RETURN_SUCCESS;
 }
 
 
