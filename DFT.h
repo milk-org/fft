@@ -1,5 +1,5 @@
-/** @file DFT.h
- */
+#ifndef FFT_DFT_H
+#define FFT_DFT_H
 
 errno_t fft_DFT(
     const char *IDin_name,
@@ -28,3 +28,5 @@ errno_t fft_DFTinsertFPM_re(
     const char *pupout_name,
     imageID    *outID
 );
+
+#endif
