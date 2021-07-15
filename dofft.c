@@ -198,12 +198,16 @@ int array_index(long size)
 /* 1d complex -> complex fft */
 // supports single and double precisions
 //
-long FFT_do1dfft(const char *in_name, const char *out_name, int dir)
+imageID FFT_do1dfft(
+    const char *__restrict in_name,
+    const char *__restrict out_name,
+    int dir
+)
 {
     int *naxes;
     uint32_t *naxesl;
     long naxis;
-    long IDin, IDout;
+    imageID IDin, IDout;
     long i;
     int OK = 0;
     fftwf_plan plan;
@@ -382,8 +386,8 @@ long FFT_do1dfft(const char *in_name, const char *out_name, int dir)
 /* 1d real -> complex fft */
 // supports single and double precision
 imageID do1drfft(
-    const char *in_name,
-    const char *out_name
+    const char *__restrict in_name,
+    const char *__restrict out_name
 )
 {
     int *naxes;
@@ -547,9 +551,12 @@ imageID do1drfft(
 
 
 
-long do1dfft(const char *in_name, const char *out_name)
+imageID do1dfft(
+    const char *__restrict in_name,
+    const char *__restrict out_name
+)
 {
-    long IDout;
+    imageID IDout;
 
     IDout = FFT_do1dfft(in_name, out_name, -1);
 
@@ -557,9 +564,12 @@ long do1dfft(const char *in_name, const char *out_name)
 }
 
 
-long do1dffti(const char *in_name, const char *out_name)
+imageID do1dffti(
+    const char *__restrict in_name,
+    const char *__restrict out_name
+)
 {
-    long IDout;
+    imageID IDout;
 
     IDout = FFT_do1dfft(in_name, out_name, 1);
 
@@ -573,7 +583,11 @@ long do1dffti(const char *in_name, const char *out_name)
 
 /* 2d complex fft */
 // supports single and double precisions
-long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
+imageID FFT_do2dfft(
+    const char *in_name,
+    const char *out_name,
+    int dir
+)
 {
     int *naxes;
     uint32_t *naxesl;
@@ -766,9 +780,12 @@ long FFT_do2dfft(const char *in_name, const char *out_name, int dir)
 
 
 
-long do2dfft(const char *in_name, const char *out_name)
+imageID do2dfft(
+    const char *__restrict in_name,
+    const char *__restrict out_name
+)
 {
-    long IDout;
+    imageID IDout;
 
     IDout = FFT_do2dfft(in_name, out_name, -1);
 
@@ -776,9 +793,12 @@ long do2dfft(const char *in_name, const char *out_name)
 }
 
 
-long do2dffti(const char *in_name, const char *out_name)
+imageID do2dffti(
+    const char *__restrict in_name,
+    const char *__restrict out_name
+)
 {
-    long IDout;
+    imageID IDout;
 
     IDout = FFT_do2dfft(in_name, out_name, 1);
 
@@ -793,8 +813,8 @@ long do2dffti(const char *in_name, const char *out_name)
 /* real fft : real to complex */
 // supports single and double precisions
 imageID FFT_do2drfft(
-    const char *in_name,
-    const char *out_name,
+    const char *__restrict in_name,
+    const char *__restrict out_name,
     int dir
 )
 {
