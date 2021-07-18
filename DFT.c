@@ -577,7 +577,7 @@ errno_t fft_DFTinsertFPM(
             }
         }
 
-        //	save_fits("_DFTpupmask", "!_DFTpupmask.fits");
+        //	save_fits("_DFTpupmask", "_DFTpupmask.fits");
 
 
 
@@ -644,11 +644,11 @@ errno_t fft_DFTinsertFPM(
             );
 
             FUNC_CHECK_RETURN(
-                save_fl_fits("_foc0_amp", "!_foc_amp.fits")
+                save_fl_fits("_foc0_amp", "_foc_amp.fits")
             );
 
             FUNC_CHECK_RETURN(
-                save_fl_fits("_foc0_pha", "!_foc_pha.fits")
+                save_fl_fits("_foc0_pha", "_foc_pha.fits")
             );
 
             FUNC_CHECK_RETURN(
@@ -676,7 +676,7 @@ errno_t fft_DFTinsertFPM(
         data.image[ID].array.CF[ii].im = 0.0;
         }
         printf("IM RESIDUAL = %lf\n", imresidual);
-        save_fl_fits("imresidual", "!imresidual.fits");
+        save_fl_fits("imresidual", "imresidual.fits");
         delete_image_ID("imresidual");
         }
         */
@@ -819,7 +819,7 @@ errno_t fft_DFTinsertFPM_re(
             data.image[IDpupin_mask].array.F[ii] = 0.0;
         }
     }
-    //  save_fl_fits("_DFTpupmask", "!_DFTpupmask.fits");
+    //  save_fl_fits("_DFTpupmask", "_DFTpupmask.fits");
 
     if(ID_DFTmask00 != -1)
         for(uint64_t ii = 0; ii < xysize; ii++)
