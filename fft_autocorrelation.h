@@ -3,7 +3,4 @@
  *
  */
 
-imageID autocorrelation(
-    const char *IDin_name,
-    const char *IDout_name
-);
+imageID autocorrelation(const char *IDin_name, const char *IDout_name);
