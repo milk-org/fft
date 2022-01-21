@@ -13,8 +13,11 @@
 /* inverse = pupil plane -> focal plane equ. fft2d(..,..,..,0) */
 /* options :  -reim  takes real/imaginary input and creates real/imaginary output
                -inv  for inverse fft (inv=1) */
-errno_t pupfft(const char *ID_name_ampl, const char *ID_name_pha, const char *ID_name_ampl_out,
-               const char *ID_name_pha_out, const char *options)
+errno_t pupfft(const char *ID_name_ampl,
+               const char *ID_name_pha,
+               const char *ID_name_ampl_out,
+               const char *ID_name_pha_out,
+               const char *options)
 {
     int reim;
     int inv;
@@ -23,7 +26,7 @@ errno_t pupfft(const char *ID_name_ampl, const char *ID_name_pha, const char *ID
     char C1tmpname[STRINGMAXLEN_IMGNAME];
 
     reim = 0;
-    inv = 0;
+    inv  = 0;
 
     if (strstr(options, "-reim") != NULL)
     {
@@ -37,7 +40,7 @@ errno_t pupfft(const char *ID_name_ampl, const char *ID_name_pha, const char *ID
         inv = 1;
     }
 
-    WRITE_IMAGENAME(Ctmpname, "_Ctmp_%d", (int)getpid());
+    WRITE_IMAGENAME(Ctmpname, "_Ctmp_%d", (int) getpid());
 
     if (reim == 0)
     {
@@ -50,7 +53,7 @@ errno_t pupfft(const char *ID_name_ampl, const char *ID_name_pha, const char *ID
 
     permut(Ctmpname);
 
-    WRITE_IMAGENAME(C1tmpname, "_C1tmp_%d", (int)getpid());
+    WRITE_IMAGENAME(C1tmpname, "_C1tmp_%d", (int) getpid());
 
     if (inv == 0)
     {

@@ -7,12 +7,16 @@
 errno_t import_wisdom()
 {
     FILE *fp;
-    char wisdom_file_single[STRINGMAXLEN_FULLFILENAME];
-    char wisdom_file_double[STRINGMAXLEN_FULLFILENAME];
+    char  wisdom_file_single[STRINGMAXLEN_FULLFILENAME];
+    char  wisdom_file_double[STRINGMAXLEN_FULLFILENAME];
 
 #ifdef FFTWMT
-    WRITE_FULLFILENAME(wisdom_file_single, "%s/fftwf_mt_wisdom.dat", FFTCONFIGDIR);
-    WRITE_FULLFILENAME(wisdom_file_double, "%s/fftw_mt_wisdom.dat", FFTCONFIGDIR);
+    WRITE_FULLFILENAME(wisdom_file_single,
+                       "%s/fftwf_mt_wisdom.dat",
+                       FFTCONFIGDIR);
+    WRITE_FULLFILENAME(wisdom_file_double,
+                       "%s/fftw_mt_wisdom.dat",
+                       FFTCONFIGDIR);
 #endif
 
 #ifndef FFTWMT
@@ -73,7 +77,8 @@ errno_t import_wisdom()
 
     if (nowisdomWarning == 1)
     {
-        printf("    [no fftw wisdom file, run initfft to create in %s]\n", FFTCONFIGDIR);
+        printf("    [no fftw wisdom file, run initfft to create in %s]\n",
+               FFTCONFIGDIR);
     }
 
     return RETURN_SUCCESS;
@@ -82,14 +87,18 @@ errno_t import_wisdom()
 errno_t export_wisdom()
 {
     FILE *fp;
-    char wisdom_file_single[STRINGMAXLEN_FULLFILENAME];
-    char wisdom_file_double[STRINGMAXLEN_FULLFILENAME];
+    char  wisdom_file_single[STRINGMAXLEN_FULLFILENAME];
+    char  wisdom_file_double[STRINGMAXLEN_FULLFILENAME];
 
     EXECUTE_SYSTEM_COMMAND("mkdir -p %s", FFTCONFIGDIR);
 
 #ifdef FFTWMT
-    WRITE_FULLFILENAME(wisdom_file_single, "%s/fftwf_mt_wisdom.dat", FFTCONFIGDIR);
-    WRITE_FULLFILENAME(wisdom_file_double, "%s/fftw_mt_wisdom.dat", FFTCONFIGDIR);
+    WRITE_FULLFILENAME(wisdom_file_single,
+                       "%s/fftwf_mt_wisdom.dat",
+                       FFTCONFIGDIR);
+    WRITE_FULLFILENAME(wisdom_file_double,
+                       "%s/fftw_mt_wisdom.dat",
+                       FFTCONFIGDIR);
 #endif
 
 #ifndef FFTWMT

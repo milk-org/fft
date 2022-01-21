@@ -7,7 +7,7 @@
  */
 
 #define MODULE_SHORTNAME_DEFAULT "fft"
-#define MODULE_DESCRIPTION "FFTW wrapper and FFT-related functions"
+#define MODULE_DESCRIPTION       "FFTW wrapper and FFT-related functions"
 
 #include <fftw3.h>
 
@@ -29,7 +29,8 @@ static errno_t init_module_CLI()
 {
 
 #ifdef FFTWMT
-    printf("Multi-threaded fft enabled, max threads = %d\n", omp_get_max_threads());
+    printf("Multi-threaded fft enabled, max threads = %d\n",
+           omp_get_max_threads());
     fftwf_init_threads();
     fftwf_plan_with_nthreads(omp_get_max_threads());
 #endif

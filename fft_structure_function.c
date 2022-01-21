@@ -15,13 +15,13 @@
 
 imageID fft_structure_function(const char *ID_in, const char *ID_out)
 {
-    imageID IDout;
-    double value;
+    imageID  IDout;
+    double   value;
     uint64_t nelement;
-    uint8_t datatype;
+    uint8_t  datatype;
 
     autocorrelation(ID_in, ID_out);
-    IDout = image_ID(ID_out);
+    IDout    = image_ID(ID_out);
     nelement = data.image[IDout].md[0].nelement;
 
     datatype = data.image[IDout].md[0].datatype;

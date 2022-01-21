@@ -23,7 +23,7 @@ errno_t test_fftspeed_cli()
 {
     if (CLI_checkarg(1, CLIARG_LONG) == 0)
     {
-        test_fftspeed((int)data.cmdargtoken[1].val.numl);
+        test_fftspeed((int) data.cmdargtoken[1].val.numl);
         return CLICMD_SUCCESS;
     }
     else
@@ -38,7 +38,12 @@ errno_t test_fftspeed_cli()
 
 errno_t testfftspeed_addCLIcmd()
 {
-    RegisterCLIcommand("testfftspeed", __FILE__, test_fftspeed_cli, "test FFTW speed", "no argument", "testfftspeed",
+    RegisterCLIcommand("testfftspeed",
+                       __FILE__,
+                       test_fftspeed_cli,
+                       "test FFTW speed",
+                       "no argument",
+                       "testfftspeed",
                        "int test_fftwspeed(int nmax)");
 
     return RETURN_SUCCESS;
@@ -50,22 +55,22 @@ errno_t testfftspeed_addCLIcmd()
 
 int test_fftspeed(int nmax)
 {
-    int n;
+    int  n;
     long size;
-    int nbiter, iter;
+    int  nbiter, iter;
 
     struct timespec tS0;
     struct timespec tS1;
     struct timespec tS2;
-    double ti0, ti1, ti2;
-    double dt1;
+    double          ti0, ti1, ti2;
+    double          dt1;
     //struct timeval tv;
     //int nb_threads=1;
     //int nb_threads_max = 8;
 
     /*  printf("%ld ticks per second\n",CLOCKS_PER_SEC);*/
     nbiter = 10000;
-    size = 2;
+    size   = 2;
 
     printf("Testing complex FFT, nxn pix\n");
 
@@ -92,7 +97,7 @@ int test_fftspeed(int nmax)
             clock_gettime(CLOCK_REALTIME, &tS0);
 #else
         gettimeofday(&tv, NULL);
-        tS0.tv_sec = tv.tv_sec;
+        tS0.tv_sec  = tv.tv_sec;
         tS0.tv_nsec = tv.tv_usec * 1000;
 #endif
 
@@ -109,7 +114,7 @@ int test_fftspeed(int nmax)
             clock_gettime(CLOCK_REALTIME, &tS1);
 #else
         gettimeofday(&tv, NULL);
-        tS1.tv_sec = tv.tv_sec;
+        tS1.tv_sec  = tv.tv_sec;
         tS1.tv_nsec = tv.tv_usec * 1000;
 #endif
             //	  clock_gettime(CLOCK_REALTIME, &tS1);
@@ -124,7 +129,7 @@ int test_fftspeed(int nmax)
             clock_gettime(CLOCK_REALTIME, &tS2);
 #else
         gettimeofday(&tv, NULL);
-        tS2.tv_sec = tv.tv_sec;
+        tS2.tv_sec  = tv.tv_sec;
         tS2.tv_nsec = tv.tv_usec * 1000;
 #endif
             //clock_gettime(CLOCK_REALTIME, &tS2);

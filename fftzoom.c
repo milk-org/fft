@@ -10,10 +10,10 @@
 
 int fftczoom(const char *ID_name, const char *IDout_name, long factor)
 {
-    imageID ID;
-    imageID ID1;
+    imageID  ID;
+    imageID  ID1;
     uint32_t naxes[2];
-    double coeff;
+    double   coeff;
 
     char tmpzname[STRINGMAXLEN_IMGNAME];
     char tmpz1name[STRINGMAXLEN_IMGNAME];
@@ -26,14 +26,14 @@ int fftczoom(const char *ID_name, const char *IDout_name, long factor)
     coeff = 1.0 / (factor * factor * naxes[0] * naxes[1]);
     permut(ID_name);
 
-    WRITE_IMAGENAME(tmpzname, "_tmpz_%d", (int)getpid());
+    WRITE_IMAGENAME(tmpzname, "_tmpz_%d", (int) getpid());
     do2dfft(ID_name, tmpzname);
 
     permut(ID_name);
     permut(tmpzname);
     ID = image_ID(tmpzname);
 
-    WRITE_IMAGENAME(tmpz1name, "_tmpz1_%d", (int)getpid());
+    WRITE_IMAGENAME(tmpz1name, "_tmpz1_%d", (int) getpid());
 
     create_2DCimage_ID(tmpz1name, factor * naxes[0], factor * naxes[1], &ID1);
 
@@ -42,12 +42,14 @@ int fftczoom(const char *ID_name, const char *IDout_name, long factor)
         {
             data.image[ID1]
                 .array
-                .CF[(jj + factor * naxes[1] / 2 - naxes[1] / 2) * naxes[0] * factor +
+                .CF[(jj + factor * naxes[1] / 2 - naxes[1] / 2) * naxes[0] *
+                        factor +
                     (ii + factor * naxes[0] / 2 - naxes[0] / 2)]
                 .re = data.image[ID].array.CF[jj * naxes[0] + ii].re * coeff;
             data.image[ID1]
                 .array
-                .CF[(jj + factor * naxes[1] / 2 - naxes[1] / 2) * naxes[0] * factor +
+                .CF[(jj + factor * naxes[1] / 2 - naxes[1] / 2) * naxes[0] *
+                        factor +
                     (ii + factor * naxes[0] / 2 - naxes[0] / 2)]
                 .im = data.image[ID].array.CF[jj * naxes[0] + ii].im * coeff;
         }
@@ -63,10 +65,10 @@ int fftczoom(const char *ID_name, const char *IDout_name, long factor)
 
 int fftzoom(const char *ID_name, const char *IDout_name, long factor)
 {
-    imageID ID;
-    imageID ID1;
+    imageID  ID;
+    imageID  ID1;
     uint32_t naxes[2];
-    double coeff;
+    double   coeff;
 
     ID = image_ID(ID_name);
 
@@ -76,7 +78,7 @@ int fftzoom(const char *ID_name, const char *IDout_name, long factor)
     coeff = 1.0 / (factor * factor * naxes[0] * naxes[1]);
     permut(ID_name);
 
-    CREATE_IMAGENAME(tmpzname, "_tmpz_%d", (int)getpid());
+    CREATE_IMAGENAME(tmpzname, "_tmpz_%d", (int) getpid());
 
     do2drfft(ID_name, tmpzname);
 
@@ -84,7 +86,7 @@ int fftzoom(const char *ID_name, const char *IDout_name, long factor)
     permut(tmpzname);
     ID = image_ID(tmpzname);
 
-    CREATE_IMAGENAME(tmpz1name, "_tmpz1_%d", (int)getpid());
+    CREATE_IMAGENAME(tmpz1name, "_tmpz1_%d", (int) getpid());
 
     create_2DCimage_ID(tmpz1name, factor * naxes[0], factor * naxes[1], &ID1);
 
@@ -93,12 +95,14 @@ int fftzoom(const char *ID_name, const char *IDout_name, long factor)
         {
             data.image[ID1]
                 .array
-                .CF[(jj + factor * naxes[1] / 2 - naxes[1] / 2) * naxes[0] * factor +
+                .CF[(jj + factor * naxes[1] / 2 - naxes[1] / 2) * naxes[0] *
+                        factor +
                     (ii + factor * naxes[0] / 2 - naxes[0] / 2)]
                 .re = data.image[ID].array.CF[jj * naxes[0] + ii].re * coeff;
             data.image[ID1]
                 .array
-                .CF[(jj + factor * naxes[1] / 2 - naxes[1] / 2) * naxes[0] * factor +
+                .CF[(jj + factor * naxes[1] / 2 - naxes[1] / 2) * naxes[0] *
+                        factor +
                     (ii + factor * naxes[0] / 2 - naxes[0] / 2)]
                 .im = data.image[ID].array.CF[jj * naxes[0] + ii].im * coeff;
         }
@@ -106,14 +110,14 @@ int fftzoom(const char *ID_name, const char *IDout_name, long factor)
 
     permut(tmpz1name);
 
-    CREATE_IMAGENAME(tmpz2name, "_tmpz2_%d", (int)getpid());
+    CREATE_IMAGENAME(tmpz2name, "_tmpz2_%d", (int) getpid());
 
     do2dffti(tmpz1name, tmpz2name);
 
     permut(tmpz2name);
     delete_image_ID(tmpz1name, DELETE_IMAGE_ERRMODE_WARNING);
 
-    CREATE_IMAGENAME(tbename, "_tbe_%d", (int)getpid());
+    CREATE_IMAGENAME(tbename, "_tbe_%d", (int) getpid());
 
     mk_reim_from_complex(tmpz2name, IDout_name, tbename, 0);
 
