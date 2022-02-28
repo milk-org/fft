@@ -624,6 +624,7 @@ imageID do1drfft(const char *__restrict in_name,
 
         if (datatype == _DATATYPE_UINT16)
         {
+            printf("UINT16 data type\n");
             inptr  = (float *) malloc(sizeof(float) * naxes[2]);
             outptr = (fftwf_complex *) malloc(sizeof(fftwf_complex) * naxes[2]);
             uint64_t xysize = naxes[0];
@@ -652,6 +653,7 @@ imageID do1drfft(const char *__restrict in_name,
 
         if (datatype == _DATATYPE_UINT32)
         {
+            printf("UINT32 data type\n");
             inptr  = (float *) malloc(sizeof(float) * naxes[2]);
             outptr = (fftwf_complex *) malloc(sizeof(fftwf_complex) * naxes[2]);
             uint64_t xysize = naxes[0];
@@ -680,6 +682,7 @@ imageID do1drfft(const char *__restrict in_name,
 
         if (datatype == _DATATYPE_UINT64)
         {
+            printf("UINT64 data type\n");
             inptr  = (float *) malloc(sizeof(float) * naxes[2]);
             outptr = (fftwf_complex *) malloc(sizeof(fftwf_complex) * naxes[2]);
             uint64_t xysize = naxes[0];
