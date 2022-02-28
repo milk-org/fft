@@ -610,7 +610,7 @@ imageID do1drfft(const char *__restrict in_name,
                     inptr[i] = data.image[IDin].array.F[i * xysize + ii];
                 }
                 fftwf_execute(plan);
-                for (int i = 0; i < naxes[2]; i++)
+                for (uint32_t i = 0; i < naxesout[2]; i++)
                 {
                     data.image[IDout].array.CF[i * xysize + ii].re =
                         outptr[i][0];
@@ -639,7 +639,7 @@ imageID do1drfft(const char *__restrict in_name,
                         1.0 * data.image[IDin].array.UI16[i * xysize + ii];
                 }
                 fftwf_execute(plan);
-                for (int i = 0; i < naxes[2]; i++)
+                for (uint32_t i = 0; i < naxesout[2]; i++)
                 {
                     data.image[IDout].array.CF[i * xysize + ii].re =
                         outptr[i][0];
@@ -668,7 +668,7 @@ imageID do1drfft(const char *__restrict in_name,
                         1.0 * data.image[IDin].array.UI32[i * xysize + ii];
                 }
                 fftwf_execute(plan);
-                for (int i = 0; i < naxes[2]; i++)
+                for (uint32_t i = 0; i < naxesout[2]; i++)
                 {
                     data.image[IDout].array.CF[i * xysize + ii].re =
                         outptr[i][0];
@@ -697,7 +697,7 @@ imageID do1drfft(const char *__restrict in_name,
                         1.0 * data.image[IDin].array.UI64[i * xysize + ii];
                 }
                 fftwf_execute(plan);
-                for (int i = 0; i < naxes[2]; i++)
+                for (uint32_t i = 0; i < naxesout[2]; i++)
                 {
                     data.image[IDout].array.CF[i * xysize + ii].re =
                         outptr[i][0];
