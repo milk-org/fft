@@ -583,6 +583,40 @@ imageID do1drfft(const char *__restrict in_name,
             }
         }
     }
+    if (naxis == 3)
+    {
+        // perform 1D FFT along last dimension
+
+        if (datatype == _DATATYPE_FLOAT)
+        {
+            inptr  = (float *) malloc(sizeof(float) * naxes[2]);
+            outptr = (fftwf_complex *) malloc(sizeof(fftwf_complex) * naxes[2]);
+            uint64_t xysize = naxes[0];
+            xysize *= naxes[1];
+
+            plan = fftwf_plan_dft_r2c_1d(naxes[2], inptr, outptr, FFTWOPTMODE);
+            for (uint32_t ii = 0; ii < xysize; ii++)
+            {
+                for (int i = 0; i < naxes[2]; i++)
+                {
+                    inptr[i] = data.image[IDin].array.F[i * xysize + ii];
+                }
+                fftwf_execute(plan);
+                for (int i = 0; i < naxes[2]; i++)
+                {
+                    data.image[IDout].array.CF[i * xysize + ii].re =
+                        outptr[i][0];
+                    data.image[IDout].array.CF[i * xysize + ii].im =
+                        outptr[i][1];
+                }
+            }
+            free(inptr);
+            free(outptr);
+        }
+    }
+
+
+
 
     if (OK == 0)
     {
