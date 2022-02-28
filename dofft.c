@@ -444,12 +444,19 @@ imageID do1drfft(const char *__restrict in_name,
 
     datatype = data.image[IDin].md[0].datatype;
 
+    int fftaxis = 0;
+    if (naxis == 3)
+    {
+        fftaxis = 2;
+    }
+
+
     for (i = 0; i < naxis; i++)
     {
         naxesl[i]   = data.image[IDin].md[0].size[i];
         naxes[i]    = (int) data.image[IDin].md[0].size[i];
         naxesout[i] = data.image[IDin].md[0].size[i];
-        if (i == 0)
+        if (i == fftaxis)
         {
             naxesout[i] = data.image[IDin].md[0].size[i] / 2 + 1;
         }
@@ -586,6 +593,7 @@ imageID do1drfft(const char *__restrict in_name,
     if (naxis == 3)
     {
         // perform 1D FFT along last dimension
+        OK = 1;
 
         if (datatype == _DATATYPE_FLOAT)
         {
