@@ -462,12 +462,12 @@ imageID do1drfft(const char *__restrict in_name,
         }
     }
 
-    if (datatype == _DATATYPE_FLOAT)
+    if (datatype == _DATATYPE_DOUBLE)
     {
         create_image_ID(out_name,
                         naxis,
                         naxesout,
-                        _DATATYPE_COMPLEX_FLOAT,
+                        _DATATYPE_COMPLEX_DOUBLE,
                         data.SHARED_DFT,
                         data.NBKEYWORD_DFT,
                         0,
@@ -478,7 +478,7 @@ imageID do1drfft(const char *__restrict in_name,
         create_image_ID(out_name,
                         naxis,
                         naxesout,
-                        _DATATYPE_COMPLEX_DOUBLE,
+                        _DATATYPE_COMPLEX_FLOAT,
                         data.SHARED_DFT,
                         data.NBKEYWORD_DFT,
                         0,
@@ -608,6 +608,90 @@ imageID do1drfft(const char *__restrict in_name,
                 for (int i = 0; i < naxes[2]; i++)
                 {
                     inptr[i] = data.image[IDin].array.F[i * xysize + ii];
+                }
+                fftwf_execute(plan);
+                for (int i = 0; i < naxes[2]; i++)
+                {
+                    data.image[IDout].array.CF[i * xysize + ii].re =
+                        outptr[i][0];
+                    data.image[IDout].array.CF[i * xysize + ii].im =
+                        outptr[i][1];
+                }
+            }
+            free(inptr);
+            free(outptr);
+        }
+
+        if (datatype == _DATATYPE_UINT16)
+        {
+            inptr  = (float *) malloc(sizeof(float) * naxes[2]);
+            outptr = (fftwf_complex *) malloc(sizeof(fftwf_complex) * naxes[2]);
+            uint64_t xysize = naxes[0];
+            xysize *= naxes[1];
+
+            plan = fftwf_plan_dft_r2c_1d(naxes[2], inptr, outptr, FFTWOPTMODE);
+            for (uint32_t ii = 0; ii < xysize; ii++)
+            {
+                for (int i = 0; i < naxes[2]; i++)
+                {
+                    inptr[i] =
+                        1.0 * data.image[IDin].array.UI16[i * xysize + ii];
+                }
+                fftwf_execute(plan);
+                for (int i = 0; i < naxes[2]; i++)
+                {
+                    data.image[IDout].array.CF[i * xysize + ii].re =
+                        outptr[i][0];
+                    data.image[IDout].array.CF[i * xysize + ii].im =
+                        outptr[i][1];
+                }
+            }
+            free(inptr);
+            free(outptr);
+        }
+
+        if (datatype == _DATATYPE_UINT32)
+        {
+            inptr  = (float *) malloc(sizeof(float) * naxes[2]);
+            outptr = (fftwf_complex *) malloc(sizeof(fftwf_complex) * naxes[2]);
+            uint64_t xysize = naxes[0];
+            xysize *= naxes[1];
+
+            plan = fftwf_plan_dft_r2c_1d(naxes[2], inptr, outptr, FFTWOPTMODE);
+            for (uint32_t ii = 0; ii < xysize; ii++)
+            {
+                for (int i = 0; i < naxes[2]; i++)
+                {
+                    inptr[i] =
+                        1.0 * data.image[IDin].array.UI32[i * xysize + ii];
+                }
+                fftwf_execute(plan);
+                for (int i = 0; i < naxes[2]; i++)
+                {
+                    data.image[IDout].array.CF[i * xysize + ii].re =
+                        outptr[i][0];
+                    data.image[IDout].array.CF[i * xysize + ii].im =
+                        outptr[i][1];
+                }
+            }
+            free(inptr);
+            free(outptr);
+        }
+
+        if (datatype == _DATATYPE_UINT64)
+        {
+            inptr  = (float *) malloc(sizeof(float) * naxes[2]);
+            outptr = (fftwf_complex *) malloc(sizeof(fftwf_complex) * naxes[2]);
+            uint64_t xysize = naxes[0];
+            xysize *= naxes[1];
+
+            plan = fftwf_plan_dft_r2c_1d(naxes[2], inptr, outptr, FFTWOPTMODE);
+            for (uint32_t ii = 0; ii < xysize; ii++)
+            {
+                for (int i = 0; i < naxes[2]; i++)
+                {
+                    inptr[i] =
+                        1.0 * data.image[IDin].array.UI64[i * xysize + ii];
                 }
                 fftwf_execute(plan);
                 for (int i = 0; i < naxes[2]; i++)
