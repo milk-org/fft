@@ -21,7 +21,7 @@ int test_fftspeed(int nmax);
 
 errno_t test_fftspeed_cli()
 {
-    if (CLI_checkarg(1, CLIARG_LONG) == 0)
+    if(CLI_checkarg(1, CLIARG_LONG) == 0)
     {
         test_fftspeed((int) data.cmdargtoken[1].val.numl);
         return CLICMD_SUCCESS;
@@ -76,7 +76,7 @@ int test_fftspeed(int nmax)
 
     printf("size(pix)");
 #ifdef FFTWMT
-    for (nb_threads = 1; nb_threads < nb_threads_max; nb_threads++)
+    for(nb_threads = 1; nb_threads < nb_threads_max; nb_threads++)
     {
         printf("%13d", nb_threads);
     }
@@ -84,11 +84,11 @@ int test_fftspeed(int nmax)
     printf("\n");
 
     size = 2;
-    for (n = 0; n < nmax; n++)
+    for(n = 0; n < nmax; n++)
     {
         printf("%9ld", size);
 #ifdef FFTWMT
-        for (nb_threads = 1; nb_threads < nb_threads_max; nb_threads++)
+        for(nb_threads = 1; nb_threads < nb_threads_max; nb_threads++)
         {
             fft_setNthreads(nb_threads);
 #endif
@@ -96,13 +96,13 @@ int test_fftspeed(int nmax)
 #if _POSIX_TIMERS > 0
             clock_gettime(CLOCK_REALTIME, &tS0);
 #else
-        gettimeofday(&tv, NULL);
-        tS0.tv_sec  = tv.tv_sec;
-        tS0.tv_nsec = tv.tv_usec * 1000;
+            gettimeofday(&tv, NULL);
+            tS0.tv_sec  = tv.tv_sec;
+            tS0.tv_nsec = tv.tv_usec * 1000;
 #endif
 
             //	  clock_gettime(CLOCK_REALTIME, &tS0);
-            for (iter = 0; iter < nbiter; iter++)
+            for(iter = 0; iter < nbiter; iter++)
             {
                 create_2DCimage_ID("tmp", size, size, NULL);
                 do2dfft("tmp", "tmpf");
@@ -113,13 +113,13 @@ int test_fftspeed(int nmax)
 #if _POSIX_TIMERS > 0
             clock_gettime(CLOCK_REALTIME, &tS1);
 #else
-        gettimeofday(&tv, NULL);
-        tS1.tv_sec  = tv.tv_sec;
-        tS1.tv_nsec = tv.tv_usec * 1000;
+            gettimeofday(&tv, NULL);
+            tS1.tv_sec  = tv.tv_sec;
+            tS1.tv_nsec = tv.tv_usec * 1000;
 #endif
             //	  clock_gettime(CLOCK_REALTIME, &tS1);
 
-            for (iter = 0; iter < nbiter; iter++)
+            for(iter = 0; iter < nbiter; iter++)
             {
                 create_2DCimage_ID("tmp", size, size, NULL);
                 delete_image_ID("tmp", DELETE_IMAGE_ERRMODE_WARNING);
@@ -128,9 +128,9 @@ int test_fftspeed(int nmax)
 #if _POSIX_TIMERS > 0
             clock_gettime(CLOCK_REALTIME, &tS2);
 #else
-        gettimeofday(&tv, NULL);
-        tS2.tv_sec  = tv.tv_sec;
-        tS2.tv_nsec = tv.tv_usec * 1000;
+            gettimeofday(&tv, NULL);
+            tS2.tv_sec  = tv.tv_sec;
+            tS2.tv_nsec = tv.tv_usec * 1000;
 #endif
             //clock_gettime(CLOCK_REALTIME, &tS2);
 
@@ -149,7 +149,7 @@ int test_fftspeed(int nmax)
 #endif
         printf("\n");
         nbiter = 0.1 / dt1;
-        if (nbiter < 2)
+        if(nbiter < 2)
         {
             nbiter = 2;
         }

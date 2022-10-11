@@ -25,9 +25,9 @@ imageID fft_correlation(const char *ID_name1,
 
 errno_t fft_correlation_cli()
 {
-    if (CLI_checkarg(1, CLIARG_IMG) + CLI_checkarg(2, CLIARG_IMG) +
+    if(CLI_checkarg(1, CLIARG_IMG) + CLI_checkarg(2, CLIARG_IMG) +
             CLI_checkarg(3, CLIARG_STR_NOT_IMG) ==
-        0)
+            0)
     {
         fft_correlation(data.cmdargtoken[1].val.string,
                         data.cmdargtoken[2].val.string,

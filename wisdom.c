@@ -26,7 +26,7 @@ errno_t import_wisdom()
 
     int nowisdomWarning = 0;
 
-    if ((fp = fopen(wisdom_file_single, "r")) == NULL)
+    if((fp = fopen(wisdom_file_single, "r")) == NULL)
     {
         nowisdomWarning = 1;
         /*
@@ -45,14 +45,14 @@ errno_t import_wisdom()
     }
     else
     {
-        if (fftwf_import_wisdom_from_file(fp) == 0)
+        if(fftwf_import_wisdom_from_file(fp) == 0)
         {
             PRINT_ERROR("Error reading wisdom");
         }
         fclose(fp);
     }
 
-    if ((fp = fopen(wisdom_file_double, "r")) == NULL)
+    if((fp = fopen(wisdom_file_double, "r")) == NULL)
     {
         nowisdomWarning = 1;
         /*  n = snprintf(
@@ -68,14 +68,14 @@ errno_t import_wisdom()
     }
     else
     {
-        if (fftw_import_wisdom_from_file(fp) == 0)
+        if(fftw_import_wisdom_from_file(fp) == 0)
         {
             PRINT_ERROR("Error reading wisdom");
         }
         fclose(fp);
     }
 
-    if (nowisdomWarning == 1)
+    if(nowisdomWarning == 1)
     {
         printf("    [no fftw wisdom file, run initfft to create in %s]\n",
                FFTCONFIGDIR);
@@ -106,7 +106,7 @@ errno_t export_wisdom()
     WRITE_FULLFILENAME(wisdom_file_double, "%s/fftw_wisdom.dat", FFTCONFIGDIR);
 #endif
 
-    if ((fp = fopen(wisdom_file_single, "w")) == NULL)
+    if((fp = fopen(wisdom_file_single, "w")) == NULL)
     {
         PRINT_ERROR("Error creating wisdom file \"%s\"", wisdom_file_single);
         abort();
@@ -114,7 +114,7 @@ errno_t export_wisdom()
     fftwf_export_wisdom_to_file(fp);
     fclose(fp);
 
-    if ((fp = fopen(wisdom_file_double, "w")) == NULL)
+    if((fp = fopen(wisdom_file_double, "w")) == NULL)
     {
         PRINT_ERROR("Error creating wisdom file \"%s\"", wisdom_file_double);
         abort();

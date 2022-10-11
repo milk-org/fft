@@ -70,9 +70,9 @@ errno_t init_fftw_plans(int mode)
     //  plan_mode = FFTWOPTMODE;
     plan_mode = FFTW_EXHAUSTIVE;
 
-    for (n = 0; n < 14; n++)
+    for(n = 0; n < 14; n++)
     {
-        if (mode == 0)
+        if(mode == 0)
         {
             printf("Optimizing 2D FFTs - size = %d\n", size);
             fflush(stdout);
@@ -104,15 +104,15 @@ errno_t init_fftw_plans(int mode)
         fftw_free(outd);
 
         size *= 2;
-        if (mode == 0)
+        if(mode == 0)
         {
             export_wisdom();
         }
     }
     size = 1;
-    for (n = 0; n < 15; n++)
+    for(n = 0; n < 15; n++)
     {
-        if (mode == 0)
+        if(mode == 0)
         {
             printf("Optimizing 1D FFTs - size = %d\n", size);
             fflush(stdout);
@@ -142,7 +142,7 @@ errno_t init_fftw_plans(int mode)
         fftw_free(outd);
 
         size *= 2;
-        if (mode == 0)
+        if(mode == 0)
         {
             export_wisdom();
         }
