@@ -21,7 +21,7 @@ int test_fftspeed(int nmax);
 
 errno_t test_fftspeed_cli()
 {
-    if(CLI_checkarg(1, CLIARG_LONG) == 0)
+    if(CLI_checkarg(1, CLIARG_INT64) == 0)
     {
         test_fftspeed((int) data.cmdargtoken[1].val.numl);
         return CLICMD_SUCCESS;

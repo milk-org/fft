@@ -27,7 +27,7 @@ int fft_image_translate(const char *ID_name,
 errno_t fft_image_translate_cli()
 {
     if(CLI_checkarg(1, CLIARG_IMG) + CLI_checkarg(2, CLIARG_STR_NOT_IMG) +
-            CLI_checkarg(3, CLIARG_FLOAT) + CLI_checkarg(4, CLIARG_FLOAT) ==
+            CLI_checkarg(3, CLIARG_FLOAT64) + CLI_checkarg(4, CLIARG_FLOAT64) ==
             0)
     {
         fft_image_translate(data.cmdargtoken[1].val.string,
